@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-import { Navigation } from './nav';
+import { Navigation } from './layout/nav';
 import { DottedSeperator } from './dotted-seperator';
 
 export const Sidebar = () => {

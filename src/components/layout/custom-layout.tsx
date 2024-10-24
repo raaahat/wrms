@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { SidebarC } from './collapsible-sidebar';
 import { Navbar } from './top-nav-bar';
+import { ScrollArea } from '../ui/scroll-area';
 
 export default function CustomLayout({
   children,
@@ -12,7 +13,7 @@ export default function CustomLayout({
   const [expanded, setExpanded] = useState(true); // Track sidebar state
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative flex min-h-screen">
       {/* Fixed Sidebar (1) */}
       <div className=" hidden md:block">
         <SidebarC expanded={expanded} setExpanded={setExpanded} />
@@ -21,7 +22,7 @@ export default function CustomLayout({
       {/* Fixed Top Navbar (2) */}
       <header
         className={cn(
-          'md:fixed top-0 right-0 border-b shadow-sm z-1 transition-all',
+          'md:fixed top-0 right-0 border-b shadow-sm z-10 transition-all bg-white',
           expanded ? 'md:left-[245px]' : 'md:left-[74px]' // Adjust left position based on sidebar width
         )}
       >
@@ -32,12 +33,13 @@ export default function CustomLayout({
       {/* Main Content (3) */}
       <main
         className={cn(
-          ' p-4 transition-all',
-          expanded ? 'md:ml-[245px]' : 'md:ml-[74px]', // Adjust left margin based on sidebar width
-          'md:mt-20'
+          'flex-1 max-h-screen overflow-hidden transition-all', // Ensure no scroll in the parent container
+          expanded ? 'md:ml-[245px]' : 'md:ml-[74px]', // Adjust margin based on sidebar width
+          'pt-20' // Adjust for the top navbar height
         )}
       >
-        {children}
+        {/* Controlled scroll area */}
+        <ScrollArea className="h-full p-4">{children}</ScrollArea>
       </main>
     </div>
   );

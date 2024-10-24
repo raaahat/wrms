@@ -1,4 +1,4 @@
-import CustomLayout from '@/components/custom-layout';
+import CustomLayout from '@/components/layout/custom-layout';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return <CustomLayout>{children}</CustomLayout>;
