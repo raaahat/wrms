@@ -34,7 +34,11 @@ const SetupPage = async () => {
       name: true,
     },
   });
-  return <DeptList dept={departmentList} />;
+  return (
+    <div>
+      <DeptList dept={departmentList} />;<div className="h-[2000px]"></div>
+    </div>
+  );
 };
 
 export default SetupPage;
