@@ -13,7 +13,7 @@ export default function CustomLayout({
   const [expanded, setExpanded] = useState(true); // Track sidebar state
 
   return (
-    <div className="relative flex min-h-screen">
+    <div className="relative md:flex min-h-screen">
       {/* Fixed Sidebar (1) */}
       <div className=" hidden md:block">
         <SidebarC expanded={expanded} setExpanded={setExpanded} />
@@ -22,7 +22,7 @@ export default function CustomLayout({
       {/* Fixed Top Navbar (2) */}
       <header
         className={cn(
-          'md:fixed top-0 right-0 border-b shadow-sm z-10 transition-all bg-white',
+          'block md:fixed md:top-0 md:right-0 border-b shadow-sm z-9 transition-all',
           expanded ? 'md:left-[245px]' : 'md:left-[74px]' // Adjust left position based on sidebar width
         )}
       >
@@ -33,9 +33,9 @@ export default function CustomLayout({
       {/* Main Content (3) */}
       <main
         className={cn(
-          'flex-1 max-h-screen overflow-hidden transition-all', // Ensure no scroll in the parent container
+          'flex-1 max-h-screen overflow-hidden transition-all',
           expanded ? 'md:ml-[245px]' : 'md:ml-[74px]', // Adjust margin based on sidebar width
-          'pt-20' // Adjust for the top navbar height
+          'md:pt-20' // Adjust for the top navbar height
         )}
       >
         {/* Controlled scroll area */}

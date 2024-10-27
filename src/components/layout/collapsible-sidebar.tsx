@@ -156,7 +156,7 @@ export const SidebarSection = ({
   return (
     <ul className=" flex-1 px-3">
       {items.map((item) => {
-        const active = path === item.href;
+        const active = path.startsWith(item.href);
         return (
           <SidebarItem
             key={item.text}

@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { db } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { DepartmentTable } from './_compontents/department-table';
+import { Department } from '@prisma/client';
 
-const SetupPage = async () => {
+const SetupPage = async ({ data }: { data: Department }) => {
   // const user = await currentUser();
 
   // if (!user) {
@@ -36,8 +38,7 @@ const SetupPage = async () => {
   });
   return (
     <div>
-      <DeptList dept={departmentList} />
-      <div className=" h-[2000px]" />
+      <DepartmentTable data={departmentList} />
     </div>
   );
 };
