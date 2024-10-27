@@ -1,21 +1,14 @@
 import { create } from 'zustand';
 
-export type ModalType =
-  | 'createGroupspace'
-  | 'invite'
-  | 'editGroupspace'
-  | 'members'
-  | 'createZone'
-  | 'leaveGroupspace'
-  | 'deleteGroupspace'
-  | 'editZone'
-  | 'deleteZone'
-  | 'messageFile'
-  | 'deleteMessage';
+export type ModalType = 'createDepartment' | 'invite' | 'deleteDepartment';
 
-type ModalData = {
+export type ModalData = {
   apiUrl?: string;
   query?: Record<string, any>;
+  departmentInfo?: {
+    id: string;
+    name: string;
+  };
 };
 export type ModalStore = {
   type: ModalType | null;

@@ -21,22 +21,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { DataTablePagination } from './pagination';
 import { DataTableViewOptions } from './column-toggle';
+import { ModalData, ModalType } from '@/hooks/use-modal-store';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterBy: string;
+  onOpen?: (type: ModalType, data?: ModalData) => void;
 }
 
 export function DataTable<TData, TValue>({

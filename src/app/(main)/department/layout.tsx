@@ -3,6 +3,7 @@ import { db } from '@/lib/prisma';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { TabbarNav } from './_components/tab-bar';
+import { DeptModalProvider } from './_provider/modal-dept';
 
 const DepartmentLayout = async ({
   children,
@@ -20,6 +21,7 @@ const DepartmentLayout = async ({
 
   return (
     <>
+      <DeptModalProvider />
       <TabbarNav items={tabItem} className=" p-4" />
       {children}
     </>

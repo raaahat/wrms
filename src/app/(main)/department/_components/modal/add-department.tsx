@@ -1,18 +1,40 @@
 'use client';
 
 import { useModal } from '@/hooks/use-modal-store';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Check, Copy, RefreshCw } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { addDepartment } from '@/actions/department';
+import { toast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
-export const TestModal = () => {
+export const AddDepartmentModal = () => {
+  const router = useRouter();
   const [name, setName] = useState('');
-  const { data, isOpen, onClose, onOpen, type } = useModal();
-  const isModalOpen = isOpen && type === 'invite';
+  const { isOpen, onClose, type } = useModal();
+  const isModalOpen = isOpen && type === 'createDepartment';
+  async function handleSubmit() {
+    const { success, message } = await addDepartment(name);
+    if (success)
+      toast({
+        variant: 'default',
+        title: message,
+      });
+    else
+      toast({
+        variant: 'destructive',
+        title: message,
+      });
+    onClose();
+    router.refresh();
+  }
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className="overflow-hidden">
@@ -29,13 +51,7 @@ export const TestModal = () => {
               onChange={(e) => setName(e.target.value)}
               className=" border-0 bg-foreground/10 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
-            <Button
-              onClick={async () => {
-                const dept = await addDepartment(name);
-              }}
-            >
-              Save
-            </Button>
+            <Button onClick={handleSubmit}>Save</Button>
           </div>
         </div>
       </DialogContent>

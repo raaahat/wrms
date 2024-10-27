@@ -1,6 +1,5 @@
 'use client';
 
-import { TestModal } from '@/components/modals/add-department';
 import { useEffect, useState } from 'react';
 
 export const ModalProvider = () => {
@@ -12,9 +11,5 @@ export const ModalProvider = () => {
 
   if (!isMounted) return null;
 
-  return (
-    <>
-      <TestModal />
-    </>
-  );
+  return <></>;
 };

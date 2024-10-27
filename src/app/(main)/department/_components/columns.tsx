@@ -9,10 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useModal } from '@/hooks/use-modal-store';
 import { Department } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
+
 export const columns: ColumnDef<Department>[] = [
   {
     id: 'select',
@@ -55,7 +57,8 @@ export const columns: ColumnDef<Department>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const payment = row.original;
+      const { onOpen } = useModal();
+      const department = row.original;
 
       return (
         <DropdownMenu>
@@ -68,12 +71,20 @@ export const columns: ColumnDef<Department>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(department.id)}
             >
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() =>
+                onOpen('deleteDepartment', {
+                  departmentInfo: { id: department.id, name: department.name },
+                })
+              }
+            >
+              delete
+            </DropdownMenuItem>
             <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
