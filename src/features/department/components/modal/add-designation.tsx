@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { addDesignation } from '@/actions/designation';
-import { designationNameSchema } from '../schema';
+import { designationNameSchema } from '../../schema';
 import { Loader2 } from 'lucide-react';
 
 export const AddDesignationtModal = () => {

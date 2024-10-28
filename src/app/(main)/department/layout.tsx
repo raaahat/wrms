@@ -1,9 +1,8 @@
-import { buttonVariants } from '@/components/ui/button';
 import { db } from '@/lib/prisma';
-import { cn } from '@/lib/utils';
-import Link from 'next/link';
-import { TabbarNav } from './_components/tab-bar';
-import { DeptModalProvider } from './_provider/modal-dept';
+
+import TabbarNav from '@/features/department/components/tab-bar';
+import { DeptModalProvider } from '@/features/department/provider/modal-dept';
+import { AnimationProvider } from '@/features/department/provider/animation-provider';
 
 const DepartmentLayout = async ({
   children,
@@ -23,7 +22,7 @@ const DepartmentLayout = async ({
     <>
       <DeptModalProvider />
       <TabbarNav items={tabItem} className=" p-4" />
-      {children}
+      <AnimationProvider tabItem={tabItem}>{children}</AnimationProvider>
     </>
   );
 };

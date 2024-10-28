@@ -1,10 +1,5 @@
-import DeptList from '@/components/settings/dept-list';
-import { Button } from '@/components/ui/button';
-
 import { db } from '@/lib/prisma';
-import { auth, currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
-import { DepartmentTable } from './_components/department-table';
+import { DepartmentTable } from '../../../features/department/components/department-table';
 import { Department } from '@prisma/client';
 
 const SetupPage = async ({ data }: { data: Department }) => {

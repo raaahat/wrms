@@ -1,6 +1,6 @@
 import { db } from '@/lib/prisma';
-import { AddDesignationButton } from './add-button';
-import { DesignationList } from './designation-list';
+import { AddDesignationButton } from '@/features/designation/components/add-button';
+import { DesignationList } from '@/features/designation/components/designation-list';
 
 type SingleDepartmentProps = {
   params: {

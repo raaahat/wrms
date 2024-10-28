@@ -1,5 +1,4 @@
 'use client';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -13,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { Designation } from '@prisma/client';
 import { AddDesignationButton } from './add-button';
 import { ActionTooltip } from '@/components/action-tooltip';
-import { Delete, Edit, Trash, Trash2 } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal-store';
 type DesignationListProps = {
   designations: Designation[];

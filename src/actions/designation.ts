@@ -1,5 +1,5 @@
 'use server';
-import { designationNameSchema } from '@/app/(main)/department/_components/schema';
+import { designationNameSchema } from '@/features/department/schema';
 import { db } from '@/lib/prisma';
 import { z } from 'zod';
 
