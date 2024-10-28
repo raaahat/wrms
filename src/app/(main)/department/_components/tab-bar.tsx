@@ -30,10 +30,10 @@ export function TabbarNav({ className, items, ...props }: SidebarNavProps) {
             buttonVariants({ variant: 'ghost' }),
             ' capitalize',
             pathname === `/department` && item.name === 'Overview'
-              ? 'bg-muted hover:bg-muted'
+              ? 'bg-muted hover:bg-muted font-bold'
               : pathname === `/department/${item.name}`
-              ? 'bg-muted hover:bg-muted'
-              : 'hover:bg-transparent hover:underline',
+              ? 'font-bold bg-muted hover:bg-muted'
+              : 'text-muted-foreground hover:bg-transparent hover:underline',
             'justify-start'
           )}
         >

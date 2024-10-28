@@ -1,12 +1,16 @@
 import { create } from 'zustand';
 
-export type ModalType = 'createDepartment' | 'invite' | 'deleteDepartment';
+export type ModalType =
+  | 'createDepartment'
+  | 'invite'
+  | 'deleteDepartment'
+  | 'addDesignation'
+  | 'deleteDesignation';
 
 export type ModalData = {
-  apiUrl?: string;
-  query?: Record<string, any>;
+  designationId?: string;
   departmentInfo?: {
-    id: string;
+    id?: string;
     name: string;
   };
 };

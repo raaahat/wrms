@@ -59,7 +59,7 @@ export const SidebarC = ({ expanded, setExpanded }: SidebarProps) => {
           </div>
           <button
             onClick={() => setExpanded((curr) => !curr)}
-            className="text-gray-600 p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200"
+            className="shadow-md text-gray-600 p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </button>
