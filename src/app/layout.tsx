@@ -20,8 +20,9 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: 'Template for nextjsprisma',
-  description: 'Starter code for nextjs prisma shadcnui theme project',
+  title: 'Work Request Management System',
+  description:
+    'A streamlined system for managing work requests between departments, enabling efficient request handling and task management for maintenance teams.',
 };
 
 export default function RootLayout({
