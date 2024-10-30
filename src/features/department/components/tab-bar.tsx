@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 
 interface TabItem {
-  id: string;
-  name: string;
+  title: string;
+  href: string;
 }
+[];
 
 interface AnimatedTabsProps extends React.HTMLAttributes<HTMLElement> {
   items: TabItem[];
@@ -29,29 +30,21 @@ export default function AnimatedTabs({
       {...props}
     >
       {items.map((item) => {
-        const isActive =
-          (pathname === '/department' && item.name === 'Overview') ||
-          pathname === `/department/${item.name}`;
-
         return (
           <Link
-            key={item.id}
-            href={
-              item.name === 'Overview'
-                ? '/department'
-                : `/department/${item.name}`
-            }
+            key={item.href}
+            href={item.href}
             className={cn(
               buttonVariants({ variant: 'ghost' }),
               'capitalize relative',
-              isActive
+              pathname === item.href
                 ? 'text-foreground'
                 : 'text-muted-foreground hover:text-foreground',
               'justify-start'
             )}
           >
-            {item.name}
-            {isActive && (
+            {item.title}
+            {pathname === item.href && (
               <motion.div
                 className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
                 layoutId="activeTab"

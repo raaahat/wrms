@@ -8,22 +8,15 @@ export const AnimationProvider = async ({
   children,
 }: {
   tabItem: {
-    name: string;
-    id: string;
+    title: string;
+    href: string;
   }[];
   children: React.ReactNode;
 }) => {
   const pathname = usePathname();
   const getTabIndex = (path: string) => {
-    if (path === '/department') return 0;
-    const tabName = path.split('/').pop();
-    return (
-      tabItem.findIndex(
-        (item) => item.name.toLowerCase() === tabName?.toLowerCase()
-      ) || 0
-    );
+    return tabItem.findIndex((item) => item.href === path);
   };
-
   const currentIndex = getTabIndex(pathname);
   const previousIndex = React.useRef(currentIndex);
   useEffect(() => {

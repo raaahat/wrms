@@ -10,19 +10,25 @@ const DepartmentLayout = async ({
   children: React.ReactNode;
 }) => {
   const deptList = await db.department.findMany();
-  const tabItem = [
+
+  const navItem = [
     {
-      id: '0',
-      name: 'Overview',
+      title: 'overview',
+      href: '/department',
     },
-    ...deptList,
+    ...deptList.map((dept) => {
+      return {
+        title: dept.name,
+        href: `/department/${dept.name}`,
+      };
+    }),
   ];
 
   return (
     <>
       <DeptModalProvider />
-      <TabbarNav items={tabItem} className=" p-4" />
-      <AnimationProvider tabItem={tabItem}>{children}</AnimationProvider>
+      <TabbarNav items={navItem} className=" p-4" />
+      <AnimationProvider tabItem={navItem}>{children}</AnimationProvider>
     </>
   );
 };
