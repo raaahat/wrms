@@ -21,6 +21,7 @@ export const registerEmployee = async (data: unknown) => {
   }
   const userId = user.id;
   const email = user.emailAddresses[0].emailAddress;
+  const imageUrl = user.imageUrl;
   const { name, phone, department, designation } = parsedData.data;
 
   try {
@@ -28,6 +29,7 @@ export const registerEmployee = async (data: unknown) => {
     const newEmployee = await db.employee.create({
       data: {
         userId,
+        imageUrl,
         name,
         email,
         phone,

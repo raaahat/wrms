@@ -10,12 +10,9 @@ export const Navbar = () => {
     text = 'Hi there';
   }
   return (
-    <nav className=" py-4 px-6 flex items-center justify-between bg-background">
+    <nav className=" py-4 px-6 flex items-center justify-between bg-background shadow-md">
       <div className=" flex-col hidden md:flex">
         <h1 className=" text-2xl font-semibold capitalize ">{text}</h1>
-        <p className=" text-muted-foreground">
-          Monitor all of your projects and tasks
-        </p>
       </div>
       <MobileSidebar />
     </nav>

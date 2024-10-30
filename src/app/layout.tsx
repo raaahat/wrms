@@ -1,12 +1,7 @@
 import type { Metadata } from 'next';
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/nextjs';
+import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
+import localFont from 'next/font/local';
 import { Inter as FontSans } from 'next/font/google';
 
 import { cn } from '@/lib/utils';
@@ -18,7 +13,16 @@ const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans',
 });
-
+const geistSans = localFont({
+  src: './fonts/GeistVF.woff',
+  variable: '--font-geist-sans',
+  weight: '100 900',
+});
+const geistMono = localFont({
+  src: './fonts/GeistMonoVF.woff',
+  variable: '--font-geist-mono',
+  weight: '100 900',
+});
 export const metadata: Metadata = {
   title: 'Work Request Management System',
   description:
@@ -36,7 +40,7 @@ export default function RootLayout({
         <body
           className={cn(
             'min-h-screen bg-background font-sans antialiased',
-            fontSans.variable
+            geistSans.variable
           )}
         >
           <ThemeProvider

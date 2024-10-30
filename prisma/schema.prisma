@@ -15,6 +15,7 @@ datasource db {
 model Employee {
   id           String     @id @default(uuid())
   userId       String     @unique
+  imageUrl     String     @db.Text
   name         String
   email        String     @db.Text
   phone        String

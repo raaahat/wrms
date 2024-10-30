@@ -6,10 +6,13 @@ import {
   LucideProps,
   MoreVertical,
 } from 'lucide-react';
-import React from 'react';
+
 import { Settings, BarChart3, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { UserButton } from '@clerk/nextjs';
+import { Employee } from '@prisma/client';
+import Image from 'next/image';
 
 const items = [
   {
@@ -27,18 +30,19 @@ const items = [
     href: '/department',
   },
   {
-    text: 'Layout',
+    text: 'Request',
     icon: LayoutDashboard,
     active: false,
     alert: true,
-    href: '/test',
+    href: '/request',
   },
 ];
 interface SidebarProps {
   expanded: boolean;
+  user?: Employee;
   setExpanded: (value: boolean | ((prevState: boolean) => boolean)) => void;
 }
-export const SidebarC = ({ expanded, setExpanded }: SidebarProps) => {
+export const SidebarC = ({ expanded, setExpanded, user }: SidebarProps) => {
   const path = usePathname();
   return (
     <aside
@@ -54,7 +58,13 @@ export const SidebarC = ({ expanded, setExpanded }: SidebarProps) => {
               expanded ? 'w-32' : 'w-0'
             )}
           >
-            <img src="logo.svg" alt="" className="size-8 mr-4" />
+            <Image
+              src="logo.svg"
+              alt=""
+              className="size-8 mr-4"
+              width={20}
+              height={20}
+            />
             <p className="font-bold text-2xl">WRS</p>
           </div>
           <button
@@ -66,83 +76,9 @@ export const SidebarC = ({ expanded, setExpanded }: SidebarProps) => {
         </div>
         <SidebarSection expanded={expanded} path={path} />
 
-        <div className="border-t flex p-3">
-          <img
-            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
-            alt=""
-            className="w-10 h-10 rounded-md"
-          />
-          <div
-            className={`
-              flex justify-between items-center
-              overflow-hidden transition-all ${expanded ? 'w-40 ml-3' : 'w-0'}
-          `}
-          >
-            <div className="leading-4">
-              <h4 className="font-semibold">John Doe</h4>
-              <span className="text-xs text-gray-600">johndoe@gmail.com</span>
-            </div>
-            <MoreVertical size={20} />
-          </div>
-        </div>
+        <UserInfo user={user} expanded={expanded} />
       </nav>
     </aside>
-  );
-};
-type SidebarItemProps = {
-  text: string;
-  expanded: boolean;
-  href: string;
-  icon: React.ForwardRefExoticComponent<
-    Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
-  >;
-  active: boolean;
-  alert: boolean;
-  key: string;
-};
-const SidebarItem = ({
-  text,
-  expanded,
-  href,
-  icon,
-  active,
-  alert,
-}: SidebarItemProps) => {
-  const Icon = icon;
-  return (
-    <Link key={text} href={href}>
-      <li
-        className={cn(
-          'relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group',
-          active
-            ? 'bg-primary/30 text-primary'
-            : 'hover:bg-primary/10 text-gray-600'
-        )}
-      >
-        <Icon />
-        <span
-          className={`overflow-hidden transition-all ${
-            expanded ? 'w-40 ml-3' : 'w-0'
-          }`}
-        >
-          {text}
-          {alert && (
-            <div
-              className={cn(
-                'absolute top-2 right-2 w-2 h-2 rounded bg-primary/70'
-              )}
-            />
-          )}
-          {!expanded && (
-            <div
-              className={` absolute left-full rounded-md px-2 py-1 ml-6 mt-[-24px] bg-indigo-100 text-indigo-800 invisible text-sm opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
-            >
-              {text}
-            </div>
-          )}
-        </span>
-      </li>
-    </Link>
   );
 };
 
@@ -172,3 +108,87 @@ export const SidebarSection = ({
     </ul>
   );
 };
+
+type SidebarItemProps = {
+  text: string;
+  expanded: boolean;
+  href: string;
+  icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
+  >;
+  active: boolean;
+  alert: boolean;
+  key: string;
+};
+const SidebarItem = ({
+  text,
+  expanded,
+  href,
+  icon,
+  active,
+  alert,
+}: SidebarItemProps) => {
+  const Icon = icon;
+  return (
+    <Link key={text} href={href}>
+      <li
+        className={cn(
+          'relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group',
+          active
+            ? 'bg-primary/20 text-primary/90'
+            : 'hover:bg-primary/10 text-gray-600'
+        )}
+      >
+        <Icon />
+        <span
+          className={`overflow-hidden transition-all ${
+            expanded ? 'w-40 ml-3' : 'w-0'
+          }`}
+        >
+          {text}
+          {alert && (
+            <div
+              className={cn(
+                'absolute top-2 right-2 w-2 h-2 rounded bg-primary/70'
+              )}
+            />
+          )}
+          {!expanded && (
+            <div
+              className={` absolute left-full rounded-md px-2 py-1 ml-6 mt-[-24px] bg-neutral-100 text-neutral-800 invisible text-sm opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
+            >
+              {text}
+            </div>
+          )}
+        </span>
+      </li>
+    </Link>
+  );
+};
+
+function UserInfo({ expanded, user }: { expanded: boolean; user?: Employee }) {
+  return (
+    <div className={cn('border-t flex p-3', !expanded && 'p-0')}>
+      <div className=" flex-1 flex justify-center">
+        <UserButton />
+      </div>
+
+      <div
+        className={cn(
+          'flex justify-between items-center overflow-hidden transition-all',
+          expanded ? 'w-40 ml-3' : 'w-0 '
+        )}
+      >
+        <div className="leading-4">
+          <h4 className="font-semibold capitalize">
+            {user?.name || 'unknown'}
+          </h4>
+          <span className="text-xs text-gray-600">
+            {user?.email || 'no email'}
+          </span>
+        </div>
+        <MoreVertical size={20} />
+      </div>
+    </div>
+  );
+}

@@ -4,11 +4,14 @@ import { useState } from 'react';
 import { SidebarC } from './collapsible-sidebar';
 import { Navbar } from './top-nav-bar';
 import { ScrollArea } from '../ui/scroll-area';
+import { Employee } from '@prisma/client';
 
 export default function CustomLayout({
   children,
+  user,
 }: {
   children: React.ReactNode;
+  user?: Employee;
 }) {
   const [expanded, setExpanded] = useState(true); // Track sidebar state
 
@@ -16,7 +19,7 @@ export default function CustomLayout({
     <div className="relative md:flex min-h-screen">
       {/* Fixed Sidebar (1) */}
       <div className=" hidden md:block">
-        <SidebarC expanded={expanded} setExpanded={setExpanded} />
+        <SidebarC user={user} expanded={expanded} setExpanded={setExpanded} />
       </div>
 
       {/* Fixed Top Navbar (2) */}
