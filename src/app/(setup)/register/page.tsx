@@ -1,4 +1,5 @@
 import { currentProfile } from '@/database/current-profile';
+import { getDeptWithDesig } from '@/database/department';
 import { RegisterForm } from '@/features/register/components/register-form';
 import { db } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
@@ -11,13 +12,8 @@ const RegisterPage = async () => {
   }
   const employee = await currentProfile();
   if (!employee) {
-    const deptWithDesig = await db.department.findMany({
-      select: {
-        name: true,
-        id: true,
-        designations: true,
-      },
-    });
+    const { deptWithDesig } = await getDeptWithDesig();
+    if (!deptWithDesig) return <h1>Something went wrong</h1>;
     const defaultValues = {
       name: `${user.firstName} ${user.lastName}`,
     };

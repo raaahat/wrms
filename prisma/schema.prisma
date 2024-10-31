@@ -44,4 +44,6 @@ model Designation {
   department   Department @relation(fields: [departmentId], references: [id])
 
   employees Employee[]
+
+  @@unique([departmentId, title])
 }

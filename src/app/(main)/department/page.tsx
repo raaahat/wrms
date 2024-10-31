@@ -1,8 +1,7 @@
 import { db } from '@/lib/prisma';
 import { DepartmentTable } from '../../../features/department/components/department-table';
-import { Department } from '@prisma/client';
 
-const SetupPage = async ({ data }: { data: Department }) => {
+const SetupPage = async () => {
   // const user = await currentUser();
 
   // if (!user) {

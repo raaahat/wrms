@@ -1,6 +1,6 @@
 import { db } from '@/lib/prisma';
 
-import TabbarNav from '@/features/department/components/tab-bar';
+import TabbarNav from '@/components/layout/tab-bar';
 import { DeptModalProvider } from '@/features/department/provider/modal-dept';
 import { AnimationProvider } from '@/features/department/provider/animation-provider';
 

@@ -6,7 +6,7 @@ export const RegisterEmployeeSchema = z.object({
     .min(1, 'Name is required')
     .transform((value) => value.trim().replace(/\s+/g, ' ').toLowerCase()),
   department: z.string().min(1, 'Department is required'),
-  designation: z.string(),
+  designation: z.string().min(1, 'Designation is required'),
   phone: z
     .string()
     .min(10, 'Phone number must be at least 10 digits')

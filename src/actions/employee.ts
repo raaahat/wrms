@@ -1,4 +1,5 @@
 'use server';
+import { EmployeeWithDetails } from '@/features/employee/type';
 import { RegisterEmployeeSchema } from '@/features/register/type';
 import { db } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
@@ -22,9 +23,32 @@ export const registerEmployee = async (data: unknown) => {
   const userId = user.id;
   const email = user.emailAddresses[0].emailAddress;
   const imageUrl = user.imageUrl;
-  const { name, phone, department, designation } = parsedData.data;
+  const {
+    name,
+    phone,
+    department: departmentId,
+    designation: designationId,
+  } = parsedData.data;
 
   try {
+    // Step 1: Check if the designation exists
+    const desig = await db.designation.findUnique({
+      where: { id: designationId },
+      include: { department: true }, // Include related department for comparison
+    });
+
+    if (!desig) {
+      return {
+        success: false,
+        message: 'Designation does not exist.',
+      };
+    }
+    if (desig.departmentId !== departmentId) {
+      return {
+        success: false,
+        message: 'Designation does not match the selected department.',
+      };
+    }
     // Create the new employee in the database
     const newEmployee = await db.employee.create({
       data: {
@@ -33,8 +57,8 @@ export const registerEmployee = async (data: unknown) => {
         name,
         email,
         phone,
-        departmentId: department,
-        designationId: designation,
+        departmentId,
+        designationId,
       },
     });
 
@@ -48,6 +72,73 @@ export const registerEmployee = async (data: unknown) => {
     return {
       success: false,
       message: 'Failed to register employee. Please try again later.',
+    };
+  }
+};
+
+export const updateEmployee = async (
+  employeeId: string,
+  updatedFields: Partial<{
+    name: string;
+    email: string;
+    phone: string;
+    departmentId: string;
+    designationId: string;
+  }>
+) => {
+  try {
+    const employee = await db.employee.findUnique({
+      where: { id: employeeId },
+    });
+
+    if (!employee) {
+      return {
+        success: false,
+        message: 'Employee does not exist.',
+      };
+    }
+    if (updatedFields.designationId) {
+      const designation = await db.designation.findUnique({
+        where: { id: updatedFields.designationId },
+        include: { department: true },
+      });
+      if (!designation) {
+        return {
+          success: false,
+          message: 'Designation does not exist.',
+        };
+      }
+      if (updatedFields.departmentId) {
+        if (updatedFields.departmentId !== designation.departmentId) {
+          return {
+            success: false,
+            message: 'Designation does not match the selected department.',
+          };
+        }
+      }
+      if (designation.departmentId !== employee.departmentId) {
+        return {
+          success: false,
+          message: 'Designation does not match the selected department.',
+        };
+      }
+    }
+    // Step 2: Proceed with updating the employee with only modified fields
+    const updatedEmployee = await db.employee.update({
+      where: { id: employeeId },
+      data: updatedFields,
+    });
+
+    return {
+      success: true,
+      message: 'Employee updated successfully.',
+      data: updatedEmployee,
+    };
+  } catch (error) {
+    console.error('Error updating employee:', error);
+    return {
+      success: false,
+      message: 'Failed to update employee.',
     };
   }
 };

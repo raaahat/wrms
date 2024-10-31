@@ -30,11 +30,11 @@ const items = [
     href: '/department',
   },
   {
-    text: 'Request',
+    text: 'Employee',
     icon: LayoutDashboard,
     active: false,
     alert: true,
-    href: '/request',
+    href: '/employee',
   },
 ];
 interface SidebarProps {
@@ -90,7 +90,7 @@ export const SidebarSection = ({
   expanded: boolean;
 }) => {
   return (
-    <ul className=" flex-1 px-3">
+    <ul className=" flex-1 px-3 ">
       {items.map((item) => {
         const active = path.startsWith(item.href);
         return (
@@ -133,15 +133,15 @@ const SidebarItem = ({
     <Link key={text} href={href}>
       <li
         className={cn(
-          'relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group',
+          'relative flex items-center my-1 py-2 px-3 font-medium rounded-md cursor-pointer transition-colors group',
           active
             ? 'bg-primary/20 text-primary/90'
             : 'hover:bg-primary/10 text-gray-600'
         )}
       >
-        <Icon />
+        <Icon size={18} />
         <span
-          className={`overflow-hidden transition-all ${
+          className={`h-5 overflow-clip transition-all ${
             expanded ? 'w-40 ml-3' : 'w-0'
           }`}
         >

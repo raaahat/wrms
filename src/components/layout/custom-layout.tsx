@@ -26,7 +26,7 @@ export default function CustomLayout({
       <header
         className={cn(
           'block md:fixed md:top-0 md:right-0 border-b shadow-sm z-9 transition-all',
-          expanded ? 'md:left-[245px]' : 'md:left-[74px]' // Adjust left position based on sidebar width
+          expanded ? 'md:left-[241px]' : 'md:left-[70px]' // Adjust left position based on sidebar width
         )}
       >
         {/* Top navbar content */}
