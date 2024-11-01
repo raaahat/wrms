@@ -77,7 +77,7 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
       const {
         id: employeeId,
         name,
-
+        verified,
         designationId: designation,
         phone,
         email,
@@ -108,6 +108,7 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
                     designation,
                     name,
                     phone,
+                    verified,
                   },
                 })
               }

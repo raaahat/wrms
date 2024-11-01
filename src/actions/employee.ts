@@ -138,3 +138,26 @@ export const updateEmployee = async (
     };
   }
 };
+
+export const grantAccess = async (employeeId: string) => {
+  const now = new Date();
+  try {
+    await db.employee.update({
+      where: {
+        id: employeeId,
+      },
+      data: {
+        verified: now,
+      },
+    });
+    return {
+      success: true,
+      message: 'Successfully Verified!',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Something went wrong while granting access',
+    };
+  }
+};

@@ -16,6 +16,7 @@ export type ModalData = {
     department?: string;
     designation?: string | null;
     phone: string;
+    verified: Date | null;
   };
   designationId?: string;
   departmentInfo?: {

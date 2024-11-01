@@ -8,12 +8,13 @@ export const UpdateEmployeetModal = () => {
   const employeeId = data.userInfo?.employeeId;
 
   if (!deptWithDesig || !employeeId || !data.userInfo) return null;
-  const { name, department, designation, phone } = data.userInfo;
+  const { name, department, designation, phone, verified } = data.userInfo;
   const defaultValues = {
     name,
     department,
     designation,
     phone,
+    verified,
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>

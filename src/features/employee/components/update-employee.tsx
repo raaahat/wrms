@@ -31,13 +31,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { updateEmployee } from '@/actions/employee';
+import { grantAccess, updateEmployee } from '@/actions/employee';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import {
   DeptWithDesig,
   RegisterEmployeeSchema,
 } from '@/features/register/type';
+import { Check } from 'lucide-react';
 
 type UpdateEmployeeFormProps = {
   onClose: () => void;
@@ -48,6 +49,7 @@ type UpdateEmployeeFormProps = {
     department: string | undefined;
     designation: string | null | undefined;
     phone: string;
+    verified: Date | null;
   };
 };
 
@@ -58,6 +60,7 @@ export const UpdateEmployeeForm = ({
   defaultValues,
 }: UpdateEmployeeFormProps) => {
   const router = useRouter();
+  const [verified, setVerified] = useState(!!defaultValues?.verified);
   const [designations, setDesignations] = useState<
     {
       id: string;
@@ -75,6 +78,7 @@ export const UpdateEmployeeForm = ({
       designationId: defaultValues?.designation ?? '',
     },
   });
+
   async function handleSubmit(
     formData: z.infer<typeof RegisterEmployeeSchema>
   ) {
@@ -113,17 +117,20 @@ export const UpdateEmployeeForm = ({
         title: 'Nothing to update, make some changes or leave',
       });
   }
+
   const onDepartmentChange = (value: string) => {
     const department = deptWithDesig.find((dept) => dept.id === value);
     setDesignations(department ? department.designations : []);
     form.setValue('designationId', ''); // Reset designation when department changes
   };
+
   useEffect(() => {
     const department = deptWithDesig.find(
       (dept) => dept.id === defaultValues?.department
     );
     setDesignations(department ? department.designations : []);
   }, [deptWithDesig, defaultValues?.department]);
+
   return (
     <Card className=" w-full max-w-2xl mx-auto">
       <CardHeader>
@@ -251,9 +258,36 @@ export const UpdateEmployeeForm = ({
                 )}
               />
             </div>
-            <Button type="submit" disabled={!form.formState.isDirty}>
-              Save Changes
-            </Button>
+            <div className="flex justify-end items-center">
+              <Button type="submit" disabled={!form.formState.isDirty}>
+                Save Changes
+              </Button>
+              {verified ? (
+                <Button disabled className=" bg-emerald-600 ml-auto">
+                  {' '}
+                  <Check />
+                  verified
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  className=" ml-auto hover:cursor-pointer"
+                  onClick={async () => {
+                    const { success, message } = await grantAccess(employeeId);
+                    toast({
+                      variant: success ? 'default' : 'destructive',
+                      title: message,
+                    });
+                    if (success) {
+                      setVerified(true);
+                      router.refresh();
+                    }
+                  }}
+                >
+                  <p>Grant Access</p>
+                </Button>
+              )}
+            </div>
           </form>
         </Form>
       </CardContent>
