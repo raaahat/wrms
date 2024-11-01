@@ -45,8 +45,8 @@ type UpdateEmployeeFormProps = {
   deptWithDesig: DeptWithDesig;
   defaultValues?: {
     name: string;
-    department: string;
-    designation: string;
+    department: string | undefined;
+    designation: string | null | undefined;
     phone: string;
   };
 };
@@ -69,7 +69,10 @@ export const UpdateEmployeeForm = ({
   const form = useForm<z.infer<typeof RegisterEmployeeSchema>>({
     resolver: zodResolver(RegisterEmployeeSchema),
     defaultValues: {
-      ...defaultValues,
+      name: defaultValues?.name || '',
+      phone: defaultValues?.phone || '',
+      departmentId: defaultValues?.department || undefined,
+      designationId: defaultValues?.designation ?? '',
     },
   });
   async function handleSubmit(
@@ -89,7 +92,6 @@ export const UpdateEmployeeForm = ({
       },
       {}
     );
-    console.log(updatedFields);
     // const changes = getChangedFields(defaultValues, formData);
     if (updatedFields) {
       const { success, message, data } = await updateEmployee(
@@ -114,7 +116,7 @@ export const UpdateEmployeeForm = ({
   const onDepartmentChange = (value: string) => {
     const department = deptWithDesig.find((dept) => dept.id === value);
     setDesignations(department ? department.designations : []);
-    form.setValue('designation', ''); // Reset designation when department changes
+    form.setValue('designationId', ''); // Reset designation when department changes
   };
   useEffect(() => {
     const department = deptWithDesig.find(
@@ -123,7 +125,7 @@ export const UpdateEmployeeForm = ({
     setDesignations(department ? department.designations : []);
   }, [deptWithDesig, defaultValues?.department]);
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className=" w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Register</CardTitle>
         <CardDescription>
@@ -159,13 +161,12 @@ export const UpdateEmployeeForm = ({
             />
             <FormField
               control={form.control}
-              name="department"
+              name="departmentId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Department</FormLabel>
                   <Select
                     onValueChange={(value) => {
-                      console.log(value);
                       field.onChange(value);
                       onDepartmentChange(value);
                     }}
@@ -202,7 +203,7 @@ export const UpdateEmployeeForm = ({
             >
               <FormField
                 control={form.control}
-                name="designation"
+                name="designationId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Designation</FormLabel>

@@ -1,10 +1,5 @@
 import { useModal } from '@/hooks/use-modal-store';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { UpdateEmployeeForm } from '../update-employee';
 
 export const UpdateEmployeetModal = () => {
@@ -12,10 +7,7 @@ export const UpdateEmployeetModal = () => {
   const isModalOpen = isOpen && type === 'updateEmployee';
   const employeeId = data.userInfo?.employeeId;
 
-  if (!deptWithDesig || !employeeId || !data.userInfo)
-    return (
-      <h1> please provide department information and employee information</h1>
-    );
+  if (!deptWithDesig || !employeeId || !data.userInfo) return null;
   const { name, department, designation, phone } = data.userInfo;
   const defaultValues = {
     name,

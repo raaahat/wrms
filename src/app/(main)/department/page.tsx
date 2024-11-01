@@ -1,5 +1,5 @@
 import { db } from '@/lib/prisma';
-import { DepartmentTable } from '../../../features/department/components/department-table';
+import { DepartmentTable } from '@/features/department/components/department-table';
 
 const SetupPage = async () => {
   // const user = await currentUser();
@@ -28,6 +28,7 @@ const SetupPage = async () => {
     select: {
       id: true,
       name: true,
+      shortName: true,
     },
   });
   return (

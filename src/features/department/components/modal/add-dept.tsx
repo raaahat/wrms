@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -23,7 +22,6 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-import { addDesignation } from '@/actions/designation';
 import { DepartmentSchema } from '../../schema';
 import { Loader2 } from 'lucide-react';
 
@@ -31,16 +29,21 @@ export const AddDepartmentModal = () => {
   const form = useForm<z.infer<typeof DepartmentSchema>>({
     defaultValues: {
       name: '',
+      shortName: '',
     },
     resolver: zodResolver(DepartmentSchema),
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { data, isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type } = useModal();
   const isModalOpen = isOpen && type === 'createDepartment';
 
   async function onSubmit(values: z.infer<typeof DepartmentSchema>) {
-    const { success, message } = await addDepartment(values.name);
+    setLoading(true);
+    const { success, message } = await addDepartment(
+      values.name,
+      values.shortName
+    );
     toast({
       variant: success ? 'default' : 'destructive',
       title: message,
@@ -48,9 +51,11 @@ export const AddDepartmentModal = () => {
 
     if (success) {
       setLoading(false);
+      form.reset();
       onClose();
       router.refresh();
     }
+    setLoading(false);
   }
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -78,9 +83,25 @@ export const AddDepartmentModal = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              name="shortName"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Enter a short name for the department"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <Button disabled={loading} className=" w-full">
-              Add {loading && <Loader2 />}
+            <Button type="submit" disabled={loading} className=" w-full">
+              Add {loading && <Loader2 className=" animate-spin" />}
             </Button>
           </form>
         </Form>

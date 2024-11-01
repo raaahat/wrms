@@ -34,6 +34,7 @@ import {
 import { registerEmployee } from '@/actions/employee';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 export const RegisterForm = ({
   deptWithDesig,
@@ -55,8 +56,6 @@ export const RegisterForm = ({
     resolver: zodResolver(RegisterEmployeeSchema),
     defaultValues: {
       name: defaultValues?.name ?? '',
-      department: '',
-      designation: '',
       phone: '',
     },
   });
@@ -77,7 +76,7 @@ export const RegisterForm = ({
   const onDepartmentChange = (value: string) => {
     const department = deptWithDesig.find((dept) => dept.id === value);
     setDesignations(department ? department.designations : []);
-    form.setValue('designation', ''); // Reset designation when department changes
+    form.setValue('designationId', ''); // Reset designation when department changes
   };
 
   return (
@@ -117,7 +116,7 @@ export const RegisterForm = ({
             />
             <FormField
               control={form.control}
-              name="department"
+              name="departmentId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Department</FormLabel>
@@ -159,7 +158,7 @@ export const RegisterForm = ({
             >
               <FormField
                 control={form.control}
-                name="designation"
+                name="designationId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Designation</FormLabel>
@@ -207,7 +206,12 @@ export const RegisterForm = ({
                 )}
               />
             </div>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={form.formState.isLoading}>
+              Submit{' '}
+              {form.formState.isLoading && (
+                <Loader2 className=" animate-spin" />
+              )}
+            </Button>
           </form>
         </Form>
       </CardContent>

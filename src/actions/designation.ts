@@ -1,13 +1,13 @@
 'use server';
-import { designationNameSchema } from '@/features/department/schema';
+import { CreateDesignationSchema } from '@/features/department/schema';
 import { db } from '@/lib/prisma';
 import { z } from 'zod';
 
 export const addDesignation = async (
-  name: z.infer<typeof designationNameSchema>,
+  data: z.infer<typeof CreateDesignationSchema>,
   deptName: string
 ) => {
-  const result = await designationNameSchema.safeParse(name);
+  const result = await CreateDesignationSchema.safeParse(data);
   try {
     const department = await db.department.findUnique({
       where: { name: deptName },
@@ -20,7 +20,8 @@ export const addDesignation = async (
     if (result.success) {
       await db.designation.create({
         data: {
-          title: result.data.name,
+          title: result.data.title,
+          shortTitle: result.data.shortTitle,
           department: {
             connect: { id: department.id },
           },

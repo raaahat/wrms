@@ -13,15 +13,10 @@ import { usePathname } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 import { Employee } from '@prisma/client';
 import Image from 'next/image';
+import { Logo } from './logo';
+import { Separator } from '../ui/separator';
 
 const items = [
-  {
-    text: 'Settings',
-    icon: Settings,
-    active: false,
-    alert: false,
-    href: '/settings',
-  },
   {
     text: 'Department',
     icon: BarChart3,
@@ -36,6 +31,13 @@ const items = [
     alert: true,
     href: '/employee',
   },
+  {
+    text: 'Settings',
+    icon: Settings,
+    active: false,
+    alert: false,
+    href: '/settings',
+  },
 ];
 interface SidebarProps {
   expanded: boolean;
@@ -45,12 +47,8 @@ interface SidebarProps {
 export const SidebarC = ({ expanded, setExpanded, user }: SidebarProps) => {
   const path = usePathname();
   return (
-    <aside
-      className={cn(
-        'fixed top-0 left-0 h-screen border-r shadow-sm z-10 transition-all'
-      )}
-    >
-      <nav className="h-full flex flex-col border-r shadow-sm">
+    <aside className={cn('fixed top-0 left-0 h-screen z-10 transition-all')}>
+      <nav className="h-full flex flex-col shadow-centered">
         <div className="p-4 pb-2 flex justify-between items-center">
           <div
             className={cn(
@@ -58,14 +56,7 @@ export const SidebarC = ({ expanded, setExpanded, user }: SidebarProps) => {
               expanded ? 'w-32' : 'w-0'
             )}
           >
-            <Image
-              src="logo.svg"
-              alt=""
-              className="size-8 mr-4"
-              width={20}
-              height={20}
-            />
-            <p className="font-bold text-2xl">WRS</p>
+            <Logo />
           </div>
           <button
             onClick={() => setExpanded((curr) => !curr)}

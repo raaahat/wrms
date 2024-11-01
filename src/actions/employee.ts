@@ -1,5 +1,4 @@
 'use server';
-import { EmployeeWithDetails } from '@/features/employee/type';
 import { RegisterEmployeeSchema } from '@/features/register/type';
 import { db } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
@@ -23,12 +22,7 @@ export const registerEmployee = async (data: unknown) => {
   const userId = user.id;
   const email = user.emailAddresses[0].emailAddress;
   const imageUrl = user.imageUrl;
-  const {
-    name,
-    phone,
-    department: departmentId,
-    designation: designationId,
-  } = parsedData.data;
+  const { name, phone, departmentId, designationId } = parsedData.data;
 
   try {
     // Step 1: Check if the designation exists
@@ -57,7 +51,6 @@ export const registerEmployee = async (data: unknown) => {
         name,
         email,
         phone,
-        departmentId,
         designationId,
       },
     });
@@ -89,6 +82,9 @@ export const updateEmployee = async (
   try {
     const employee = await db.employee.findUnique({
       where: { id: employeeId },
+      include: {
+        designation: true,
+      },
     });
 
     if (!employee) {
@@ -116,7 +112,7 @@ export const updateEmployee = async (
           };
         }
       }
-      if (designation.departmentId !== employee.departmentId) {
+      if (designation.departmentId !== employee.designation?.departmentId) {
         return {
           success: false,
           message: 'Designation does not match the selected department.',

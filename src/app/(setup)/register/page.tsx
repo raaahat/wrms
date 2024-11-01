@@ -13,7 +13,8 @@ const RegisterPage = async () => {
   const employee = await currentProfile();
   if (!employee) {
     const { deptWithDesig } = await getDeptWithDesig();
-    if (!deptWithDesig) return <h1>Something went wrong</h1>;
+    if (!deptWithDesig || deptWithDesig?.length === 0)
+      return <h1>Something went wrong</h1>;
     const defaultValues = {
       name: `${user.firstName} ${user.lastName}`,
     };

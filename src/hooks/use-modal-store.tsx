@@ -13,8 +13,8 @@ export type ModalData = {
   userInfo?: {
     employeeId: string;
     name: string;
-    department: string;
-    designation: string;
+    department?: string;
+    designation?: string | null;
     phone: string;
   };
   designationId?: string;

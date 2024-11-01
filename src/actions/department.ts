@@ -1,11 +1,12 @@
 'use server';
 import { db } from '@/lib/prisma';
 
-export const addDepartment = async (name: string) => {
+export const addDepartment = async (name: string, shortName: string) => {
   try {
     await db.department.create({
       data: {
-        name: name,
+        name,
+        shortName,
       },
     });
     return {

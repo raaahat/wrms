@@ -43,7 +43,7 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
     accessorKey: 'department.name',
     header: 'Department',
     cell: ({ row }) => {
-      const title = row.original.department.name;
+      const title = row.original.designation?.department.name;
       return <span className=" capitalize ">{title}</span>;
     },
   },
@@ -51,7 +51,7 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
     accessorKey: 'designation.title',
     header: 'Designation',
     cell: ({ row }) => {
-      const title = row.original.designation.title;
+      const title = row.original.designation?.title;
       return <div className=" capitalize ">{title}</div>;
     },
   },
@@ -77,12 +77,12 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
       const {
         id: employeeId,
         name,
-        departmentId: department,
+
         designationId: designation,
         phone,
         email,
       } = row.original;
-
+      const department = row.original.designation?.departmentId;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

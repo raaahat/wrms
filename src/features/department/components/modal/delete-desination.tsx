@@ -61,7 +61,7 @@ export const DeleteDesignationModal = () => {
               onClick={handleSubmit}
             >
               Delete
-              {loading && <Loader2 />}
+              {loading && <Loader2 className=" animate-spin" />}
             </Button>
             <Button onClick={onClose}> Cancel</Button>
           </div>

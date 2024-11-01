@@ -10,7 +10,7 @@ export const Navbar = () => {
     text = 'Hi there';
   }
   return (
-    <nav className=" py-4 px-6 flex items-center justify-between bg-background shadow-md">
+    <nav className=" py-4 px-6 flex items-center justify-between bg-background">
       <div className=" flex-col hidden md:flex">
         <h1 className=" text-2xl font-semibold capitalize ">{text}</h1>
       </div>

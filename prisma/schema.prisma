@@ -13,17 +13,15 @@ datasource db {
 }
 
 model Employee {
-  id           String     @id @default(uuid())
-  userId       String     @unique
-  imageUrl     String     @db.Text
-  name         String
-  email        String     @db.Text
-  phone        String
-  departmentId String
-  department   Department @relation(fields: [departmentId], references: [id])
+  id       String @id @default(uuid())
+  userId   String @unique
+  imageUrl String @db.Text
+  name     String
+  email    String @unique
+  phone    String
 
-  designationId String
-  designation   Designation @relation(fields: [designationId], references: [id])
+  designationId String?
+  designation   Designation? @relation(fields: [designationId], references: [id], onDelete: SetNull)
 
   verified  DateTime?
   createdAt DateTime  @default(now())
@@ -33,15 +31,16 @@ model Employee {
 model Department {
   id           String        @id @default(uuid())
   name         String        @unique
-  employees    Employee[]
+  shortName    String
   designations Designation[]
 }
 
 model Designation {
   id           String     @id @default(uuid())
   title        String
+  shortTitle   String
   departmentId String
-  department   Department @relation(fields: [departmentId], references: [id])
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
 
   employees Employee[]
 

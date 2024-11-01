@@ -63,7 +63,7 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-  console.log(filterBy);
+
   return (
     <div>
       <div className="flex items-center py-4">

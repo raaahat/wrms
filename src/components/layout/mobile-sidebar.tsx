@@ -19,7 +19,7 @@ export const MobileSidebar = () => {
           <MenuIcon size={20} className=" text-neutral-500" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className=" p-0">
+      <SheetContent side="left" className=" p-0 max-w-[250px]">
         <div className="p-4 pb-2 flex justify-between items-center">
           <div
             className={'flex items-center w-32 overflow-hidden transition-all'}

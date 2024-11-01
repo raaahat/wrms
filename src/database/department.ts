@@ -6,6 +6,7 @@ export const getDeptWithDesig = async () => {
       select: {
         name: true,
         id: true,
+        shortName: true,
         designations: true,
       },
     });

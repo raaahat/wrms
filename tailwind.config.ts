@@ -19,6 +19,9 @@ const config = {
       },
     },
     extend: {
+      boxShadow: {
+        centered: '0 0 10px rgba(0, 0, 0, 0.2)',
+      },
       fontFamily: {
         sans: ['var(--font-geist-sans)', ...fontFamily.sans],
       },
