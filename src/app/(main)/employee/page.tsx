@@ -1,7 +1,8 @@
 import { getDeptWithDesig } from '@/database/department';
 import { getAllEmployee } from '@/database/employee';
 import { DepartmentProvider } from '@/features/department/provider/department-provider';
-import { EmployeeTable } from '@/features/employee/components/employee-table';
+import { columnsEmployee } from '@/features/employee/components/employee-table/employee-column';
+import { EmployeeDataTable } from '@/features/employee/components/employee-table/employee-table';
 
 const AllPage = async () => {
   const { data: employees, success } = await getAllEmployee();
@@ -11,7 +12,7 @@ const AllPage = async () => {
   return (
     <>
       <DepartmentProvider deptWithDesig={deptWithDesig} />
-      <EmployeeTable employees={employees} />
+      <EmployeeDataTable columns={columnsEmployee} data={employees} />
     </>
   );
 };

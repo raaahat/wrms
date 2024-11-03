@@ -1,8 +1,11 @@
 'use client';
-
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useRouter } from 'next/navigation';
+import { toast } from '@/hooks/use-toast';
+import { Check, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,8 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
-import { useEffect, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -32,13 +33,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { grantAccess, updateEmployee } from '@/actions/employee';
-import { toast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
 import {
   DeptWithDesig,
   RegisterEmployeeSchema,
 } from '@/features/register/type';
-import { Check } from 'lucide-react';
 
 type UpdateEmployeeFormProps = {
   onClose: () => void;
@@ -98,7 +96,7 @@ export const UpdateEmployeeForm = ({
     );
     // const changes = getChangedFields(defaultValues, formData);
     if (updatedFields) {
-      const { success, message, data } = await updateEmployee(
+      const { success, message } = await updateEmployee(
         employeeId,
         updatedFields
       );
@@ -259,8 +257,14 @@ export const UpdateEmployeeForm = ({
               />
             </div>
             <div className="flex justify-end items-center">
-              <Button type="submit" disabled={!form.formState.isDirty}>
-                Save Changes
+              <Button
+                type="submit"
+                disabled={!form.formState.isDirty || form.formState.isLoading}
+              >
+                Save Changes{' '}
+                {form.formState.isSubmitting && (
+                  <Loader2 className=" animate-spin" />
+                )}
               </Button>
               {verified ? (
                 <Button disabled className=" bg-emerald-600 ml-auto">

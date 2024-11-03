@@ -104,15 +104,12 @@ export const updateEmployee = async (
           message: 'Designation does not exist.',
         };
       }
-      if (updatedFields.departmentId) {
-        if (updatedFields.departmentId !== designation.departmentId) {
-          return {
-            success: false,
-            message: 'Designation does not match the selected department.',
-          };
-        }
-      }
-      if (designation.departmentId !== employee.designation?.departmentId) {
+      const departmentIdToCheck =
+        updatedFields.departmentId ?? employee.designation?.departmentId;
+      if (
+        departmentIdToCheck &&
+        departmentIdToCheck !== designation.departmentId
+      ) {
         return {
           success: false,
           message: 'Designation does not match the selected department.',
@@ -122,7 +119,15 @@ export const updateEmployee = async (
     // Step 2: Proceed with updating the employee with only modified fields
     const updatedEmployee = await db.employee.update({
       where: { id: employeeId },
-      data: updatedFields,
+      data: {
+        name: updatedFields.name,
+        phone: updatedFields.phone,
+        ...(updatedFields.designationId && {
+          designation: {
+            connect: { id: updatedFields.designationId },
+          },
+        }),
+      },
     });
 
     return {

@@ -2,7 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { EmployeeWithDetails } from '../type';
+import { EmployeeWithDetails } from '../../type';
 import Image from 'next/image';
 import { Check, MoreHorizontal, X } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal-store';
@@ -15,11 +15,40 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { EmployeeTableColumnHeader } from './employee-table-header';
 
 export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
   {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="translate-y-[2px]"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-[2px]"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    id: 'name',
     accessorKey: 'name',
-    header: 'Name',
+    header: ({ column }) => (
+      <EmployeeTableColumnHeader column={column} title="Name" />
+    ),
     cell: ({ row }) => {
       const { imageUrl, name, email } = row.original;
       return (
@@ -40,20 +69,36 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
     },
   },
   {
-    accessorKey: 'department.name',
-    header: 'Department',
+    id: 'dept-name',
+    accessorFn: (info) => info.designation?.department.name,
+    header: ({ column }) => (
+      <EmployeeTableColumnHeader column={column} title="Department" />
+    ),
     cell: ({ row }) => {
-      const title = row.original.designation?.department.name;
+      const title = row.getValue('dept-name') as string;
       return <span className=" capitalize ">{title}</span>;
     },
   },
   {
-    accessorKey: 'designation.title',
-    header: 'Designation',
+    id: 'designation',
+    accessorFn: (info) => info.designation?.title,
+    header: ({ column }) => (
+      <EmployeeTableColumnHeader column={column} title="Designation" />
+    ),
     cell: ({ row }) => {
-      const title = row.original.designation?.title;
-      return <div className=" capitalize ">{title}</div>;
+      const desig = row.original.designation;
+      return (
+        <div className=" capitalize ">
+          {`${desig?.title}(${desig?.shortTitle})`}
+        </div>
+      );
     },
+  },
+  {
+    accessorKey: 'phone',
+    header: 'Phone',
+    cell: (info) => info.getValue(),
+    enableSorting: false,
   },
   {
     accessorKey: 'verified',
@@ -83,16 +128,19 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
         email,
       } = row.original;
       const department = row.original.designation?.departmentId;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button
+              variant="ghost"
+              className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+            >
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(email)}
             >
@@ -115,7 +163,6 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
             >
               edit
             </DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
