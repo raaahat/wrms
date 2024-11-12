@@ -25,3 +25,7 @@ export function getChangedFields<T extends Record<string, any> | undefined>(
 
   return changes;
 }
+
+export function cleanUpSpaces(input: string): string {
+  return input.trim().replace(/\s+/g, ' ');
+}
