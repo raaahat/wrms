@@ -1,7 +1,6 @@
 import { currentProfile } from '@/database/current-profile';
 import { getDeptWithDesig } from '@/database/department';
-import { RegisterForm } from '@/features/register/components/register-form';
-import { db } from '@/lib/prisma';
+import { RegisterForm } from '@/features/employee/register/components/register-form';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 

@@ -1,4 +1,4 @@
-import { DeptWithDesig } from '@/features/register/type';
+import { DeptWithDesig } from '@/features/employee/register/type';
 import { create } from 'zustand';
 
 export type ModalType =

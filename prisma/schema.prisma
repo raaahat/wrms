@@ -46,3 +46,28 @@ model Designation {
 
   @@unique([departmentId, title])
 }
+
+enum Mode {
+  NORMAL
+  STRICT
+}
+
+enum Status {
+  placed
+  pending
+  ongoing
+  done
+  underObservation @map("U/O")
+  notSolved
+  followUp         @map("Follow-Up")
+}
+
+model Area {
+  id       String  @id @default(cuid())
+  name     String
+  parentId String?
+  parent   Area?   @relation("AreaParent", fields: [parentId], references: [id])
+  children Area[]  @relation("AreaParent")
+
+  createdAt DateTime @default(now())
+}

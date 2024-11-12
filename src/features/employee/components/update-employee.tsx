@@ -36,7 +36,7 @@ import { grantAccess, updateEmployee } from '@/actions/employee';
 import {
   DeptWithDesig,
   RegisterEmployeeSchema,
-} from '@/features/register/type';
+} from '@/features/employee/register/type';
 
 type UpdateEmployeeFormProps = {
   onClose: () => void;

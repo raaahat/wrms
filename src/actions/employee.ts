@@ -1,5 +1,6 @@
 'use server';
-import { RegisterEmployeeSchema } from '@/features/register/type';
+
+import { RegisterEmployeeSchema } from '@/features/employee/register/type';
 import { db } from '@/lib/prisma';
 import { auth, currentUser } from '@clerk/nextjs/server';
 
