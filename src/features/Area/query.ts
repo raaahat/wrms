@@ -1,6 +1,5 @@
 import { db } from '@/lib/prisma';
 import { Area } from '@prisma/client';
-type Areasss = Area;
 export interface AreaWithChild extends Area {
   children?: AreaWithChild[];
 }

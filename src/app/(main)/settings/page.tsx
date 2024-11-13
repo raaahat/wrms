@@ -4,7 +4,12 @@ import { getAreas } from '@/features/Area/query';
 const Settings = async () => {
   const areas = await getAreas();
 
-  return <AreaNavigator areas={areas} />;
+  return (
+    <>
+      <AreaNavigator areas={areas} />
+      {JSON.stringify(areas)}
+    </>
+  );
 };
 
 export default Settings;

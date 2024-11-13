@@ -66,7 +66,7 @@ export const NestedItem = ({
       <div
         key={id}
         className={cn(
-          ' flex flex-col border pl-4 pr-2 py-2 rounded-lg bg-gray-200 transition-all',
+          ' flex flex-col border pl-4 pr-2 pt-2 pb-1 rounded-lg bg-gray-200 transition-all',
           className
         )}
       >
