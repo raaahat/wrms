@@ -20,13 +20,14 @@ const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Header className="flex shadow-md  rounded-lg">
-    <div className=" w-full my-auto pl-4">{children}</div>
+  <AccordionPrimitive.Header
+    className={cn('flex shadow-md  rounded-lg', className)}
+  >
+    <div className=" w-full pl-4 ">{children}</div>
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        ' ml-auto hover:bg-slate-400 p-2 rounded-lg font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
-        className
+        ' ml-auto hover:bg-slate-400 p-2 rounded-lg font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180'
       )}
       {...props}
     >
@@ -63,7 +64,7 @@ export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
 
 export function AccordionBlock({ children }: { children: React.ReactNode }) {
   return (
-    <div className=" shadow-md bg-slate-200 rounded-lg">
+    <div className=" shadow-sm bg-slate-200 rounded-lg">
       <div className=" w-full my-auto h-8 pl-4  flex items-center">
         {children}
       </div>

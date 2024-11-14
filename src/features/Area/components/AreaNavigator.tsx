@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { useAdding } from '../store';
 import { cleanUpSpaces } from '@/lib/utils';
+import { AccordionBlock } from './accordion';
 
 export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
   const [isAddingParent, setIsAddingParent] = useState(false);
@@ -39,6 +40,7 @@ export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
       toast.success(message, {
         id: 'create-parent',
       });
+      setParentName('');
       setIsAddingParent(false);
     }
     setIsLoading(false);
@@ -91,42 +93,46 @@ export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
             {expand ? 'Collapse all' : 'Expand all'}
           </Button>
         </div>
-        {isAddingParent && (
-          <form className=" flex items-center" onSubmit={handleSubmit}>
-            <Input
-              className="mr-2 border pl-4 pr-2 py-1 rounded-lg bg-gray-200 transition-all"
-              autoFocus
-              onChange={(e) => setParentName(e.target.value)}
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              className="rounded-md p-1 bg-teal-400 ml-auto h-[28px] mr-2 "
-              disabled={isLoading || cleanUpSpaces(parentName) === ''}
-            >
-              {isLoading ? (
-                <Loader2
-                  className="animate-spin text-white"
-                  size={20}
-                  strokeWidth={3}
-                />
-              ) : (
-                <Check className=" text-white" strokeWidth={2.5} />
-              )}
-            </button>
-            <button
-              type="button"
-              className="rounded-md p-1 bg-rose-400 ml-auto h-[28px] mr-2 "
-              onClick={() => {
-                setIsAddingParent(false);
-              }}
-            >
-              <X className=" text-white " strokeWidth={2.5} />
-            </button>
-          </form>
-        )}
-
         <div className=" flex flex-col gap-2 transition-all duration-1000">
+          {isAddingParent && (
+            <form className=" max-w-[240px]" onSubmit={handleSubmit}>
+              <AccordionBlock>
+                <Input
+                  value={parentName}
+                  className="focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 h-full border-none bg-inherit w-full "
+                  type="text"
+                  autoFocus
+                  onChange={(e) => setParentName(e.target.value)}
+                  disabled={isLoading}
+                />
+
+                <button
+                  type="submit"
+                  className=" ml-auto m-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400"
+                  disabled={isLoading || cleanUpSpaces(parentName) === ''}
+                >
+                  {isLoading ? (
+                    <Loader2
+                      className="animate-spin text-white"
+                      size={20}
+                      strokeWidth={3}
+                    />
+                  ) : (
+                    '✔'
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className=" ml-auto mr-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400"
+                  onClick={() => {
+                    setIsAddingParent(false);
+                  }}
+                >
+                  ❌
+                </button>
+              </AccordionBlock>
+            </form>
+          )}
           {areas.map((area) => {
             return (
               <NestedItem

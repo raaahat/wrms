@@ -7,7 +7,6 @@ const Settings = async () => {
   return (
     <>
       <AreaNavigator areas={areas} />
-      {JSON.stringify(areas)}
     </>
   );
 };
