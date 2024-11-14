@@ -18,6 +18,13 @@ import { Separator } from '../ui/separator';
 
 const items = [
   {
+    text: 'Work Requests',
+    icon: BarChart3,
+    active: true,
+    alert: false,
+    href: '/work-request',
+  },
+  {
     text: 'Department',
     icon: BarChart3,
     active: true,

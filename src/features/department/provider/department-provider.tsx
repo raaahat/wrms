@@ -1,5 +1,5 @@
 'use client';
-import { DeptWithDesig } from '@/features/register/type';
+import { DeptWithDesig } from '@/features/employee/register/type';
 import { useModal } from '@/hooks/use-modal-store';
 import { useEffect } from 'react';
 
