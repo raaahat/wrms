@@ -1,17 +1,19 @@
 import { Mode, WrType } from '@prisma/client';
 import { z } from 'zod';
 
+export type CreateWRFormSchemaType = z.infer<typeof CreateWRFormSchema>;
 export const CreateWRFormSchema = z.object({
   title: z
     .string()
+    .min(1, 'Title is required')
     .transform((value) => value.trim().replace(/\s+/g, ' ').toLowerCase()),
-  areaId: z.string(), //will be a combobox, which i will work on later
-  runningHour: z.number().optional(), //user can left it empty
-  creatorId: z.string(), //will be a combobox, which i will work on later
-  mode: z.nativeEnum(Mode), //const Mode: "NORMAL" | "STRICT"
-  type: z.nativeEnum(WrType), //const WrType: "ELECTRICAL" | "MECHANICAL"
+  areaId: z.string().min(1, 'Area is required'),
+  runningHour: z.number().optional(),
+  creatorId: z.string().min(1, 'Creator is required'),
+  mode: z.nativeEnum(Mode),
+  type: z.nativeEnum(WrType),
   remarks: z
     .string()
     .transform((value) => value.trim().replace(/\s+/g, ' ').toLowerCase())
-    .optional(), //user can left it empty
+    .optional(),
 });

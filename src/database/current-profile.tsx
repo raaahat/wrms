@@ -11,6 +11,13 @@ export const currentProfile = async () => {
     where: {
       userId,
     },
+    include: {
+      designation: {
+        include: {
+          department: true,
+        },
+      },
+    },
   });
   return profile;
 };

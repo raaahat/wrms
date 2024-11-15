@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { EmployeeTableColumnHeader } from './employee-table-header';
+import UserAvatar from '../UserAvatar';
 
 export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
   {
@@ -52,19 +53,12 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
     cell: ({ row }) => {
       const { imageUrl, name, email } = row.original;
       return (
-        <div className="flex scale-90 md:scale-100">
-          <Image
-            className=" flex-shrink-0 w-fit rounded-full"
-            src={imageUrl}
-            height={35}
-            width={35}
-            alt="user icon"
-          />
-          <div className="flex-1 ml-3 flex flex-col ">
-            <p className=" capitalize text-base"> {name}</p>
-            <p className=" text-muted-foreground truncate"> {email}</p>
-          </div>
-        </div>
+        <UserAvatar
+          name={name}
+          avatar={imageUrl}
+          email={email}
+          className="min-w-44"
+        />
       );
     },
   },

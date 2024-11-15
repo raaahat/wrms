@@ -84,14 +84,6 @@ export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
           <Button onClick={() => setIsAddingParent((prev) => !prev)}>
             {isAddingParent ? 'Cancel' : 'Add'}
           </Button>
-          <Button
-            variant={'outline'}
-            size={'sm'}
-            className=" ml-auto"
-            onClick={toggleExpand}
-          >
-            {expand ? 'Collapse all' : 'Expand all'}
-          </Button>
         </div>
         <div className=" flex flex-col gap-2 transition-all duration-1000">
           {isAddingParent && (

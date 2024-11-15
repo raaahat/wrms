@@ -12,9 +12,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 import { Employee } from '@prisma/client';
-import Image from 'next/image';
+
 import { Logo } from './logo';
-import { Separator } from '../ui/separator';
 
 const items = [
   {

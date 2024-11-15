@@ -3,7 +3,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import localFont from 'next/font/local';
 import { Inter as FontSans } from 'next/font/google';
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ModalProvider } from '@/providers/modal-provider';
@@ -41,7 +41,8 @@ export default function RootLayout({
         <body
           className={cn(
             'min-h-screen bg-background font-sans antialiased',
-            geistSans.variable
+            geistSans.variable,
+            geistMono.variable
           )}
         >
           <ThemeProvider
@@ -52,6 +53,7 @@ export default function RootLayout({
           >
             <QueryProvider>
               {children}
+              <ReactQueryDevtools initialIsOpen={false} />
               <Toaster />
             </QueryProvider>
           </ThemeProvider>

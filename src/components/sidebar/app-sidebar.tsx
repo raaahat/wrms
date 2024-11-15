@@ -1,18 +1,13 @@
-import { Plus, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSkeleton,
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { FaUserGear } from 'react-icons/fa6';
@@ -21,8 +16,9 @@ import { redirect } from 'next/navigation';
 import { NavUser, NavUserSkeleton } from './nav-user';
 import React from 'react';
 import { MdOutlineWorkOutline } from 'react-icons/md';
-import Link from 'next/link';
+import { SiWorkplace } from 'react-icons/si';
 import { NavMain } from './nav-main';
+import Link from 'next/link';
 // Menu items.
 const items = [
   {
@@ -52,10 +48,12 @@ export async function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="#">
-                🎫
-                <span>WRMS</span>
-              </a>
+              <Link href="#">
+                <SiWorkplace />
+                <span className="text-lg tracking-widest text-slate-300 font-bold">
+                  WRMS
+                </span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

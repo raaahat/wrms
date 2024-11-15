@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { useAdding } from '../store';
 import { toast } from 'sonner';
 import { createChildArea } from '../actions/area';
-import { ActionTooltip } from '@/components/action-tooltip';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Loader2, MoreHorizontal, SquarePlus, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+
 import { cleanUpSpaces, cn } from '@/lib/utils';
 interface NestedItemProps {
   name: string;
@@ -47,7 +47,6 @@ export const NestedItem = ({
     setNewChild,
     isLoading,
     setIsLoading,
-    setDeletingId,
     expand,
   } = useAdding();
 
@@ -81,14 +80,14 @@ export const NestedItem = ({
         <Accordion
           key={id}
           type="multiple"
-          className="w-full bg-slate-200 rounded-md"
+          className="w-full bg-slate-200 dark:bg-slate-800 rounded-md"
         >
           <AccordionItem value={id}>
             <AccordionTrigger>
               <div className="group flex items-center justify-between w-full h-full">
                 {name}
                 <Menu
-                  className="hidden group-hover:block bg-slate-300 hover:bg-slate-400 h-full rounded-md size-6 p-1 mr-1"
+                  className="hidden group-hover:block bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 h-full rounded-md size-6 p-1 mr-1"
                   id={id}
                   canDelete={!hasChildren}
                 />
@@ -102,7 +101,7 @@ export const NestedItem = ({
                     <Input
                       autoFocus
                       value={newChild}
-                      className=" focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 h-full border-none bg-inherit w-full"
+                      className=" = h-full bg-inherit w-full"
                       type="text"
                       onChange={(e) => setNewChild(e.target.value)}
                       disabled={isLoading}
@@ -154,7 +153,7 @@ export const NestedItem = ({
             <div className="group flex items-center justify-between w-full h-full">
               {name}
               <Menu
-                className="hidden group-hover:block bg-slate-300 hover:bg-slate-400 h-full rounded-md size-6 p-1 mr-1"
+                className="hidden group-hover:block bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 h-full rounded-md size-6 p-1 mr-1"
                 id={id}
                 canDelete={!hasChildren}
               />

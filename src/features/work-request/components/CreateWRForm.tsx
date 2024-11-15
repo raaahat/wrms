@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Mode, WrType } from '@prisma/client';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,32 +23,19 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+
 import { AreaPicker } from './AreaPicker';
 import { useCreateWRstore } from '../hooks/create-wr-store';
-
-export const CreateWRFormSchema = z.object({
-  title: z
-    .string()
-    .min(1, 'Title is required')
-    .transform((value) => value.trim().replace(/\s+/g, ' ').toLowerCase()),
-  areaId: z.string().min(1, 'Area is required'),
-  runningHour: z.number().optional(),
-  creatorId: z.string().min(1, 'Creator is required'),
-  mode: z.nativeEnum(Mode),
-  type: z.nativeEnum(WrType),
-  remarks: z
-    .string()
-    .transform((value) => value.trim().replace(/\s+/g, ' ').toLowerCase())
-    .optional(),
-});
-
-type FormValues = z.infer<typeof CreateWRFormSchema>;
+import { EmployeePickerComboBox } from './EmployeePickerComboBox';
+import { CreateWRFormSchema, CreateWRFormSchemaType } from '../type';
+import { createWorkRequest } from '../action';
+import { toast } from 'sonner';
+import { useWRModal } from '../hooks/modal-store';
 
 export default function CreateWorkRequestForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { areaId, setAreaId } = useCreateWRstore();
-  const form = useForm<FormValues>({
+  const { areaId, creatorId } = useCreateWRstore();
+  const { onClose } = useWRModal();
+  const form = useForm<CreateWRFormSchemaType>({
     resolver: zodResolver(CreateWRFormSchema),
     defaultValues: {
       title: '',
@@ -57,42 +43,49 @@ export default function CreateWorkRequestForm() {
       runningHour: undefined,
       creatorId: '',
       mode: Mode.NORMAL,
-      type: WrType.ELECTRICAL,
+      type: undefined,
       remarks: '',
     },
   });
   useEffect(() => {
     if (areaId) form.setValue('areaId', areaId);
   }, [areaId, form]);
+  useEffect(() => {
+    if (creatorId) form.setValue('creatorId', creatorId);
+  }, [creatorId, form]);
 
-  async function onSubmit(data: FormValues) {
-    setIsSubmitting(true);
-    try {
-      // Here you would typically send the data to your API
-      console.log(data);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert('Work request created successfully!');
-      form.reset();
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('An error occurred while creating the work request.');
-    } finally {
-      setIsSubmitting(false);
+  async function onSubmit(formData: CreateWRFormSchemaType) {
+    toast.loading('Creating Work Request...', {
+      id: 'create-wr',
+    });
+    const { success, message } = await createWorkRequest(formData);
+    if (!success) {
+      toast.error(message, {
+        id: 'create-wr',
+      });
+      return;
     }
+    form.reset();
+    toast.success(message, {
+      id: 'create-wr',
+    });
+    onClose();
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 m-6">
-        <div className="grid md:grid-cols-2 gap-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 m-6 flex flex-col"
+      >
+        <div className="flex-1 grid md:grid-cols-2 gap-6">
           <div className="md:col-span-2 xl:col-span-1">
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title:{form.watch('title')}</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter work request title" {...field} />
                   </FormControl>
@@ -112,7 +105,7 @@ export default function CreateWorkRequestForm() {
                   <AreaPicker />
                 </FormControl>
                 <FormDescription>
-                  Select or create Equipment / area
+                  This will be the equipment or place of the work
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -124,12 +117,12 @@ export default function CreateWorkRequestForm() {
             name="creatorId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Creator</FormLabel>
+                <FormLabel>Added By</FormLabel>
                 <FormControl>
-                  <Input placeholder="Select creator" {...field} />
+                  <EmployeePickerComboBox />
                 </FormControl>
                 <FormDescription>
-                  This will be replaced with a combobox later.
+                  Opreation Engineer who is creating this work request
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -235,10 +228,10 @@ export default function CreateWorkRequestForm() {
 
         <Button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full md:w-fit"
+          disabled={form.formState.isSubmitting}
+          className=" w-full md:w-fit md:ml-auto"
         >
-          {isSubmitting ? 'Creating...' : 'Create Work Request'}
+          {form.formState.isSubmitting ? 'Creating...' : 'Create Work Request'}
         </Button>
       </form>
     </Form>
