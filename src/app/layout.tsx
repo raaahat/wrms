@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ModalProvider } from '@/providers/modal-provider';
 import { Toaster } from '@/components/ui/toaster';
+import { QueryProvider } from '@/providers/query-provider';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -49,9 +50,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <ModalProvider />
-            {children}
-            <Toaster />
+            <QueryProvider>
+              <ModalProvider />
+              {children}
+              <Toaster />
+            </QueryProvider>
           </ThemeProvider>
         </body>
       </html>

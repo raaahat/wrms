@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -25,8 +25,10 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { AreaPicker } from './AreaPicker';
+import { useCreateWRstore } from '../hooks/create-wr-store';
 
-const CreateWRFormSchema = z.object({
+export const CreateWRFormSchema = z.object({
   title: z
     .string()
     .min(1, 'Title is required')
@@ -46,7 +48,7 @@ type FormValues = z.infer<typeof CreateWRFormSchema>;
 
 export default function CreateWorkRequestForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const { areaId, setAreaId } = useCreateWRstore();
   const form = useForm<FormValues>({
     resolver: zodResolver(CreateWRFormSchema),
     defaultValues: {
@@ -59,6 +61,9 @@ export default function CreateWorkRequestForm() {
       remarks: '',
     },
   });
+  useEffect(() => {
+    if (areaId) form.setValue('areaId', areaId);
+  }, [areaId, form]);
 
   async function onSubmit(data: FormValues) {
     setIsSubmitting(true);
@@ -87,7 +92,7 @@ export default function CreateWorkRequestForm() {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Title:{form.watch('title')}</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter work request title" {...field} />
                   </FormControl>
@@ -104,10 +109,10 @@ export default function CreateWorkRequestForm() {
               <FormItem>
                 <FormLabel>Area</FormLabel>
                 <FormControl>
-                  <Input placeholder="Select area" {...field} />
+                  <AreaPicker />
                 </FormControl>
                 <FormDescription>
-                  This will be replaced with a combobox later.
+                  Select or create Equipment / area
                 </FormDescription>
                 <FormMessage />
               </FormItem>
