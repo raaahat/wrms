@@ -17,3 +17,26 @@ export const CreateWRFormSchema = z.object({
     .transform((value) => value.trim().replace(/\s+/g, ' ').toLowerCase())
     .optional(),
 });
+
+export type WRdataType = {
+  wrNo: string;
+  title: string;
+  area: {
+    id: string;
+    name: string;
+    parent?: {
+      id: string;
+      name: string;
+      parent: null;
+    };
+  };
+  creator: {
+    name: string;
+    designation: {
+      title: string;
+      department: {
+        name: string;
+      };
+    };
+  };
+};

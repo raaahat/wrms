@@ -34,8 +34,7 @@ export const getAreas = async () => {
 
 export type AreaType = Awaited<ReturnType<typeof getAreas>>;
 
-export async function getAllAreaWithFullName() {
-  // Fetch all areas in a single call
+export async function getAllAreaWithParentArr() {
   const areas = await db.area.findMany({
     select: {
       id: true,
@@ -43,12 +42,8 @@ export async function getAllAreaWithFullName() {
       parentId: true,
     },
   });
-
-  // Create a map for fast parent lookup
   const areasMap = new Map(areas.map((area) => [area.id, area]));
-
-  // Helper function to build fullName for an area (child-first order)
-  const buildFullName = (area: {
+  const buildParentArr = (area: {
     name: string;
     id: string;
     parentId: string | null;
@@ -61,16 +56,22 @@ export async function getAllAreaWithFullName() {
       parent = areasMap.get(parent.parentId as string);
     }
 
-    return names.join(' / ');
+    return names;
   };
-
-  // Generate output directly
   const output = areas.map((area) => ({
     id: area.id,
-    fullName: buildFullName(area),
+    name: area.name,
+    parentArr: buildParentArr(area),
   }));
-
   return output;
+}
+
+export async function getAllAreaWithFullName() {
+  const allAreaWithParentArr = await getAllAreaWithParentArr();
+  return allAreaWithParentArr.map((item) => ({
+    id: item.id,
+    fullName: item.parentArr.join(' / '),
+  }));
 }
 export type AllAreaWithFullNameType = Awaited<
   ReturnType<typeof getAllAreaWithFullName>

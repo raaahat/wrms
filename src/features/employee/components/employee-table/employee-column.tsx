@@ -3,14 +3,12 @@
 import { ColumnDef } from '@tanstack/react-table';
 
 import { EmployeeWithDetails } from '../../type';
-import Image from 'next/image';
 import { Check, MoreHorizontal, X } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal-store';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';

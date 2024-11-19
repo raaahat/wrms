@@ -1,7 +1,7 @@
 import { Table } from '@tanstack/react-table';
 import { EmployeeTableViewOptions } from './employee-table-view-options';
 import { Input } from '@/components/ui/input';
-import { departments, statuses } from './data';
+import { departments } from './data';
 import { EmployeeTableFacetedFilter } from './employee-table-faceted-filter';
 import { Button } from '@/components/ui/button';
 import { Cross2Icon } from '@radix-ui/react-icons';

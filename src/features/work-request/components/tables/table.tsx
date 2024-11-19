@@ -9,6 +9,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  GlobalFilterTableState,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -22,17 +23,24 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useState } from 'react';
-
-import { EmployeeTableToolbar } from './employee-table-toolbar';
-import { EmployeeTablePagination } from './Employee-table-pagination';
+import { useEffect, useState } from 'react';
+import { DataTablePagination } from '@/components/table/pagination';
+import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function EmployeeDataTable<TData, TValue>({
+export function WRDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -41,10 +49,15 @@ export function EmployeeDataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   console.log('column filters: ', columnFilters);
 
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    ['mode']: false,
+  });
+  const [globalFilter, setGlobalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState({});
   const table = useReactTable({
+    initialState: {
+      pagination: { pageSize: 40 },
+    },
     data,
     columns,
     state: {
@@ -52,8 +65,11 @@ export function EmployeeDataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      globalFilter,
     },
+    globalFilterFn: 'includesString',
     enableRowSelection: true,
+    onGlobalFilterChange: setGlobalFilter,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -65,11 +81,54 @@ export function EmployeeDataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
-
+  const column = table.getColumn('creator');
+  if (!column) return;
+  const creatorArr = Array.from(column.getFacetedUniqueValues().keys()).sort();
+  const selectedValues = new Set(column?.getFilterValue() as string[]);
   return (
     <div className="space-y-4">
-      <EmployeeTableToolbar table={table} />
-
+      {creatorArr.map((person) => {
+        const isSelected = selectedValues.has(person);
+        return (
+          <div key={person}>
+            <Checkbox
+              checked={isSelected}
+              onCheckedChange={() => {
+                if (isSelected) {
+                  selectedValues.delete(person);
+                } else {
+                  selectedValues.add(person);
+                }
+                const filterValues = Array.from(selectedValues);
+                column?.setFilterValue(
+                  filterValues.length ? filterValues : undefined
+                );
+              }}
+            />
+            {person}
+          </div>
+        );
+      })}
+      <Select
+        onValueChange={(value) => {
+          table.getColumn('creator')?.setFilterValue(value);
+        }}
+      >
+        <SelectTrigger>
+          {table.getColumn('creator')?.getFilterValue() as string}
+        </SelectTrigger>
+        <SelectContent>
+          {creatorArr.map((person) => (
+            <SelectItem value={person}>{person}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Input
+        value={globalFilter ?? ''}
+        onChange={(value) => setGlobalFilter(String(value.target.value))}
+        className="p-2 font-lg shadow border border-block"
+        placeholder="Search all columns..."
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -120,7 +179,9 @@ export function EmployeeDataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <EmployeeTablePagination table={table} />
+      <DataTablePagination table={table} />
+      <pre>{JSON.stringify(table.getState(), null, 2)}</pre>
+      <br />
     </div>
   );
 }
