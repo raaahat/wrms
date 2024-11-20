@@ -2,6 +2,7 @@
 
 import { db } from '@/lib/prisma';
 import { CreateWRFormSchema, CreateWRFormSchemaType } from './type';
+import { revalidatePath } from 'next/cache';
 
 export const createWorkRequest = async (formData: CreateWRFormSchemaType) => {
   // Validate input data
@@ -68,7 +69,7 @@ export const createWorkRequest = async (formData: CreateWRFormSchemaType) => {
         },
       },
     });
-
+    revalidatePath('/work-request');
     return {
       success: true,
       message: 'Work Request created successfully.',

@@ -34,6 +34,7 @@ import {
   SelectTrigger,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useFilterStore } from '../../wr-filter-store';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,7 +47,7 @@ export function WRDataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const { columnFilters, setColumnFilters } = useFilterStore();
   console.log('column filters: ', columnFilters);
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -81,6 +82,12 @@ export function WRDataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
+  const typeFacets = table.getColumn('type')?.getFacetedUniqueValues();
+
+  useEffect(() => {
+    if (typeFacets) useFilterStore.setState({ typeFacetedValues: typeFacets });
+  }, [typeFacets]);
+
   const column = table.getColumn('creator');
   if (!column) return;
   const creatorArr = Array.from(column.getFacetedUniqueValues().keys()).sort();
@@ -119,7 +126,9 @@ export function WRDataTable<TData, TValue>({
         </SelectTrigger>
         <SelectContent>
           {creatorArr.map((person) => (
-            <SelectItem value={person}>{person}</SelectItem>
+            <SelectItem value={person} key={person}>
+              {person}
+            </SelectItem>
           ))}
         </SelectContent>
       </Select>

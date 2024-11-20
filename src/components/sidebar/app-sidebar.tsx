@@ -1,5 +1,3 @@
-import { Settings } from 'lucide-react';
-
 import {
   Sidebar,
   SidebarContent,
@@ -10,34 +8,15 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import { FaUserGear } from 'react-icons/fa6';
+
 import { currentProfile } from '@/database/current-profile';
 import { redirect } from 'next/navigation';
 import { NavUser, NavUserSkeleton } from './nav-user';
 import React from 'react';
-import { MdOutlineWorkOutline } from 'react-icons/md';
+
 import { SiWorkplace } from 'react-icons/si';
 import { NavMain } from './nav-main';
 import Link from 'next/link';
-// Menu items.
-const items = [
-  {
-    title: 'Work Requests',
-    url: 'work-request',
-    icon: MdOutlineWorkOutline,
-  },
-  {
-    title: 'Employee',
-    url: 'employee',
-    icon: FaUserGear,
-  },
-
-  {
-    title: 'Settings',
-    url: 'settings',
-    icon: Settings,
-  },
-];
 
 export async function AppSidebar() {
   const user = await currentProfile();

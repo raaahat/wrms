@@ -1,11 +1,18 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
 import { GetAllWRType } from '../../query';
+import { format } from 'date-fns';
+const DATE_FORMAT = 'd-MMM-yy';
 
 export const columnWR: ColumnDef<GetAllWRType>[] = [
   {
     accessorKey: 'wrNo',
     header: 'WR-No',
+  },
+  {
+    id: 'createdAt',
+    accessorFn: (info) => format(info.createdAt, DATE_FORMAT),
+    header: 'Date',
   },
   {
     id: 'area',
@@ -20,7 +27,7 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
   },
   {
     accessorKey: 'type',
-    header: 'Type',
+    header: 'Department',
   },
   {
     accessorKey: 'mode',
