@@ -3,6 +3,8 @@
 import { db } from '@/lib/prisma';
 import { CreateWRFormSchema, CreateWRFormSchemaType } from './type';
 import { revalidatePath } from 'next/cache';
+import { Status } from '@prisma/client';
+import { nextAvailableStatus } from './constants';
 
 export const createWorkRequest = async (formData: CreateWRFormSchemaType) => {
   // Validate input data
@@ -84,6 +86,47 @@ export const createWorkRequest = async (formData: CreateWRFormSchemaType) => {
       success: false,
       message:
         'An error occurred while creating the Work Request. Please try again.',
+    };
+  }
+};
+
+export const setStatus = async (id: string, status: Status) => {
+  const existingWr = await db.workRequest.findUnique({
+    where: {
+      id,
+    },
+  });
+  if (!existingWr)
+    return {
+      success: false,
+      message: 'No WR found',
+    };
+  const nextStatus = nextAvailableStatus(existingWr.status);
+  if (!nextStatus)
+    return {
+      success: false,
+      message: 'Nothing need to change',
+    };
+  if (!nextStatus.includes(status))
+    return {
+      success: false,
+      message: 'Invalid status transition',
+    };
+  try {
+    await db.workRequest.update({
+      where: { id },
+      data: { status },
+    });
+    revalidatePath('/work-request');
+    return {
+      success: true,
+      message: `Status updated to ${status}`,
+    };
+  } catch (error) {
+    console.error('Error updating status:', error);
+    return {
+      success: false,
+      message: 'Failed to update status',
     };
   }
 };

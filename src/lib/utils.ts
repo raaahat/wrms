@@ -29,3 +29,9 @@ export function getChangedFields<T extends Record<string, any> | undefined>(
 export function cleanUpSpaces(input: string): string {
   return input.trim().replace(/\s+/g, ' ');
 }
+
+export const wait = async (sec: number) => {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => resolve(), sec * 1000);
+  });
+};

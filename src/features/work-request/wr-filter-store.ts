@@ -4,6 +4,9 @@ import { create } from 'zustand';
 type FilterStoreProps = {
   typeFacetedValues: Map<string, number> | undefined;
   columnFilters: ColumnFiltersState;
+
+  globalFilter: string;
+  setGlobalFilter: (updaterOrValue: string | ((old: string) => string)) => void;
   setColumnFilters: (
     updaterOrValue:
       | ColumnFiltersState
@@ -16,6 +19,14 @@ type FilterStoreProps = {
 export const useFilterStore = create<FilterStoreProps>((set) => ({
   typeFacetedValues: undefined,
   columnFilters: [],
+  globalFilter: '',
+  setGlobalFilter: (updaterOrValue) =>
+    set((state) => ({
+      globalFilter:
+        typeof updaterOrValue === 'function'
+          ? updaterOrValue(state.globalFilter)
+          : updaterOrValue,
+    })),
   setColumnFilters: (updaterOrValue) =>
     set((state) => ({
       columnFilters:

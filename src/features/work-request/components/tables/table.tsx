@@ -35,6 +35,8 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useFilterStore } from '../../wr-filter-store';
+import { WrTableToolbar } from './toolbar';
+import { Button } from '@/components/ui/button';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,7 +55,7 @@ export function WRDataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     ['mode']: false,
   });
-  const [globalFilter, setGlobalFilter] = useState('');
+  const { globalFilter, setGlobalFilter } = useFilterStore();
   const [rowSelection, setRowSelection] = useState({});
   const table = useReactTable({
     initialState: {
@@ -88,13 +90,21 @@ export function WRDataTable<TData, TValue>({
     if (typeFacets) useFilterStore.setState({ typeFacetedValues: typeFacets });
   }, [typeFacets]);
 
-  const column = table.getColumn('creator');
+  const column = table.getColumn('status');
   if (!column) return;
   const creatorArr = Array.from(column.getFacetedUniqueValues().keys()).sort();
   const selectedValues = new Set(column?.getFilterValue() as string[]);
   return (
-    <div className="space-y-4">
-      {creatorArr.map((person) => {
+    <div className="space-y-4 my-6">
+      <Button
+        onClick={() =>
+          table.getColumn('area')?.setFilterValue(['Engine Hall', 'Engine-01'])
+        }
+      >
+        engine
+      </Button>
+      <WrTableToolbar table={table} />
+      {/* {creatorArr.map((person) => {
         const isSelected = selectedValues.has(person);
         return (
           <div key={person}>
@@ -137,7 +147,7 @@ export function WRDataTable<TData, TValue>({
         onChange={(value) => setGlobalFilter(String(value.target.value))}
         className="p-2 font-lg shadow border border-block"
         placeholder="Search all columns..."
-      />
+      /> */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
