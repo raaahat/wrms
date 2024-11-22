@@ -18,6 +18,9 @@ export const getAllWr = async () => {
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   });
 
   return allWr.map((wr) => ({

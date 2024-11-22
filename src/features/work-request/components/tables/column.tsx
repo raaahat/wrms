@@ -103,28 +103,31 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
   },
   {
     id: 'area',
-    // accessorFn: (info) => info.allParentAreas?.join(' / '),
-    accessorFn: (info) => info.allParentAreas,
+    accessorFn: (info) => info.allParentAreas?.join(' / '),
+    // accessorFn: (info) => info.allParentAreas,
     header: 'Area',
-    cell: ({ row }) => {
-      const allParents = row.getValue('area') as string[];
-      return allParents.join(' / ');
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
     },
-    filterFn: (row: Row<GetAllWRType>, id: string, filterValues: any[]) => {
-      const columnValue = row.getValue(id) as string;
-      if (Array.isArray(columnValue)) {
-        // If the column value is an array, check if any value matches any filter case-insensitively
-        return filterValues.every((filterValue) =>
-          columnValue.some(
-            (val) => val.toLowerCase() === filterValue.toLowerCase()
-          )
-        );
-      }
-      // If the column value is a string, check inclusion for all filter values case-insensitively
-      return filterValues.every((filterValue) =>
-        columnValue.toLowerCase().includes(filterValue.toLowerCase())
-      );
-    },
+    // cell: ({ row }) => {
+    //   const allParents = row.getValue('area') as string[];
+    //   return allParents.join(' / ');
+    // },
+    // filterFn: (row: Row<GetAllWRType>, id: string, filterValues: any[]) => {
+    //   const columnValue = row.getValue(id) as string;
+    //   if (Array.isArray(columnValue)) {
+    //     // If the column value is an array, check if any value matches any filter case-insensitively
+    //     return filterValues.every((filterValue) =>
+    //       columnValue.some(
+    //         (val) => val.toLowerCase() === filterValue.toLowerCase()
+    //       )
+    //     );
+    //   }
+    //   // If the column value is a string, check inclusion for all filter values case-insensitively
+    //   return filterValues.every((filterValue) =>
+    //     columnValue.toLowerCase().includes(filterValue.toLowerCase())
+    //   );
+    // },
   },
   {
     accessorKey: 'title',
@@ -133,8 +136,12 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
   {
     accessorKey: 'type',
     header: ({ column }) => (
-      <WrTableColumnHeader column={column} title="Department" />
+      <WrTableColumnHeader className="max-w-16" column={column} title="Dept." />
     ),
+    cell: ({ row }) => {
+      return `${(row.getValue('type') as string)[0]}M`;
+    },
+    size: 180,
   },
   {
     accessorKey: 'mode',

@@ -31,8 +31,8 @@ export function WrTableFacetedFilter<TData, TValue>({
   title,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
-  const allOptions = Array.from(facets?.keys() || []);
-  console.log('facets entries: ', facets?.entries());
+  const allOptions: string[] = Array.from(facets?.keys() || []);
+
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
   return (
@@ -86,7 +86,7 @@ export function WrTableFacetedFilter<TData, TValue>({
                 const isSelected = selectedValues.has(option);
                 return (
                   <CommandItem
-                    key={option.value}
+                    key={option}
                     onSelect={() => {
                       if (isSelected) {
                         selectedValues.delete(option);

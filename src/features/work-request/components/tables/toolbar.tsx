@@ -31,6 +31,9 @@ export function WrTableToolbar<TData>({
             title="Status"
           />
         )}
+        {table.getColumn('area') && (
+          <WrTableFacetedFilter column={table.getColumn('area')} title="Area" />
+        )}
         {isFiltered && (
           <Button
             variant="ghost"

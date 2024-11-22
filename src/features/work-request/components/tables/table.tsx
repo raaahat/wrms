@@ -50,7 +50,6 @@ export function WRDataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const { columnFilters, setColumnFilters } = useFilterStore();
-  console.log('column filters: ', columnFilters);
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     ['mode']: false,
@@ -176,7 +175,7 @@ export function WRDataTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className=" py-1" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
