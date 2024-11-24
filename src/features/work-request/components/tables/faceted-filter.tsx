@@ -30,8 +30,32 @@ export function WrTableFacetedFilter<TData, TValue>({
   column,
   title,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-  const facets = column?.getFacetedUniqueValues();
-  const allOptions: string[] = Array.from(facets?.keys() || []);
+  const computeFacetedUniqueValues = () => {
+    const rawFacets = column?.getFacetedUniqueValues();
+
+    if (!rawFacets) return new Map();
+
+    const valueCountMap = new Map<string, number>();
+
+    Array.from(rawFacets.entries()).forEach(([key, count]) => {
+      if (Array.isArray(key)) {
+        // If the key is an array, split and count each individual value
+        key.forEach((val) => {
+          valueCountMap.set(val, (valueCountMap.get(val) || 0) + count);
+        });
+      } else {
+        // If the key is a single value, handle it normally
+        valueCountMap.set(key, (valueCountMap.get(key) || 0) + count);
+      }
+    });
+
+    return valueCountMap;
+  };
+  const facets = computeFacetedUniqueValues();
+
+  const allOptions: string[] = Array.from(facets.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([key]) => key);
 
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
@@ -112,9 +136,9 @@ export function WrTableFacetedFilter<TData, TValue>({
                     {/* {option.icon && (
                       <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                     )} */}
-                    <span>{option}</span>
+                    <span className="line-clamp-2 text-xs">{option}</span>
                     {facets?.get(option) && (
-                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                      <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs ">
                         {facets.get(option)}
                       </span>
                     )}

@@ -91,62 +91,10 @@ export function WRDataTable<TData, TValue>({
 
   const column = table.getColumn('status');
   if (!column) return;
-  const creatorArr = Array.from(column.getFacetedUniqueValues().keys()).sort();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
   return (
     <div className="space-y-4 my-6">
-      <Button
-        onClick={() =>
-          table.getColumn('area')?.setFilterValue(['Engine Hall', 'Engine-01'])
-        }
-      >
-        engine
-      </Button>
       <WrTableToolbar table={table} />
-      {/* {creatorArr.map((person) => {
-        const isSelected = selectedValues.has(person);
-        return (
-          <div key={person}>
-            <Checkbox
-              checked={isSelected}
-              onCheckedChange={() => {
-                if (isSelected) {
-                  selectedValues.delete(person);
-                } else {
-                  selectedValues.add(person);
-                }
-                const filterValues = Array.from(selectedValues);
-                column?.setFilterValue(
-                  filterValues.length ? filterValues : undefined
-                );
-              }}
-            />
-            {person}
-          </div>
-        );
-      })}
-      <Select
-        onValueChange={(value) => {
-          table.getColumn('creator')?.setFilterValue(value);
-        }}
-      >
-        <SelectTrigger>
-          {table.getColumn('creator')?.getFilterValue() as string}
-        </SelectTrigger>
-        <SelectContent>
-          {creatorArr.map((person) => (
-            <SelectItem value={person} key={person}>
-              {person}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Input
-        value={globalFilter ?? ''}
-        onChange={(value) => setGlobalFilter(String(value.target.value))}
-        className="p-2 font-lg shadow border border-block"
-        placeholder="Search all columns..."
-      /> */}
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>

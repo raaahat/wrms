@@ -23,10 +23,15 @@ model Employee {
   designationId String?
   designation   Designation? @relation(fields: [designationId], references: [id], onDelete: SetNull)
 
-  wrAdded   WorkRequest[]
-  verified  DateTime?
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  managedTimeLines   TimeLine[] @relation("MaintManager") // Maintenance manager for timelines
+  shiftTimeLines     TimeLine[] @relation("ShiftEngineer") // Shift engineer for timelines
+  operationTimeLines TimeLine[] @relation("OperationEngineer") // Operation junior engineer for timelines
+
+  wrAddedBy  WorkRequest[] @relation("wrCreatedBy")
+  wrIssuedTo WorkRequest[] @relation("wrIssuedTo")
+  verified   DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 }
 
 model Department {
@@ -57,6 +62,7 @@ enum Status {
   PLACED
   PENDING
   ONGOING
+  FINISHED
   DONE
   UNDER_OBSERVATION
   NOT_SOLVED
@@ -80,22 +86,51 @@ model Area {
 }
 
 model WorkRequest {
-  id             String  @id @default(cuid())
-  wrNo           String  @unique
-  title          String
-  type           WrType
-  status         Status  @default(PLACED)
-  remarks        String?
-  mode           Mode    @default(NORMAL)
-  runningHour    String?
-  referredFromId String?
-  creatorId      String
-  areaId         String
+  id                    String    @id @default(cuid())
+  wrNo                  String    @unique //auto generated short id no which will be displayed everywhere
+  title                 String
+  type                  WrType // whether it is mechanical work or electrical
+  status                Status    @default(PLACED)
+  maintEngrId           String? // an employee, name, imgurl, designation, department will be provided
+  workStartedAt         DateTime? // timestamp when status set to "ONGOING"
+  workFinishConfrimedAt DateTime? // timestamp when status set to "DONE"
+  remarks               String? // after maintanance work done, it will hold any information about the work
+  mode                  Mode      @default(NORMAL) // for internal used case, if "STRICT", wr will be maintained strictly
+  runningHour           String? // equipment running hour
+  referredFromId        String? // sometime problem not solved, it will hold the parent wr ID
+  referredToId          String? // it will hold child wr ID
+  creatorId             String // who created the work request,an employee, name, imgurl, designation, department will be provided
+  areaId                String // location of equipment of the work
 
-  creator          Employee      @relation(fields: [creatorId], references: [id])
+  creator          Employee      @relation("wrCreatedBy", fields: [creatorId], references: [id])
+  maintEngr        Employee?     @relation("wrIssuedTo", fields: [maintEngrId], references: [id])
   area             Area          @relation(fields: [areaId], references: [id])
   referredFrom     WorkRequest?  @relation("ReferredWorkRequest", fields: [referredFromId], references: [id])
+  referredTo       WorkRequest?  @relation("ReferredWorkTo", fields: [referredToId], references: [id])
   extendedRequests WorkRequest[] @relation("ReferredWorkRequest")
+  followUpRequests WorkRequest[] @relation("ReferredWorkTo") // Add reverse relation for `referredTo`
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
+  timelines        TimeLine[]    @relation("WorkRequestTimeline")
+}
+
+model TimeLine {
+  id                   String    @id @default(cuid())
+  wrId                 String // Work request ID (strict mode)
+  maintManagerId       String? // Manager ID for assigning a maintenance engineer
+  maintEngrAssignedAt  DateTime? // Assigned time for tracking WR status
+  shiftEngrId          String? // Assigned maintenance engineer for shift
+  opEngrId             String? // Assigned field operation junior engineer
+  opEngrAssignedAt     DateTime? // For tracking purposes
+  isolationConfirmedAt DateTime? // Field engineer confirms isolation, WR status becomes 'ONGOING'
+  workDoneAt           DateTime? // Maintenance engineer confirms the work is done
+
+  // Relations
+  workRequest       WorkRequest @relation("WorkRequestTimeline", fields: [wrId], references: [id])
+  maintManager      Employee?   @relation("MaintManager", fields: [maintManagerId], references: [id]) // Relation to the maintenance manager
+  shiftEngineer     Employee?   @relation("ShiftEngineer", fields: [shiftEngrId], references: [id]) // Relation to shift engineer
+  operationEngineer Employee?   @relation("OperationEngineer", fields: [opEngrId], references: [id]) // Relation to operation junior engineer
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

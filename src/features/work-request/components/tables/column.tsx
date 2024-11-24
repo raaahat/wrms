@@ -20,6 +20,8 @@ import { wait } from '@/lib/utils';
 import { setStatus } from '../../action';
 import { toast } from 'sonner';
 import { WrTableColumnHeader } from './table-header';
+import { StatusBadge } from '../status-badge';
+import UserAvatar from '@/features/employee/components/UserAvatar';
 const DATE_FORMAT = 'd-MMM-yy';
 
 export const columnWR: ColumnDef<GetAllWRType>[] = [
@@ -47,7 +49,7 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => {}}>edit</DropdownMenuItem>
-            {next && (
+            {next.length !== 0 && (
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Set status</DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
@@ -87,10 +89,12 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
       );
     },
   },
+
   {
     accessorKey: 'wrNo',
     header: 'WR-NO',
   },
+
   {
     id: 'createdAt',
     accessorFn: (info) => info.createdAt,
@@ -101,33 +105,27 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
       return format(info.row.getValue('createdAt'), DATE_FORMAT);
     },
   },
+
   {
     id: 'area',
-    accessorFn: (info) => info.allParentAreas?.join(' / '),
-    // accessorFn: (info) => info.allParentAreas,
+    accessorFn: (info) => info.allParentAreas,
     header: 'Area',
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+    filterFn: (row, id, filterValues) => {
+      const columnValue = row.getValue(id); // Get array value
+
+      if (!Array.isArray(columnValue)) return false; // Ensure it's an array
+
+      // Check if any item in the array matches any filter value
+      return filterValues.some((filterValue: string) =>
+        columnValue.some(
+          (val) => val.toLowerCase() === filterValue.toLowerCase()
+        )
+      );
     },
-    // cell: ({ row }) => {
-    //   const allParents = row.getValue('area') as string[];
-    //   return allParents.join(' / ');
-    // },
-    // filterFn: (row: Row<GetAllWRType>, id: string, filterValues: any[]) => {
-    //   const columnValue = row.getValue(id) as string;
-    //   if (Array.isArray(columnValue)) {
-    //     // If the column value is an array, check if any value matches any filter case-insensitively
-    //     return filterValues.every((filterValue) =>
-    //       columnValue.some(
-    //         (val) => val.toLowerCase() === filterValue.toLowerCase()
-    //       )
-    //     );
-    //   }
-    //   // If the column value is a string, check inclusion for all filter values case-insensitively
-    //   return filterValues.every((filterValue) =>
-    //     columnValue.toLowerCase().includes(filterValue.toLowerCase())
-    //   );
-    // },
+    cell: ({ row }) => {
+      const allParents = row.getValue('area') as string[];
+      return allParents.join(' / ');
+    },
   },
   {
     accessorKey: 'title',
@@ -152,6 +150,17 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     id: 'creator',
     accessorFn: (info) => info.creator.name,
     header: 'Added By',
+    cell: ({ row }) => {
+      const { name, imageUrl, designation: des } = row.original.creator;
+      return (
+        <UserAvatar
+          name={name}
+          avatar={imageUrl}
+          designaiton={des?.title}
+          department={des?.department.shortName}
+        />
+      );
+    },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
@@ -161,6 +170,9 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     header: ({ column }) => (
       <WrTableColumnHeader column={column} title="Status" />
     ),
+    cell: ({ row }) => {
+      return <StatusBadge status={row.getValue('status')} />;
+    },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
