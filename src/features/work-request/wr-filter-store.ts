@@ -1,7 +1,10 @@
 import { ColumnFiltersState } from '@tanstack/react-table';
 import { create } from 'zustand';
+import { DateRangeType, INITIAL_DATERANGE } from './constants';
 
 type FilterStoreProps = {
+  dateRange: DateRangeType;
+  setDateRange: (date: DateRangeType) => void;
   typeFacetedValues: Map<string, number> | undefined;
   columnFilters: ColumnFiltersState;
 
@@ -17,6 +20,8 @@ type FilterStoreProps = {
 };
 
 export const useFilterStore = create<FilterStoreProps>((set) => ({
+  dateRange: INITIAL_DATERANGE,
+  setDateRange: (value) => set({ dateRange: value }),
   typeFacetedValues: undefined,
   columnFilters: [],
   globalFilter: '',

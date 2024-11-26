@@ -51,3 +51,12 @@ export const getStatusIcon = (status: Status) => {
   };
   return icons[status];
 };
+
+export const INITIAL_DATERANGE = {
+  from: new Date(
+    new Date(new Date().setDate(new Date().getDate() - 30)).setHours(0, 0, 0, 0)
+  ), // 30 days ago, midnight
+  to: new Date(new Date().setHours(0, 0, 0, 0)), // Today, midnight
+};
+
+export type DateRangeType = typeof INITIAL_DATERANGE;

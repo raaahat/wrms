@@ -22,7 +22,7 @@ export async function AppSidebar() {
   const user = await currentProfile();
   if (!user) return redirect('/register');
   return (
-    <Sidebar variant="floating" collapsible="icon">
+    <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
