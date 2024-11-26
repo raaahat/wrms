@@ -1,9 +1,5 @@
 'use client';
 
-import { WorkRequestModal } from '@/features/work-request/components/ai-test/work-request-modal';
-import { WorkRequestModalCompact } from '@/features/work-request/components/ai-test/work-request-modal-compact';
-import { WorkRequestModalTabbed } from '@/features/work-request/components/ai-test/work-request-modal-tabbed';
-
 const sampleWorkRequest = {
   id: '1',
   wrNo: 'WR001',
@@ -45,9 +41,9 @@ export default function Home() {
         Work Request Demo
       </h1>
       <div className="space-y-4">
-        <WorkRequestModal workRequest={sampleWorkRequest} />
+        {/* <WorkRequestModal workRequest={sampleWorkRequest} />
         <WorkRequestModalTabbed workRequest={sampleWorkRequest} />
-        <WorkRequestModalCompact workRequest={sampleWorkRequest} />
+        <WorkRequestModalCompact workRequest={sampleWorkRequest} /> */}
       </div>
     </main>
   );
