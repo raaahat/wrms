@@ -31,9 +31,11 @@ import { CreateWRFormSchema, CreateWRFormSchemaType } from '../type';
 import { createWorkRequest } from '../action';
 import { toast } from 'sonner';
 import { useWRModal } from '../hooks/modal-store';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function CreateWorkRequestForm() {
-  const { areaId, creatorId } = useCreateWRstore();
+  const queryClient = useQueryClient();
+  const { areaId, setAreaId, setCreatorId, creatorId } = useCreateWRstore();
   const { onClose } = useWRModal();
   const form = useForm<CreateWRFormSchemaType>({
     resolver: zodResolver(CreateWRFormSchema),
@@ -65,10 +67,14 @@ export default function CreateWorkRequestForm() {
       });
       return;
     }
+
     form.reset();
+    setAreaId('');
+    setCreatorId('');
     toast.success(message, {
       id: 'create-wr',
     });
+    queryClient.invalidateQueries({ queryKey: ['workRequests'] });
     onClose();
   }
 

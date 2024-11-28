@@ -22,12 +22,14 @@ import { toast } from 'sonner';
 import { WrTableColumnHeader } from './table-header';
 import { StatusBadge } from '../status-badge';
 import UserAvatar from '@/features/employee/components/UserAvatar';
+import { useQueryClient } from '@tanstack/react-query';
 const DATE_FORMAT = 'd-MMM-yy';
 
 export const columnWR: ColumnDef<GetAllWRType>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
+      const queryClient = useQueryClient();
       const { id, status } = row.original;
       const next = nextAvailableStatus(status);
       return (
@@ -71,7 +73,9 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
                             });
                             return;
                           }
-
+                          queryClient.invalidateQueries({
+                            queryKey: ['workRequests'],
+                          });
                           toast.success(message, {
                             id: 'set-status',
                           });

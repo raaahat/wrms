@@ -1,28 +1,94 @@
 import { PrismaClient } from '@prisma/client';
-// import { areas } from './seed/areas';
-// import { departments } from './seed/departments';
-// import { designations } from './seed/designations';
-// import { employees } from './seed/employees';
-// import { workRequests } from './seed/workRequests';
 
 const db = new PrismaClient();
 
 async function main() {
   console.log('Seeding database...');
+  const departmentsWithDesignations = [
+    {
+      name: 'mechanical',
+      shortName: 'MM',
+      designations: [
+        {
+          title: 'assistant engineer',
+          shortTitle: 'AE',
+        },
+        {
+          title: 'junior engineer',
+          shortTitle: 'JE',
+        },
+      ],
+    },
+    {
+      name: 'electrical',
+      shortName: 'EM',
+      designations: [
+        {
+          title: 'sr. assistant engineer',
+          shortTitle: 'Sr.AE',
+        },
+        {
+          title: 'electrical manager',
+          shortTitle: 'EM',
+        },
+      ],
+    },
+    {
+      name: 'operation',
+      shortName: 'OP',
+      designations: [
+        {
+          title: 'sub assistant engineer',
+          shortTitle: 'SAE',
+        },
+        {
+          title: 'junior engineer',
+          shortTitle: 'JE',
+        },
+        {
+          title: 'operation manager',
+          shortTitle: 'OM',
+        },
+        {
+          title: 'assistant shift engineer',
+          shortTitle: 'ASE',
+        },
+      ],
+    },
+  ];
 
-  // Seed Departments
-  // await db.department.createMany({ data: departments });
+  async function seedDepartments() {
+    for (const department of departmentsWithDesignations) {
+      const createdDepartment = await db.department.create({
+        data: {
+          name: department.name,
+          shortName: department.shortName,
+        },
+      });
 
-  // Seed Designations
-  // await db.designation.createMany({ data: designations });
+      // Seed related designations
+      for (const designation of department.designations) {
+        await db.designation.create({
+          data: {
+            title: designation.title,
+            shortTitle: designation.shortTitle,
+            departmentId: createdDepartment.id, // Link to the created department
+          },
+        });
+      }
+    }
 
-  // Seed Employees
-  // await db.employee.createMany({ data: employees });
+    console.log('Departments and designations seeded successfully');
+  }
 
-  // Seed Areas
-  // await db.area.createMany({ data: areas });
-
-  // Seed Work Requests
+  seedDepartments()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await db.$disconnect();
+    });
 
   console.log('Database seeded successfully.');
 }
