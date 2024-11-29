@@ -2,10 +2,10 @@ import { WRModalProvider } from '@/features/work-request/providers/modal-provide
 
 const WRPageLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex">
+    <>
       <WRModalProvider />
-      <div className="  flex-1 overflow-auto">{children}</div>
-    </div>
+      <div>{children}</div>
+    </>
   );
 };
 

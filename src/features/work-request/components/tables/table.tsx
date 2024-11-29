@@ -39,6 +39,7 @@ import { WrTableToolbar } from './toolbar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { useSidebar } from '@/components/ui/sidebar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -93,12 +94,18 @@ export function WRDataTable<TData, TValue>({
 
   const column = table.getColumn('status');
   if (!column) return;
+  const { toggleSidebar, state } = useSidebar();
   return (
     <div className='flex-1 space-y-4'>
       <WrTableToolbar table={table} />
 
-      <div className=' rounded-md border'>
-        <ScrollArea className='max-w-[90vw]'>
+      <ScrollArea
+        className={cn(
+          'max-w-[90vw] md:max-w-full ',
+          state === 'expanded' && 'md:max-w-[70vw] lg:max-w-full'
+        )}
+      >
+        <div className=' rounded-md border'>
           <Table className='overflow-auto'>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -147,10 +154,10 @@ export function WRDataTable<TData, TValue>({
               )}
             </TableBody>
           </Table>
-          <ScrollBar orientation='horizontal' />
-        </ScrollArea>
-      </div>
-      <DataTablePagination table={table} />
+        </div>
+        <DataTablePagination table={table} />
+        <ScrollBar orientation='horizontal' />
+      </ScrollArea>
       {/* <pre>{JSON.stringify(table.getState(), null, 2)}</pre> */}
     </div>
   );
