@@ -27,11 +27,14 @@ model Employee {
   shiftTimeLines     TimeLine[] @relation("ShiftEngineer") // Shift engineer for timelines
   operationTimeLines TimeLine[] @relation("OperationEngineer") // Operation junior engineer for timelines
 
-  wrAddedBy  WorkRequest[] @relation("wrCreatedBy")
-  wrIssuedTo WorkRequest[] @relation("wrIssuedTo")
-  verified   DateTime?
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  wrAddedBy   WorkRequest[] @relation("wrCreatedBy")
+  wrIssuedTo  WorkRequest[] @relation("wrIssuedTo")
+  roles       Role[]        @relation("UserRoles")
+  permissions Permission[]  @relation("UserPermissions")
+
+  verified  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Department {
@@ -133,4 +136,37 @@ model TimeLine {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum PermissionName {
+  CREATE_WR
+  VIEW_WR
+  DELETE_WR
+}
+
+enum RoleName {
+  ControlRoom
+  ShiftIncharge
+  Employee
+  OPEngr
+  MMEngr
+  EMEngr
+  OPManager
+  MManager
+  EManager
+  DGM
+}
+
+model Role {
+  id          String       @id @default(cuid()) // unique id for the role
+  name        RoleName     @unique // the role's name, e.g., "Admin", "Employee"
+  permissions Permission[] @relation("RolePermissions") // many-to-many relation with permissions
+  employees   Employee[]   @relation("UserRoles") // many-to-many relation with employees
+}
+
+model Permission {
+  id        String         @id @default(cuid()) // unique id for permission
+  name      PermissionName @unique // permission name, e.g., "CREATE_WR", "VIEW_WR"
+  roles     Role[]         @relation("RolePermissions") // many-to-many relation with roles
+  employees Employee[]     @relation("UserPermissions")
 }

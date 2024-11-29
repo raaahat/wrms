@@ -94,12 +94,12 @@ export function WRDataTable<TData, TValue>({
   const column = table.getColumn('status');
   if (!column) return;
   return (
-    <div className="flex-1 space-y-4">
+    <div className='flex-1 space-y-4'>
       <WrTableToolbar table={table} />
 
-      <div className=" rounded-md border">
-        <ScrollArea className="max-w-[90vw]">
-          <Table className="overflow-auto">
+      <div className=' rounded-md border'>
+        <ScrollArea className='max-w-[90vw]'>
+          <Table className='overflow-auto'>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
@@ -118,7 +118,7 @@ export function WRDataTable<TData, TValue>({
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody>
+            <TableBody className='font-sans text-xs'>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
@@ -126,7 +126,7 @@ export function WRDataTable<TData, TValue>({
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell className=" py-1" key={cell.id}>
+                      <TableCell className=' py-1' key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -139,7 +139,7 @@ export function WRDataTable<TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className='h-24 text-center'
                   >
                     No results.
                   </TableCell>
@@ -147,7 +147,7 @@ export function WRDataTable<TData, TValue>({
               )}
             </TableBody>
           </Table>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation='horizontal' />
         </ScrollArea>
       </div>
       <DataTablePagination table={table} />
@@ -158,16 +158,16 @@ export function WRDataTable<TData, TValue>({
 
 export function WrSkeleton() {
   return (
-    <div className="space-y-4 my-6">
-      <Skeleton className=" h-5" />
-      <div className="rounded-md border">
+    <div className='space-y-4 my-6'>
+      <Skeleton className=' h-5' />
+      <div className='rounded-md border'>
         <Table>
           <TableHeader>
             <TableRow>
               {[1, 2, 3, 4, 5].map((c) => {
                 return (
                   <TableHead key={c}>
-                    <Skeleton className=" h-5" />
+                    <Skeleton className=' h-5' />
                   </TableHead>
                 );
               })}
@@ -175,10 +175,10 @@ export function WrSkeleton() {
           </TableHeader>
           <TableBody>
             {[1, 2, 3, 4, 5].map((row) => (
-              <TableRow key={row} className=" border-none">
+              <TableRow key={row} className=' border-none'>
                 {[1, 2, 3, 4, 5].map((cell) => (
-                  <TableCell className=" py-1" key={cell}>
-                    <Skeleton className=" h-5" />
+                  <TableCell className=' py-1' key={cell}>
+                    <Skeleton className=' h-5' />
                   </TableCell>
                 ))}
               </TableRow>

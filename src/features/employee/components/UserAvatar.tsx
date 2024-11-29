@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
+import { cn, generateAvatar } from '@/lib/utils';
 import { UserRound } from 'lucide-react';
 import React from 'react';
 
@@ -18,12 +18,17 @@ const UserAvatar = ({
   email?: string;
   className?: string;
 }) => {
+  const { text, bgColor } = generateAvatar(name);
   return (
     <div className={cn(' flex gap-2  p-2 items-center', className)}>
       <Avatar className="h-8 w-8 rounded-lg">
         <AvatarImage src={avatar} alt={name} />
-        <AvatarFallback className="rounded-lg">
-          <UserRound />
+        <AvatarFallback
+          className={`rounded-lg `}
+          style={{ backgroundColor: bgColor }}
+        >
+          {/* <UserRound /> */}
+          {text}
         </AvatarFallback>
       </Avatar>
       <div className="grid flex-1 text-left text-sm leading-tight">
