@@ -42,7 +42,6 @@ export function EmployeeDataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  console.log('column filters: ', columnFilters);
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 

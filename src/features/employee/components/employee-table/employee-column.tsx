@@ -40,10 +40,6 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
         roles: userRoles,
       } = row.original;
       const department = row.original.designation?.departmentId;
-      if (userRoles.length > 0) {
-        console.log('userRoles: ', userRoles);
-        console.log('allRoles: ', roles);
-      }
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

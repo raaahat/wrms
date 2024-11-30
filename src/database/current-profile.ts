@@ -6,7 +6,7 @@ export const currentProfile = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    return null;
+    return auth().redirectToSignIn();
   }
   const profile = await db.employee.findUnique({
     where: {
@@ -18,6 +18,7 @@ export const currentProfile = async () => {
           department: true,
         },
       },
+      roles: true,
     },
   });
   return profile;

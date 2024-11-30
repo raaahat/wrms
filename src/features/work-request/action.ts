@@ -23,7 +23,7 @@ export const createWorkRequest = async (formData: CreateWRFormSchemaType) => {
     creatorId,
     mode = 'NORMAL',
     remarks,
-  } = parsed.data; // Default mode if not provided
+  } = parsed.data;
 
   try {
     // Generate year and month strings
@@ -51,31 +51,51 @@ export const createWorkRequest = async (formData: CreateWRFormSchemaType) => {
     // Generate the new `wrNo`
     const wrNo = `${prefix}-${year}${month}${newCounter}`;
 
-    // Create the new WorkRequest
-    const newWorkRequest = await db.workRequest.create({
-      data: {
-        wrNo,
-        title,
-        type,
-        mode,
-        remarks,
-        area: {
-          connect: {
-            id: areaId, // Connect to the existing Area
+    // Use Prisma transaction to ensure atomicity
+    const [newWorkRequest, newTimeLine] = await db.$transaction(
+      async (prisma) => {
+        // Create the new WorkRequest
+        const createdWorkRequest = await prisma.workRequest.create({
+          data: {
+            wrNo,
+            title,
+            type,
+            mode,
+            remarks,
+            area: {
+              connect: {
+                id: areaId, // Connect to the existing Area
+              },
+            },
+            creator: {
+              connect: {
+                id: creatorId, // Connect to the existing Employee
+              },
+            },
           },
-        },
-        creator: {
-          connect: {
-            id: creatorId, // Connect to the existing Employee
-          },
-        },
-      },
-    });
+        });
+
+        // If mode is "STRICT", create a new entry in the TimeLine table
+        let createdTimeLine = null;
+        if (mode === 'STRICT') {
+          createdTimeLine = await prisma.timeLine.create({
+            data: {
+              wrId: createdWorkRequest.id,
+            },
+          });
+        }
+
+        return [createdWorkRequest, createdTimeLine];
+      }
+    );
+
+    // Revalidate the work-request path
     revalidatePath('/work-request');
+
     return {
       success: true,
       message: 'Work Request created successfully.',
-      data: newWorkRequest,
+      data: { workRequest: newWorkRequest, timeLine: newTimeLine },
     };
   } catch (error) {
     console.error('Error creating Work Request:', {
@@ -118,6 +138,7 @@ export const setStatus = async (id: string, status: Status) => {
       data: { status },
     });
     revalidatePath('/work-request');
+    revalidatePath('/mm');
     return {
       success: true,
       message: `Status updated to ${status}`,

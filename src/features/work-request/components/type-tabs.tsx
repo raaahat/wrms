@@ -15,7 +15,6 @@ export const TypeTabs = () => {
   const isMobile = useIsMobile();
   const { typeFacetedValues, columnFilters, setFilter, clearFilter } =
     useFilterStore();
-  console.log('tabs', columnFilters);
   const active = columnFilters.find((filter) => filter.id === 'type');
 
   if (isMobile) {
@@ -31,14 +30,14 @@ export const TypeTabs = () => {
       >
         <SelectTrigger>{(active?.value as string) ?? 'All'}</SelectTrigger>
         <SelectContent>
-          <SelectItem value="all"> All</SelectItem>
+          <SelectItem value='all'> All</SelectItem>
           {typeFacetedValues &&
             Array.from(typeFacetedValues.entries())
               .sort(([, valueA], [, valueB]) => valueB - valueA)
               .map(([key, value]) => (
                 <SelectItem key={key} value={key}>
                   <span>{key}</span>
-                  <Badge variant={'outline'} className=" ml-2">
+                  <Badge variant={'outline'} className=' ml-2'>
                     {value}
                   </Badge>
                 </SelectItem>
@@ -70,7 +69,7 @@ export const TypeTabs = () => {
                 }}
               >
                 <span>{key}</span>
-                <Badge variant={'outline'} className=" ml-2">
+                <Badge variant={'outline'} className=' ml-2'>
                   {value}
                 </Badge>
               </TabsTrigger>
