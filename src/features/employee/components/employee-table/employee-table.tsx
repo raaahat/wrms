@@ -27,6 +27,8 @@ import { useState } from 'react';
 import { EmployeeTableToolbar } from './employee-table-toolbar';
 import { EmployeeTablePagination } from './Employee-table-pagination';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
+import { useSidebar } from '@/components/ui/sidebar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -66,11 +68,16 @@ export function EmployeeDataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
-
+  const { state } = useSidebar();
   return (
     <div className='space-y-4'>
       <EmployeeTableToolbar table={table} />
-      <ScrollArea className='max-w-[90vw] md:max-w-[65vw] lg:max-w-[75vw] xl:max-w-[80vw]'>
+      <ScrollArea
+        className={cn(
+          'max-w-[90vw] md:max-w-full ',
+          state === 'expanded' && 'md:max-w-[70vw] lg:max-w-full'
+        )}
+      >
         <div className='rounded-md border'>
           <Table>
             <TableHeader>

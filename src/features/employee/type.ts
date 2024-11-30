@@ -8,5 +8,6 @@ export type EmployeeWithDetails = Prisma.EmployeeGetPayload<{
         department: true;
       };
     };
+    roles: true;
   };
 }>;

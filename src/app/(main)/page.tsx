@@ -1,16 +1,14 @@
-import { currentProfile } from '@/database/current-profile';
 import UserAvatar from '@/features/employee/components/UserAvatar';
-import { db } from '@/lib/prisma';
+import { generateAvatar } from '@/lib/utils';
+
 import React from 'react';
 const MainPage = async () => {
-  const user = await currentProfile();
-  const department = await db.department.findMany();
-  console.log(department);
-
+  console.log('Employee', generateAvatar('Employee'));
+  console.log('MManager', generateAvatar('MManager'));
   return (
     <div>
       MainPage
-      <UserAvatar name="young man" avatar="/user-avatar/young.avif" />
+      <UserAvatar name='young man' avatar='/user-avatar/young.avif' />
     </div>
   );
 };

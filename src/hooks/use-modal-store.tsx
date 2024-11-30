@@ -1,4 +1,5 @@
 import { DeptWithDesig } from '@/features/employee/register/type';
+import { RoleName } from '@prisma/client';
 import { create } from 'zustand';
 
 export type ModalType =
@@ -25,6 +26,8 @@ export type ModalData = {
   };
 };
 export type ModalStore = {
+  roles: { id: string; name: RoleName }[];
+  setRoles: (value: { id: string; name: RoleName }[]) => void;
   type: ModalType | null;
   data: ModalData;
   isOpen: boolean;
@@ -35,6 +38,8 @@ export type ModalStore = {
 };
 
 export const useModal = create<ModalStore>((set) => ({
+  roles: [],
+  setRoles: (value) => set({ roles: value }),
   type: null,
   data: {},
   isOpen: false,

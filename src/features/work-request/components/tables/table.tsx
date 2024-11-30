@@ -94,7 +94,7 @@ export function WRDataTable<TData, TValue>({
 
   const column = table.getColumn('status');
   if (!column) return;
-  const { toggleSidebar, state } = useSidebar();
+  const { state } = useSidebar();
   return (
     <div className='flex-1 space-y-4'>
       <WrTableToolbar table={table} />

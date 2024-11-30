@@ -1,3 +1,4 @@
+'use server';
 import { db } from '@/lib/prisma';
 
 export const getAllEmployee = async () => {
@@ -9,6 +10,7 @@ export const getAllEmployee = async () => {
             department: true,
           },
         },
+        roles: true,
       },
     });
 

@@ -27,3 +27,8 @@ export const opEmployeeList = async () => {
 
   return employees;
 };
+
+export const getRoles = async () => {
+  const roles = await db.role.findMany();
+  return roles;
+};

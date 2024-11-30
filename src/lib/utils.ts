@@ -61,7 +61,7 @@ export function generateAvatar(fullName: string): {
   let color = '#';
   for (let i = 0; i < 3; i++) {
     const value = (hash >> (i * 8)) & 0xff; // Extract each byte
-    color += ('00' + Math.max(30, Math.min(200, value)).toString(16)).slice(-2); // Clamp and convert to hex
+    color += ('00' + Math.max(0, Math.min(200, value)).toString(16)).slice(-2); // Clamp and convert to hex
   }
 
   return { bgColor: color, text };
