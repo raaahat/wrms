@@ -73,6 +73,12 @@ export async function getAllAreaWithFullName() {
     fullName: item.parentArr.join(' / '),
   }));
 }
+
+export const getSingleAreaFullName = async (areaId: string) => {
+  const all = await getAllAreaWithParentArr();
+  return all.find((area) => area.id === areaId)?.parentArr.join(', ');
+};
+
 export type AllAreaWithFullNameType = Awaited<
   ReturnType<typeof getAllAreaWithFullName>
 >;

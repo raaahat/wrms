@@ -2,6 +2,7 @@
 
 import { db } from '@/lib/prisma';
 import { WrType } from '@prisma/client';
+import { getSingleAreaFullName } from '../Area/query';
 
 export const getTimelines = async (type?: WrType) => {
   try {
@@ -14,14 +15,30 @@ export const getTimelines = async (type?: WrType) => {
           }
         : undefined, // No filter applied if type is not provided
       include: {
-        workRequest: true, // Include related WorkRequest details
+        workRequest: {
+          include: {
+            creator: {
+              include: { designation: { include: { department: true } } },
+            },
+          },
+        },
         maintManager: true, // Include Maintenance Manager details
         shiftEngineer: true, // Include Shift Engineer details
         operationEngineer: true, // Include Operation Engineer details
       },
     });
 
-    return timelines;
+    const resolvedTimelines = await Promise.all(
+      timelines.map(async (item) => ({
+        ...item,
+        workRequest: {
+          ...item.workRequest,
+          areaName: await getSingleAreaFullName(item.workRequest.areaId),
+        },
+      }))
+    );
+
+    return resolvedTimelines;
   } catch (error) {
     console.error('Error fetching timelines:', error);
     return [];

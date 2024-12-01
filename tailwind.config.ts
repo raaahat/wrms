@@ -2,6 +2,24 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
 import type { Config } from 'tailwindcss';
 
 const config = {
+  safelist: [
+    'bg-blue-500',
+    'hover:bg-blue-500/80',
+    'bg-yellow-500',
+    'hover:bg-yellow-500/80',
+    'bg-purple-500',
+    'hover:bg-purple-500/80',
+    'bg-green-500',
+    'hover:bg-green-500/80',
+    'bg-green-700',
+    'hover:bg-green-700/80',
+    'bg-orange-500',
+    'hover:bg-orange-500/80',
+    'bg-red-500',
+    'hover:bg-red-500/80',
+    'bg-indigo-500',
+    'hover:bg-indigo-500/80',
+  ],
   darkMode: ['class'],
   content: [
     './pages/**/*.{ts,tsx}',

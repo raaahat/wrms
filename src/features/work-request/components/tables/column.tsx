@@ -174,7 +174,12 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
       <WrTableColumnHeader column={column} title='Status' />
     ),
     cell: ({ row }) => {
-      return <StatusBadge status={row.getValue('status')} />;
+      return (
+        <StatusBadge
+          className=' px-2 py-[0.011rem] text-[.61rem] font-medium'
+          status={row.getValue('status')}
+        />
+      );
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));

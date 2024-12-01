@@ -1,7 +1,6 @@
+import { ActionTooltip } from '@/components/action-tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn, generateAvatar } from '@/lib/utils';
-import { UserRound } from 'lucide-react';
-import React from 'react';
 
 const UserAvatar = ({
   avatar,
@@ -10,6 +9,7 @@ const UserAvatar = ({
   department,
   email,
   className,
+  bagde = false,
 }: {
   avatar?: string;
   name: string;
@@ -17,8 +17,35 @@ const UserAvatar = ({
   department?: string;
   email?: string;
   className?: string;
+  bagde?: boolean;
 }) => {
   const { text, bgColor } = generateAvatar(name);
+  if (bagde)
+    return (
+      <ActionTooltip
+        label={`${designaiton || 'not available'}(${
+          department?.toUpperCase() || 'none'
+        })`}
+      >
+        <div
+          className={cn(
+            'bg-primary/10 text-foreground flex gap-1 w-fit rounded-full  px-1 py-1 items-center hover:bg-muted',
+            className
+          )}
+        >
+          <Avatar className='h-5 w-5 rounded-full'>
+            <AvatarImage src={avatar} alt={name} />
+            <AvatarFallback
+              className={`rounded-lg text-sm text-white`}
+              style={{ backgroundColor: bgColor }}
+            >
+              {text}
+            </AvatarFallback>
+          </Avatar>
+          <span className=' text-xs capitalize pr-1 '>{name}</span>
+        </div>
+      </ActionTooltip>
+    );
   return (
     <div
       className={cn(
@@ -32,7 +59,6 @@ const UserAvatar = ({
           className={`rounded-lg `}
           style={{ backgroundColor: bgColor }}
         >
-          {/* <UserRound /> */}
           {text}
         </AvatarFallback>
       </Avatar>

@@ -26,15 +26,16 @@ export function nextAvailableStatus(current: Status): Status[] {
 
 export const getStatusColor = (status: Status) => {
   const colors: Record<Status, string> = {
-    PLACED: 'bg-blue-500',
-    PENDING: 'bg-yellow-500',
-    ONGOING: 'bg-purple-500',
-    FINISHED: 'bg-green-500',
-    DONE: 'bg-green-700',
-    UNDER_OBSERVATION: 'bg-orange-500',
-    NOT_SOLVED: 'bg-red-500',
-    FOLLOW_UP: 'bg-indigo-500',
+    PLACED: 'blue-500',
+    PENDING: 'yellow-500',
+    ONGOING: 'purple-500',
+    FINISHED: 'green-500',
+    DONE: 'green-700',
+    UNDER_OBSERVATION: 'orange-500',
+    NOT_SOLVED: 'red-500',
+    FOLLOW_UP: 'indigo-500',
   };
+
   return colors[status];
 };
 
