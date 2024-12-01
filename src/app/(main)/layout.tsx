@@ -1,4 +1,3 @@
-import { Toaster } from '@/components/ui/sonner';
 import { currentProfile } from '@/database/current-profile';
 import { redirect } from 'next/navigation';
 import {
@@ -41,11 +40,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
               <ModeSwitcher />
             </div>
           </header>
-          <main>
-            {children}
-
-            <Toaster />
-          </main>
+          <main>{children}</main>
         </div>
       </SidebarInset>
     </SidebarProvider>

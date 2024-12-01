@@ -23,3 +23,20 @@ export const currentProfile = async () => {
   });
   return profile;
 };
+
+export const getEmployeeById = async (id: string) => {
+  const profile = await db.employee.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      designation: {
+        include: {
+          department: true,
+        },
+      },
+      roles: true,
+    },
+  });
+  return profile;
+};

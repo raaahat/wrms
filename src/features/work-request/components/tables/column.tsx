@@ -29,7 +29,7 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const queryClient = useQueryClient();
-      const { id, status } = row.original;
+      const { id, status, mode } = row.original;
       const next = nextAvailableStatus(status);
       return (
         <DropdownMenu>
@@ -50,7 +50,7 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => {}}>edit</DropdownMenuItem>
-            {next.length !== 0 && (
+            {next.length !== 0 && mode !== 'STRICT' && (
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Set status</DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
@@ -96,6 +96,11 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
   {
     accessorKey: 'wrNo',
     header: 'WR-NO',
+    cell({ row }) {
+      return row.original.mode === 'STRICT'
+        ? `${row.original.wrNo}(*)`
+        : row.original.wrNo;
+    },
   },
 
   {
@@ -148,6 +153,26 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     accessorKey: 'mode',
     header: 'Mode',
     enableHiding: false,
+  },
+  {
+    id: 'maintEngr',
+    accessorFn: (info) => info.maintEngr?.name,
+    header: 'Assigned',
+    cell: ({ row }) => {
+      if (!row.original.maintEngr) return '-';
+      const { name, imageUrl, designation: des } = row.original.maintEngr;
+      return (
+        <UserAvatar
+          name={name}
+          avatar={imageUrl}
+          designaiton={des?.title}
+          department={des?.department.shortName}
+        />
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     id: 'creator',

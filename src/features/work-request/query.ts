@@ -31,6 +31,15 @@ export const getAllWr = async (dateRange: { from: Date; to?: Date }) => {
           },
         },
       },
+      maintEngr: {
+        include: {
+          designation: {
+            include: {
+              department: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       createdAt: 'desc',

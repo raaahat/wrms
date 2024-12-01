@@ -11,10 +11,19 @@ import {
 import { useQuery } from '@tanstack/react-query';
 
 import { Loader2 } from 'lucide-react';
-import { Command } from '@/components/ui/command';
+
 import { employeeListByDept } from '@/features/employee/query';
 import { EmployeeComboBox } from '@/features/work-request/components/EmployeePickerComboBox';
 import { Button } from '@/components/ui/button';
+import { assignMaintEngineer } from '../actions';
+import { toast } from 'sonner';
+import {
+  ResponsiveModal,
+  ResponsiveModalContent,
+  ResponsiveModalFooter,
+  ResponsiveModalHeader,
+  ResponsiveModalTitle,
+} from '@/components/ui/responsive-modal';
 
 export const TimeLineModal = () => {
   const { isOpen, setOpen, wrType, timelineId } = useTimelineModalStore();
@@ -36,14 +45,38 @@ export const TimeLineModal = () => {
   const selectedEmployee = maintEmployee?.find(
     (item) => item.id === maintEmployeeId
   );
-  console.log(!!maintEmployeeId);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    toast.loading('Assigning an engineer...', { id: 'assign' });
+    if (!timelineId || !maintEmployeeId) {
+      toast.error('Select an engineer...', { id: 'assign' });
+      return;
+    }
+    const { success, message } = await assignMaintEngineer(
+      timelineId,
+      maintEmployeeId
+    );
+    if (!success) {
+      toast.error(message, { id: 'assign' });
+      setIsSubmitting(false);
+      return;
+    }
+    toast.success(message, { id: 'assign' });
+    setOpen(false);
+    setIsSubmitting(false);
+  }
   return (
-    <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Choose an {wrType} engineer for this work</DialogTitle>
-        </DialogHeader>
-        <form>
+    <ResponsiveModal open={isOpen} onOpenChange={setOpen}>
+      <ResponsiveModalContent side={'top'}>
+        <ResponsiveModalHeader>
+          <ResponsiveModalTitle>
+            Choose an {wrType} engineer for this work
+          </ResponsiveModalTitle>
+        </ResponsiveModalHeader>
+        <form onSubmit={handleSubmit}>
           {isLoading ? (
             <Loader2 className='animate-spin' />
           ) : (
@@ -57,11 +90,13 @@ export const TimeLineModal = () => {
               employeeId={maintEmployeeId}
             />
           )}
-          <DialogFooter className='mt-5'>
-            <Button disabled={!maintEmployeeId}> Assign </Button>
-          </DialogFooter>
+          <ResponsiveModalFooter className='mt-5'>
+            <Button type='submit' disabled={!maintEmployeeId || isSubmitting}>
+              Assign {isLoading && <Loader2 className='animate-spin' />}
+            </Button>
+          </ResponsiveModalFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </ResponsiveModalContent>
+    </ResponsiveModal>
   );
 };
