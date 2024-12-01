@@ -2,6 +2,7 @@ import { EmployeeWithDetails } from '@/features/employee/type';
 import { getTimelines } from '../query';
 import { WrType } from '@prisma/client';
 import { WorkRequestCard } from '@/features/work-request/components/wr-card';
+import { TimeLineModal } from './TimeLineModal';
 
 export const MaintManagerPage = async ({
   profile,
@@ -17,9 +18,9 @@ export const MaintManagerPage = async ({
     : undefined;
   const timelines = await getTimelines(type);
 
-  console.log(timelines);
   return (
     <>
+      <TimeLineModal />
       <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
         {timelines.length !== 0 &&
           timelines.map(

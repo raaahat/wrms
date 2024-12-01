@@ -1,10 +1,9 @@
 'use server';
 import { db } from '@/lib/prisma';
 
-export type OpEmployeeListType = Awaited<ReturnType<typeof opEmployeeList>>;
+export type OpEmployeeListType = Awaited<ReturnType<typeof employeeListByDept>>;
 
-export const opEmployeeList = async () => {
-  const departmentName = 'operation';
+export const employeeListByDept = async (deptShortName?: string) => {
   const employees = await db.employee.findMany({
     where: {
       verified: {
@@ -12,7 +11,7 @@ export const opEmployeeList = async () => {
       },
       designation: {
         department: {
-          name: departmentName, // Filter by department name through the department relation
+          shortName: deptShortName, // Filter by department name through the department relation
         },
       },
     },

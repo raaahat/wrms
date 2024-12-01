@@ -47,12 +47,7 @@ const UserAvatar = ({
       </ActionTooltip>
     );
   return (
-    <div
-      className={cn(
-        ' flex gap-2  p-2 items-center hover:bg-muted rounded-md',
-        className
-      )}
-    >
+    <div className={cn(' flex gap-2  p-2 items-center  rounded-md', className)}>
       <Avatar className='h-8 w-8 rounded-lg'>
         <AvatarImage src={avatar} alt={name} />
         <AvatarFallback

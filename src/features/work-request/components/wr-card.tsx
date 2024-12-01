@@ -1,3 +1,4 @@
+'use client';
 import { format } from 'date-fns';
 import {
   Card,
@@ -17,8 +18,9 @@ import {
 } from 'lucide-react';
 
 import { StatusBadge } from './status-badge';
-import { Status } from '@prisma/client';
+import { Status, WrType } from '@prisma/client';
 import UserAvatar from '@/features/employee/components/UserAvatar';
+import { useTimelineModalStore } from '@/features/timeline/timeline-modal-store';
 
 interface WorkRequestCardProps {
   workRequest: {
@@ -27,7 +29,7 @@ interface WorkRequestCardProps {
     title: string;
     status: Status;
     createdAt: Date;
-    type: string;
+    type: WrType;
     runningHour?: string | null;
     remarks?: string | null;
     areaName?: string;
@@ -54,6 +56,7 @@ export function WorkRequestCard({
     runningHour,
   },
 }: WorkRequestCardProps) {
+  const { setOpen, openModalWith } = useTimelineModalStore();
   return (
     <Card className='w-full max-w-md hover:shadow-lg transition-shadow duration-300'>
       <CardHeader className='pb-2'>
@@ -102,7 +105,12 @@ export function WorkRequestCard({
           />
         </div>
 
-        <Button variant='outline' size='sm' className='rounded-full'>
+        <Button
+          variant='outline'
+          size='sm'
+          className='rounded-full'
+          onClick={() => openModalWith(type, id)}
+        >
           Assign Engineer
         </Button>
       </CardFooter>
