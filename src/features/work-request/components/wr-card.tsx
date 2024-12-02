@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 import {
   Clock,
@@ -20,10 +19,13 @@ import {
 import { StatusBadge } from './status-badge';
 import { Status, WrType } from '@prisma/client';
 import UserAvatar from '@/features/employee/components/UserAvatar';
-import { useTimelineModalStore } from '@/features/timeline/timeline-modal-store';
+
+import { UserInfo } from '../type';
 
 interface WorkRequestCardProps {
+  maintManager?: UserInfo;
   workRequest: {
+    maintEngr?: UserInfo;
     id: string;
     wrNo: string;
     title: string;
@@ -33,18 +35,13 @@ interface WorkRequestCardProps {
     runningHour?: string | null;
     remarks?: string | null;
     areaName?: string;
-    creator: {
-      name: string;
-      avatar: string;
-      department: string;
-      designation: string;
-    };
+    creator: UserInfo;
   };
+  children?: React.ReactNode;
 }
 
 export function WorkRequestCard({
   workRequest: {
-    id,
     areaName = 'Not Specified',
     createdAt,
     creator,
@@ -55,10 +52,10 @@ export function WorkRequestCard({
     remarks,
     runningHour,
   },
+  children,
 }: WorkRequestCardProps) {
-  const { setOpen, openModalWith } = useTimelineModalStore();
   return (
-    <Card className='w-full max-w-md hover:shadow-lg transition-shadow duration-300'>
+    <Card className='w-full max-w-lg hover:shadow-lg transition-shadow duration-300'>
       <CardHeader className='pb-2'>
         <div className='flex justify-between items-center mb-2'>
           <CardTitle className='text-lg font-bold '>{wrNo}</CardTitle>
@@ -99,20 +96,13 @@ export function WorkRequestCard({
           <span className='text-sm text-muted-foreground'>Added by</span>
           <UserAvatar
             name={creator.name}
+            avatar={creator.avatar}
             bagde
             department={creator.department}
             designaiton={creator.designation}
           />
         </div>
-
-        <Button
-          variant='outline'
-          size='sm'
-          className='rounded-full'
-          onClick={() => openModalWith(type, id)}
-        >
-          Assign Engineer
-        </Button>
+        {children}
       </CardFooter>
     </Card>
   );

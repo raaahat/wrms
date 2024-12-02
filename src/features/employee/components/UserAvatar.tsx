@@ -42,7 +42,9 @@ const UserAvatar = ({
               {text}
             </AvatarFallback>
           </Avatar>
-          <span className=' text-xs capitalize pr-1 '>{name}</span>
+          <span className=' text-xs pr-1 truncate font-semibold capitalize'>
+            {name}
+          </span>
         </div>
       </ActionTooltip>
     );

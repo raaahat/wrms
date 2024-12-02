@@ -98,7 +98,7 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     header: 'WR-NO',
     cell({ row }) {
       return row.original.mode === 'STRICT'
-        ? `${row.original.wrNo}(*)`
+        ? `${row.original.wrNo}*`
         : row.original.wrNo;
     },
   },

@@ -20,11 +20,20 @@ export const getTimelines = async (type?: WrType) => {
             creator: {
               include: { designation: { include: { department: true } } },
             },
+            maintEngr: {
+              include: { designation: { include: { department: true } } },
+            },
           },
         },
-        maintManager: true, // Include Maintenance Manager details
-        shiftEngineer: true, // Include Shift Engineer details
-        operationEngineer: true, // Include Operation Engineer details
+        maintManager: {
+          include: { designation: { include: { department: true } } },
+        }, // Include Maintenance Manager details
+        shiftEngineer: {
+          include: { designation: { include: { department: true } } },
+        }, // Include Shift Engineer details
+        operationEngineer: {
+          include: { designation: { include: { department: true } } },
+        }, // Include Operation Engineer details
       },
     });
 

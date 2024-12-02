@@ -157,7 +157,7 @@ export function EmployeeComboBox({
               avatar={selectedEmployee.imageUrl}
             />
           ) : (
-            'Select an operation engineer...'
+            'Select an engineer...'
           )}
           <ChevronsUpDown className='opacity-50' />
         </Button>
@@ -184,6 +184,7 @@ export function EmployeeComboBox({
                   <CommandItem
                     key={employee.id}
                     onSelect={() => onSelection(employee.id)}
+                    value={employee.name}
                   >
                     <UserAvatar
                       name={employee.name}

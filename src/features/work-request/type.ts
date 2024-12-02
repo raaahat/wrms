@@ -40,3 +40,10 @@ export type WRdataType = {
     };
   };
 };
+
+export type UserInfo = {
+  name: string;
+  avatar: string;
+  department: string;
+  designation: string;
+};

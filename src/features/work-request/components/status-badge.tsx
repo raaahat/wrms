@@ -24,7 +24,9 @@ export const StatusBadge = ({
       )}
     >
       <StatusIcon className='w-3.5 h-3.5 mr-1' />
-      <span>{status === 'UNDER_OBSERVATION' ? 'U/O' : status}</span>
+      <span style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>
+        {status === 'UNDER_OBSERVATION' ? 'U/O' : status}
+      </span>
     </Badge>
   );
   // return (

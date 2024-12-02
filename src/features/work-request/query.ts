@@ -1,7 +1,6 @@
 'use server';
 import { db } from '@/lib/prisma';
 import { getAllAreaWithParentArr } from '../Area/query';
-import { wait } from '@/lib/utils';
 
 export type GetAllWRType = Awaited<ReturnType<typeof getAllWr>>[number];
 export const getAllWr = async (dateRange: { from: Date; to?: Date }) => {
