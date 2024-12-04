@@ -1,6 +1,10 @@
 'use server';
 
-import { currentProfile, getEmployeeById } from '@/database/current-profile';
+import {
+  currentProfile,
+  getEmployeeById,
+  hasRole,
+} from '@/database/current-profile';
 import { db } from '@/lib/prisma';
 import { WrType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
@@ -116,6 +120,59 @@ export const assignMaintEngineer = async (
       success: false,
       message:
         'An error occurred while assigning the engineer. Please try again.',
+    };
+  }
+};
+
+export const assignOPEngr = async (
+  timelineId: string,
+  shiftInchargeId: string,
+  OPEngrId: string
+) => {
+  try {
+    if (!hasRole(shiftInchargeId, 'ShiftIncharge'))
+      return {
+        success: false,
+        message: 'Please select a valid shift incharge',
+      };
+
+    const existingTimeline = await db.timeLine.findUnique({
+      where: { id: timelineId },
+    });
+    if (!existingTimeline) {
+      return {
+        success: false,
+        message: 'Timeline not found!',
+      };
+    }
+
+    const updatedTimeline = await db.timeLine.update({
+      where: { id: timelineId },
+      data: {
+        shiftEngineer: {
+          connect: {
+            id: shiftInchargeId,
+          },
+        },
+        operationEngineer: {
+          connect: {
+            id: OPEngrId,
+          },
+        },
+        opEngrAssignedAt: new Date(),
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Operation engineer assigned successfully!',
+      data: updatedTimeline,
+    };
+  } catch (error) {
+    console.error('Error assigning operation engineer:', error);
+    return {
+      success: false,
+      message: 'An error occurred while assigning the operation engineer.',
     };
   }
 };

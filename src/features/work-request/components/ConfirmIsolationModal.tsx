@@ -1,13 +1,7 @@
 import { useWRModal } from '../hooks/modal-store';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-} from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   employeeListByDept,
   getEmployeeByRole,
@@ -15,7 +9,7 @@ import {
 import { useState } from 'react';
 import { EmployeeComboBox } from './EmployeeComboBox';
 import { Label } from '@/components/ui/label';
-import { Button, ButtonProps } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { LoaderCircle } from 'lucide-react';
 import { cn, wait } from '@/lib/utils';
 import {
@@ -24,18 +18,51 @@ import {
   ResponsiveModalFooter,
   ResponsiveModalHeader,
 } from '@/components/ui/responsive-modal';
+import { assignOPEngr } from '@/features/timeline/actions';
+import { toast } from 'sonner';
 
 export const ConfirmIsolationModal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { isIsolationMolalOpen, closeIsolationModal } = useWRModal();
+  const { isIsolationMolalOpen, closeIsolationModal, timelineId } =
+    useWRModal();
   const { data: shiftIncharges, isLoading: isLoadingSI } = useQuery({
-    queryKey: ['shiftIncharge'],
+    queryKey: ['employee-list', 'shiftIncharge'],
     queryFn: () => getEmployeeByRole('ShiftIncharge'),
   });
   const { data: oPEngrs, isLoading: isLoadingOP } = useQuery({
-    queryKey: ['op'],
+    queryKey: ['employee-list', 'OP'],
     queryFn: () => employeeListByDept('OP'),
   });
+
+  const {
+    data: resultedTimeline,
+    mutate,
+    isPending,
+    isError,
+  } = useMutation({
+    mutationFn: ({
+      timelineId,
+      shiftInchargeId,
+      opEngrId,
+    }: {
+      timelineId: string;
+      shiftInchargeId: string;
+      opEngrId: string;
+    }) => assignOPEngr(timelineId, shiftInchargeId, opEngrId),
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success(data.message, {
+          id: 'assign-op',
+        });
+        return;
+      }
+      toast.error(data.message, { id: 'assign-op' });
+    },
+    onError: () => {
+      toast.error('Something went wrong!', { id: 'assign-op' });
+    },
+  });
+
   const [shiftInchargeId, setShiftInchargeId] = useState<string | undefined>(
     undefined
   );
@@ -53,9 +80,10 @@ export const ConfirmIsolationModal = () => {
     setOpEngrId(id);
   }
   async function onSubmit() {
-    setIsSubmitting(true);
-    await wait(4);
-    setIsSubmitting(false);
+    toast.loading('Assigning OP engineer...', { id: 'assign-op' });
+    if (timelineId && shiftInchargeId && opEngrId) {
+      mutate({ timelineId, shiftInchargeId, opEngrId });
+    }
   }
   return (
     <ResponsiveModal
@@ -103,7 +131,7 @@ export const ConfirmIsolationModal = () => {
               <LoaderCircle
                 className={cn(
                   'w-full transition-all -ms-1 me-2 animate-spin',
-                  !isSubmitting && 'hidden w-0'
+                  !isPending && 'hidden w-0'
                 )}
                 size={16}
                 strokeWidth={2}

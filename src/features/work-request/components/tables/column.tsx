@@ -30,7 +30,8 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const queryClient = useQueryClient();
-      const { id, status, mode, maintEngr } = row.original;
+      const { id, status, mode, maintEngr, timelines } = row.original;
+
       const next = nextAvailableStatus(status);
       const { openIsolationModal } = useWRModal();
       return (
@@ -45,10 +46,10 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            {mode === 'STRICT' && maintEngr && (
+            {mode === 'STRICT' && maintEngr && timelines[0].id && (
               <DropdownMenuItem
                 onClick={() => {
-                  openIsolationModal('dlksfjdfl');
+                  openIsolationModal(timelines[0].id);
                 }}
               >
                 Confirm Isolation

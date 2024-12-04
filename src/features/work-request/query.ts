@@ -21,6 +21,7 @@ export const getAllWr = async (dateRange: { from: Date; to?: Date }) => {
       },
     },
     include: {
+      timelines: true,
       creator: {
         include: {
           designation: {
@@ -40,6 +41,7 @@ export const getAllWr = async (dateRange: { from: Date; to?: Date }) => {
         },
       },
     },
+
     orderBy: {
       createdAt: 'desc',
     },
