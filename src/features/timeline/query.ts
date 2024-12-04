@@ -53,3 +53,50 @@ export const getTimelines = async (type?: WrType) => {
     return [];
   }
 };
+
+export const getTimelineActivity = async (id: string) => {
+  try {
+    return await db.employee.findUnique({
+      where: { id },
+      select: {
+        wrIssuedTo: {
+          where: {
+            mode: 'STRICT', // Filter only strict mode WRs
+            timelines: {
+              some: {}, // Ensure only WRs that have associated timelines are included
+            },
+          },
+
+          include: {
+            creator: {
+              include: { designation: { include: { department: true } } },
+            },
+            timelines: {
+              include: {
+                maintManager: {
+                  include: { designation: { include: { department: true } } },
+                },
+                operationEngineer: {
+                  include: { designation: { include: { department: true } } },
+                },
+                shiftEngineer: {
+                  include: { designation: { include: { department: true } } },
+                },
+              },
+            },
+          },
+        },
+        operationTimeLines: true,
+        shiftTimeLines: true,
+        managedTimeLines: true,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching timeline activity:', error);
+    return undefined;
+  }
+};
+
+export type GetTimelineForMaintEngrType = NonNullable<
+  Awaited<ReturnType<typeof getTimelineActivity>>
+>['wrIssuedTo'];

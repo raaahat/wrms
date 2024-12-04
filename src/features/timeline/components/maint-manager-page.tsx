@@ -8,15 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { useTimelineModalStore } from '../timeline-modal-store';
 import { ModeSwitcher } from '@/components/mode-switcher';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card';
-import { Check } from 'lucide-react';
-import { format } from 'date-fns';
-import { UserInfo } from '@/features/work-request/type';
-import UserAvatar from '@/features/employee/components/UserAvatar';
+import { HoverCardInfo } from './HoverCard';
 
 export const MaintManagerPage = ({
   profile,
@@ -50,7 +42,6 @@ export const MaintManagerPage = ({
           timelines.map(
             ({
               maintEngrAssignedAt,
-              maintManager,
               id,
               workRequest: {
                 maintEngr,
@@ -96,21 +87,23 @@ export const MaintManagerPage = ({
                     runningHour,
                   }}
                 >
-                  {!maintEngr ? (
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      className='rounded-full'
-                      onClick={() => openModalWith(type, id)}
-                    >
-                      Assign Engineer
-                    </Button>
-                  ) : (
-                    <HoverCardInfo
-                      timeStamp={maintEngrAssignedAt}
-                      user={maintEngrForAvatar}
-                    />
-                  )}
+                  <div className='ml-auto'>
+                    {!maintEngr ? (
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        className='rounded-full'
+                        onClick={() => openModalWith(type, id)}
+                      >
+                        Assign Engineer
+                      </Button>
+                    ) : (
+                      <HoverCardInfo
+                        timeStamp={maintEngrAssignedAt}
+                        user={maintEngrForAvatar}
+                      />
+                    )}
+                  </div>
                 </WorkRequestCard>
               );
             }
@@ -119,44 +112,3 @@ export const MaintManagerPage = ({
     </>
   );
 };
-type HoverProps = {
-  timeStamp?: Date | null;
-  user?: UserInfo;
-};
-function HoverCardInfo({ timeStamp, user }: HoverProps) {
-  return (
-    <HoverCard>
-      <HoverCardTrigger asChild>
-        <Button
-          variant='ghost'
-          size={'sm'}
-          className='text-white rounded-lg bg-emerald-500 hover:bg-emerald-600 hover:text-white '
-        >
-          <Check />
-          Assigned
-        </Button>
-      </HoverCardTrigger>
-      <HoverCardContent className='w-fit'>
-        <div>
-          <div className=' flex items-center'>
-            <div className='w-fit text-sm'>Maint. Engr: </div>
-            {user && (
-              <UserAvatar
-                name={user.name}
-                avatar={user.avatar}
-                department={user.department}
-                designaiton={user.designation}
-              />
-            )}
-          </div>
-
-          {timeStamp && (
-            <span className='text-xs text-muted-foreground'>
-              Assigned at {format(timeStamp, 'dd-MMM-yy, HH:mm')}
-            </span>
-          )}
-        </div>
-      </HoverCardContent>
-    </HoverCard>
-  );
-}

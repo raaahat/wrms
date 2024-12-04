@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 
 import { employeeListByDept } from '@/features/employee/query';
-import { EmployeeComboBox } from '@/features/work-request/components/EmployeePickerComboBox';
+
 import { Button } from '@/components/ui/button';
 import { assignMaintEngineer } from '../actions';
 import { toast } from 'sonner';
@@ -24,6 +24,7 @@ import {
   ResponsiveModalHeader,
   ResponsiveModalTitle,
 } from '@/components/ui/responsive-modal';
+import { EmployeeComboBox } from '@/features/work-request/components/EmployeeComboBox';
 
 export const TimeLineModal = () => {
   const { isOpen, setOpen, wrType, timelineId } = useTimelineModalStore();
@@ -37,10 +38,8 @@ export const TimeLineModal = () => {
   const [maintEmployeeId, setMaintEmployeeId] = useState<string | undefined>(
     undefined
   );
-  const [popOpen, setPopOpen] = useState(false);
   function handleSelection(id: string) {
     setMaintEmployeeId(id);
-    setPopOpen(false);
   }
   const selectedEmployee = maintEmployee?.find(
     (item) => item.id === maintEmployeeId
@@ -81,8 +80,6 @@ export const TimeLineModal = () => {
             <Loader2 className='animate-spin' />
           ) : (
             <EmployeeComboBox
-              open={popOpen}
-              setOpen={setPopOpen}
               allEmployeeList={maintEmployee}
               isLoading={isLoading}
               onSelection={handleSelection}

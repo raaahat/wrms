@@ -22,6 +22,7 @@ import { WrTableColumnHeader } from './table-header';
 import { StatusBadge } from '../status-badge';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { useQueryClient } from '@tanstack/react-query';
+import { useWRModal } from '../../hooks/modal-store';
 const DATE_FORMAT = 'd-MMM-yy';
 
 export const columnWR: ColumnDef<GetAllWRType>[] = [
@@ -29,8 +30,9 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const queryClient = useQueryClient();
-      const { id, status, mode } = row.original;
+      const { id, status, mode, maintEngr } = row.original;
       const next = nextAvailableStatus(status);
+      const { openIsolationModal } = useWRModal();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -43,11 +45,15 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText('email')}
-            >
-              Copy email address
-            </DropdownMenuItem>
+            {mode === 'STRICT' && maintEngr && (
+              <DropdownMenuItem
+                onClick={() => {
+                  openIsolationModal('dlksfjdfl');
+                }}
+              >
+                Confirm Isolation
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => {}}>edit</DropdownMenuItem>
             {next.length !== 0 && mode !== 'STRICT' && (

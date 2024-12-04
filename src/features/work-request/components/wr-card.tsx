@@ -17,28 +17,8 @@ import {
 } from 'lucide-react';
 
 import { StatusBadge } from './status-badge';
-import { Status, WrType } from '@prisma/client';
 import UserAvatar from '@/features/employee/components/UserAvatar';
-
-import { UserInfo } from '../type';
-
-interface WorkRequestCardProps {
-  maintManager?: UserInfo;
-  workRequest: {
-    maintEngr?: UserInfo;
-    id: string;
-    wrNo: string;
-    title: string;
-    status: Status;
-    createdAt: Date;
-    type: WrType;
-    runningHour?: string | null;
-    remarks?: string | null;
-    areaName?: string;
-    creator: UserInfo;
-  };
-  children?: React.ReactNode;
-}
+import { WorkRequestCardProps } from '@/features/timeline/types';
 
 export function WorkRequestCard({
   workRequest: {
@@ -91,9 +71,9 @@ export function WorkRequestCard({
           </div>
         )}
       </CardContent>
-      <CardFooter className='flex justify-between items-center pt-2'>
-        <div className='flex items-center gap-2'>
-          <span className='text-sm text-muted-foreground'>Added by</span>
+      <CardFooter className=' flex flex-col pt-2 items-start '>
+        <div className='flex items-center'>
+          <span className='text-sm text-muted-foreground'>WR created by</span>
           <UserAvatar
             name={creator.name}
             avatar={creator.avatar}
@@ -102,6 +82,7 @@ export function WorkRequestCard({
             designaiton={creator.designation}
           />
         </div>
+
         {children}
       </CardFooter>
     </Card>

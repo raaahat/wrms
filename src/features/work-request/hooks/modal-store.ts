@@ -9,6 +9,10 @@ export type ModalStore = {
   isOpen: boolean;
   onOpen: (type: ModalType, data?: ModalData) => void;
   onClose: () => void;
+  timelineId: string | undefined;
+  isIsolationMolalOpen: boolean;
+  openIsolationModal: (timelineId: string) => void;
+  closeIsolationModal: () => void;
 };
 
 export const useWRModal = create<ModalStore>((set) => ({
@@ -17,4 +21,9 @@ export const useWRModal = create<ModalStore>((set) => ({
   isOpen: false,
   onOpen: (type, data = {}) => set({ isOpen: true, type, data }),
   onClose: () => set({ isOpen: false, type: null }),
+  isIsolationMolalOpen: false,
+  timelineId: undefined,
+  closeIsolationModal: () => set({ isIsolationMolalOpen: false }),
+  openIsolationModal: (value) =>
+    set({ isIsolationMolalOpen: true, timelineId: value }),
 }));

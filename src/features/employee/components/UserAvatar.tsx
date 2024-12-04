@@ -19,13 +19,12 @@ const UserAvatar = ({
   className?: string;
   bagde?: boolean;
 }) => {
+  console.log(department);
   const { text, bgColor } = generateAvatar(name);
   if (bagde)
     return (
       <ActionTooltip
-        label={`${designaiton || 'not available'}(${
-          department?.toUpperCase() || 'none'
-        })`}
+        label={`${designaiton || 'not available'}(${department || 'none'})`}
       >
         <div
           className={cn(
@@ -42,7 +41,10 @@ const UserAvatar = ({
               {text}
             </AvatarFallback>
           </Avatar>
-          <span className=' text-xs pr-1 truncate font-semibold capitalize'>
+          <span
+            title={name}
+            className=' text-xs pr-1 truncate font-semibold capitalize'
+          >
             {name}
           </span>
         </div>
@@ -60,11 +62,20 @@ const UserAvatar = ({
         </AvatarFallback>
       </Avatar>
       <div className='grid flex-1 text-left text-sm leading-tight'>
-        <span className='truncate font-semibold capitalize'>{name}</span>
+        <span title={name} className='truncate font-semibold capitalize'>
+          {name}
+        </span>
         {designaiton && department && (
-          <span className='truncate text-xs capitalize'>{`${designaiton}(${department})`}</span>
+          <span
+            title={`${designaiton}(${department})`}
+            className='truncate text-xs capitalize'
+          >{`${designaiton}(${department})`}</span>
         )}
-        {email && <span className='truncate text-xs '>{email}</span>}
+        {email && (
+          <span title={email} className='truncate text-xs '>
+            {email}
+          </span>
+        )}
       </div>
     </div>
   );

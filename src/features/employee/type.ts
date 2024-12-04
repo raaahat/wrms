@@ -11,3 +11,10 @@ export type EmployeeWithDetails = Prisma.EmployeeGetPayload<{
     roles: true;
   };
 }>;
+
+export type UserInfo = {
+  name: string;
+  avatar: string;
+  department: string;
+  designation: string;
+};
