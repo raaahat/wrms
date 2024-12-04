@@ -100,3 +100,37 @@ export const getTimelineActivity = async (id: string) => {
 export type GetTimelineForMaintEngrType = NonNullable<
   Awaited<ReturnType<typeof getTimelineActivity>>
 >['wrIssuedTo'];
+
+export const getSingleTimeline = async (id: string) => {
+  try {
+    return db.timeLine.findUnique({
+      where: { id },
+      include: {
+        workRequest: {
+          include: {
+            creator: {
+              include: { designation: { include: { department: true } } },
+            },
+            maintEngr: {
+              include: { designation: { include: { department: true } } },
+            },
+          },
+        },
+        maintManager: {
+          include: { designation: { include: { department: true } } },
+        },
+        shiftEngineer: {
+          include: { designation: { include: { department: true } } },
+        },
+        operationEngineer: {
+          include: { designation: { include: { department: true } } },
+        },
+      },
+    });
+  } catch (error) {
+    return undefined;
+  }
+};
+export type TimeLineType = NonNullable<
+  Awaited<ReturnType<typeof getSingleTimeline>>
+>;

@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { EmployeeComboBox } from './EmployeeComboBox';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { LoaderCircle } from 'lucide-react';
+import { CheckCircle2, LoaderCircle } from 'lucide-react';
 import { cn, wait } from '@/lib/utils';
 import {
   ResponsiveModal,
@@ -20,9 +20,12 @@ import {
 } from '@/components/ui/responsive-modal';
 import { assignOPEngr } from '@/features/timeline/actions';
 import { toast } from 'sonner';
+import { getSingleTimeline, TimeLineType } from '@/features/timeline/query';
+import UserAvatar from '@/features/employee/components/UserAvatar';
+import { format } from 'date-fns';
 
 export const ConfirmIsolationModal = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editing, setEditing] = useState(false);
   const { isIsolationMolalOpen, closeIsolationModal, timelineId } =
     useWRModal();
   const { data: shiftIncharges, isLoading: isLoadingSI } = useQuery({
@@ -32,6 +35,11 @@ export const ConfirmIsolationModal = () => {
   const { data: oPEngrs, isLoading: isLoadingOP } = useQuery({
     queryKey: ['employee-list', 'OP'],
     queryFn: () => employeeListByDept('OP'),
+  });
+  const { data: timeline } = useQuery({
+    queryKey: ['timeline', timelineId],
+    queryFn: () => getSingleTimeline(timelineId as string),
+    enabled: !!timelineId,
   });
 
   const {
@@ -64,7 +72,7 @@ export const ConfirmIsolationModal = () => {
   });
 
   const [shiftInchargeId, setShiftInchargeId] = useState<string | undefined>(
-    undefined
+    timeline?.shiftEngrId as string | undefined
   );
   const selectedSI = shiftIncharges?.find(
     (person) => person.id === shiftInchargeId
@@ -73,7 +81,9 @@ export const ConfirmIsolationModal = () => {
   function onSelectSI(id: string) {
     setShiftInchargeId(id);
   }
-  const [opEngrId, setOpEngrId] = useState<string | undefined>(undefined);
+  const [opEngrId, setOpEngrId] = useState<string | undefined>(
+    timeline?.opEngrId as string | undefined
+  );
   const selectedOPEngr = oPEngrs?.find((person) => person.id === opEngrId);
 
   function onSelectOPEngr(id: string) {
@@ -91,57 +101,122 @@ export const ConfirmIsolationModal = () => {
       onOpenChange={closeIsolationModal}
     >
       <ResponsiveModalContent>
-        <ResponsiveModalHeader className=' text-2xl mx-6'>
-          Confirm Isolation
-        </ResponsiveModalHeader>
-        <ScrollArea className=' max-h-[85vh] space-y-6'>
-          <div className=' space-y-6'>
-            <div className='flex items-center '>
-              <Label className='min-w-[140px] pr-4'>Shift Incharge:</Label>
-              <EmployeeComboBox
-                title='Select Shift Incharge...'
-                isLoading={isLoadingSI}
-                allEmployeeList={shiftIncharges}
-                selectedEmployee={selectedSI}
-                onSelection={onSelectSI}
-                employeeId={shiftInchargeId}
-              />
-            </div>
-            <div className='flex items-center '>
-              <Label className='min-w-[140px] pr-4'>Field OP Engineer:</Label>
+        {timeline?.shiftEngineer &&
+        timeline.operationEngineer &&
+        timeline.opEngrAssignedAt ? (
+          <DetailsPage timeline={timeline} />
+        ) : (
+          <>
+            <ResponsiveModalHeader className=' text-2xl mx-6'>
+              Confirm Isolation
+            </ResponsiveModalHeader>
+            <ScrollArea className=' max-h-[85vh] space-y-6'>
+              <div className=' space-y-6'>
+                <div className='flex items-center '>
+                  <Label className='min-w-[140px] pr-4'>Shift Incharge:</Label>
+                  <EmployeeComboBox
+                    title='Select Shift Incharge...'
+                    isLoading={isLoadingSI}
+                    allEmployeeList={shiftIncharges}
+                    selectedEmployee={selectedSI}
+                    onSelection={onSelectSI}
+                    employeeId={shiftInchargeId}
+                  />
+                </div>
+                <div className='flex items-center '>
+                  <Label className='min-w-[140px] pr-4'>
+                    Field OP Engineer:
+                  </Label>
 
-              <EmployeeComboBox
-                title='Select Operation Field Engineer...'
-                isLoading={isLoadingOP}
-                allEmployeeList={oPEngrs}
-                selectedEmployee={selectedOPEngr}
-                onSelection={onSelectOPEngr}
-                employeeId={opEngrId}
-              />
-            </div>
-          </div>
-        </ScrollArea>
-        <ResponsiveModalFooter>
-          {shiftInchargeId && opEngrId && (
-            <Button
-              disabled={isSubmitting}
-              onClick={onSubmit}
-              className='relative flex items-center justify-center transition-all duration-300 min-w-[140px]'
-            >
-              <LoaderCircle
-                className={cn(
-                  'w-full transition-all -ms-1 me-2 animate-spin',
-                  !isPending && 'hidden w-0'
-                )}
-                size={16}
-                strokeWidth={2}
-                aria-hidden='true'
-              />
-              Assign Engineer
-            </Button>
-          )}
-        </ResponsiveModalFooter>
+                  <EmployeeComboBox
+                    title='Select Operation Field Engineer...'
+                    isLoading={isLoadingOP}
+                    allEmployeeList={oPEngrs}
+                    selectedEmployee={selectedOPEngr}
+                    onSelection={onSelectOPEngr}
+                    employeeId={opEngrId}
+                  />
+                </div>
+              </div>
+            </ScrollArea>
+            <ResponsiveModalFooter>
+              {shiftInchargeId && opEngrId && (
+                <Button
+                  disabled={isPending}
+                  onClick={onSubmit}
+                  className='relative flex items-center justify-center transition-all duration-300 min-w-[140px]'
+                >
+                  <LoaderCircle
+                    className={cn(
+                      'w-full transition-all -ms-1 me-2 animate-spin',
+                      !isPending && 'hidden w-0'
+                    )}
+                    size={16}
+                    strokeWidth={2}
+                    aria-hidden='true'
+                  />
+                  Assign Engineer
+                </Button>
+              )}
+            </ResponsiveModalFooter>
+          </>
+        )}
       </ResponsiveModalContent>
     </ResponsiveModal>
   );
 };
+
+function DetailsPage({ timeline }: { timeline: TimeLineType }) {
+  const oPAvatar = { name: timeline.operationEngineer?.name || 'unNamed' };
+  const { operationEngineer, shiftEngineer } = timeline;
+
+  const OPUser = (
+    <UserAvatar
+      name={operationEngineer?.name || 'UnNamed'}
+      avatar={operationEngineer?.imageUrl}
+      bagde
+      department={operationEngineer?.designation?.department.shortName}
+      designaiton={operationEngineer?.designation?.title}
+    />
+  );
+  return (
+    <>
+      <ResponsiveModalHeader className=' text-2xl mx-6'>
+        {timeline.isolationConfirmedAt ? (
+          <>
+            <CheckCircle2 className=' size-20 stroke-emerald-500 mx-auto' />
+          </>
+        ) : (
+          <h1>Waiting for Isolation Confirmation...</h1>
+        )}
+      </ResponsiveModalHeader>
+      {timeline.isolationConfirmedAt && (
+        <div className='flex flex-wrap rounded-lg p-2 gap-2 items-center dark:bg-cyan-950 bg-cyan-100'>
+          {OPUser} has confirmed the isolation at{' '}
+          <span className='text-xs text-muted-foreground'>
+            {format(timeline.isolationConfirmedAt, 'dd-MMM-yy, HH:mm')}
+          </span>
+        </div>
+      )}
+      <div className='flex flex-wrap items-center gap-2'>
+        {' '}
+        {OPUser} has been assigned for isolation by{' '}
+        <UserAvatar
+          name={shiftEngineer?.name || 'UnNamed'}
+          avatar={shiftEngineer?.imageUrl}
+          bagde
+          department={shiftEngineer?.designation?.department.shortName}
+          designaiton={shiftEngineer?.designation?.title}
+        />{' '}
+        {timeline.opEngrAssignedAt && (
+          <>
+            at{' '}
+            <span className='text-xs text-muted-foreground'>
+              {format(timeline.opEngrAssignedAt, 'dd-MMM-yy, HH:mm')}
+            </span>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
