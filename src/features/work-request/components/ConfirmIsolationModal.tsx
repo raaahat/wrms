@@ -1,7 +1,7 @@
 import { useWRModal } from '../hooks/modal-store';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   employeeListByDept,
   getEmployeeByRole,
@@ -23,8 +23,10 @@ import { toast } from 'sonner';
 import { getSingleTimeline, TimeLineType } from '@/features/timeline/query';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { format } from 'date-fns';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const ConfirmIsolationModal = () => {
+  const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const { isIsolationMolalOpen, closeIsolationModal, timelineId } =
     useWRModal();
@@ -58,10 +60,14 @@ export const ConfirmIsolationModal = () => {
       opEngrId: string;
     }) => assignOPEngr(timelineId, shiftInchargeId, opEngrId),
     onSuccess: (data) => {
+      setShiftInchargeId(undefined);
+      setOpEngrId(undefined);
+      queryClient.invalidateQueries({ queryKey: ['timeline', timelineId] });
       if (data.success) {
         toast.success(data.message, {
           id: 'assign-op',
         });
+
         return;
       }
       toast.error(data.message, { id: 'assign-op' });
@@ -101,65 +107,76 @@ export const ConfirmIsolationModal = () => {
       onOpenChange={closeIsolationModal}
     >
       <ResponsiveModalContent>
-        {timeline?.shiftEngineer &&
-        timeline.operationEngineer &&
-        timeline.opEngrAssignedAt ? (
-          <DetailsPage timeline={timeline} />
-        ) : (
+        {timeline || !isPending ? (
           <>
-            <ResponsiveModalHeader className=' text-2xl mx-6'>
-              Confirm Isolation
-            </ResponsiveModalHeader>
-            <ScrollArea className=' max-h-[85vh] space-y-6'>
-              <div className=' space-y-6'>
-                <div className='flex items-center '>
-                  <Label className='min-w-[140px] pr-4'>Shift Incharge:</Label>
-                  <EmployeeComboBox
-                    title='Select Shift Incharge...'
-                    isLoading={isLoadingSI}
-                    allEmployeeList={shiftIncharges}
-                    selectedEmployee={selectedSI}
-                    onSelection={onSelectSI}
-                    employeeId={shiftInchargeId}
-                  />
-                </div>
-                <div className='flex items-center '>
-                  <Label className='min-w-[140px] pr-4'>
-                    Field OP Engineer:
-                  </Label>
+            {timeline?.shiftEngineer &&
+            timeline.operationEngineer &&
+            timeline.opEngrAssignedAt ? (
+              <DetailsPage timeline={timeline} />
+            ) : (
+              <>
+                <ResponsiveModalHeader className=' text-2xl mx-6'>
+                  Confirm Isolation
+                </ResponsiveModalHeader>
+                <ScrollArea className=' max-h-[85vh] space-y-6'>
+                  <div className=' space-y-6'>
+                    <div className='flex items-center '>
+                      <Label className='min-w-[140px] pr-4'>
+                        Shift Incharge:
+                      </Label>
+                      <EmployeeComboBox
+                        title='Select Shift Incharge...'
+                        isLoading={isLoadingSI}
+                        allEmployeeList={shiftIncharges}
+                        selectedEmployee={selectedSI}
+                        onSelection={onSelectSI}
+                        employeeId={shiftInchargeId}
+                      />
+                    </div>
+                    <div className='flex items-center '>
+                      <Label className='min-w-[140px] pr-4'>
+                        Field OP Engineer:
+                      </Label>
 
-                  <EmployeeComboBox
-                    title='Select Operation Field Engineer...'
-                    isLoading={isLoadingOP}
-                    allEmployeeList={oPEngrs}
-                    selectedEmployee={selectedOPEngr}
-                    onSelection={onSelectOPEngr}
-                    employeeId={opEngrId}
-                  />
-                </div>
-              </div>
-            </ScrollArea>
-            <ResponsiveModalFooter>
-              {shiftInchargeId && opEngrId && (
-                <Button
-                  disabled={isPending}
-                  onClick={onSubmit}
-                  className='relative flex items-center justify-center transition-all duration-300 min-w-[140px]'
-                >
-                  <LoaderCircle
-                    className={cn(
-                      'w-full transition-all -ms-1 me-2 animate-spin',
-                      !isPending && 'hidden w-0'
-                    )}
-                    size={16}
-                    strokeWidth={2}
-                    aria-hidden='true'
-                  />
-                  Assign Engineer
-                </Button>
-              )}
-            </ResponsiveModalFooter>
+                      <EmployeeComboBox
+                        title='Select Operation Field Engineer...'
+                        isLoading={isLoadingOP}
+                        allEmployeeList={oPEngrs}
+                        selectedEmployee={selectedOPEngr}
+                        onSelection={onSelectOPEngr}
+                        employeeId={opEngrId}
+                      />
+                    </div>
+                  </div>
+                </ScrollArea>
+                <ResponsiveModalFooter>
+                  {shiftInchargeId && opEngrId && (
+                    <Button
+                      disabled={isPending}
+                      onClick={onSubmit}
+                      className='relative flex items-center justify-center transition-all duration-300 min-w-[140px]'
+                    >
+                      <LoaderCircle
+                        className={cn(
+                          'w-full transition-all -ms-1 me-2 animate-spin',
+                          !isPending && 'hidden w-0'
+                        )}
+                        size={16}
+                        strokeWidth={2}
+                        aria-hidden='true'
+                      />
+                      Assign Engineer
+                    </Button>
+                  )}
+                </ResponsiveModalFooter>
+              </>
+            )}
           </>
+        ) : (
+          <div className=' space-y-6'>
+            <Skeleton className='h-6 w-40' />
+            <Skeleton className='h-5 w-72' />
+          </div>
         )}
       </ResponsiveModalContent>
     </ResponsiveModal>
