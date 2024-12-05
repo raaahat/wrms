@@ -176,3 +176,54 @@ export const assignOPEngr = async (
     };
   }
 };
+
+export const confirmIsolation = async (timelineId: string) => {
+  const profile = await currentProfile();
+  if (!profile) {
+    return {
+      success: false,
+      message: 'Unauthorized!',
+    };
+  }
+
+  const timeline = await db.timeLine.findUnique({
+    where: { id: timelineId },
+  });
+
+  if (!timeline)
+    return {
+      success: false,
+      message: 'No wr found',
+    };
+
+  if (timeline.opEngrId !== profile.id)
+    return {
+      success: false,
+      message: 'You are not assigned for isolation for this work.',
+    };
+
+  if (timeline.isolationConfirmedAt) {
+    return {
+      success: false,
+      message: 'You have aleady confirmed isolation.',
+    };
+  }
+  const now = new Date();
+  await db.timeLine.update({
+    where: { id: timelineId },
+    data: {
+      isolationConfirmedAt: now,
+      workRequest: {
+        update: {
+          workStartedAt: now,
+          status: 'ONGOING',
+        },
+      },
+    },
+  });
+  revalidatePath('/activity');
+  return {
+    success: true,
+    message: 'You have confirmed the isolation for this work',
+  };
+};

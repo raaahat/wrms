@@ -86,7 +86,32 @@ export const getTimelineActivity = async (id: string) => {
             },
           },
         },
-        operationTimeLines: true,
+        operationTimeLines: {
+          include: {
+            workRequest: {
+              include: {
+                maintEngr: {
+                  include: {
+                    designation: {
+                      include: {
+                        department: true,
+                      },
+                    },
+                  },
+                },
+                creator: {
+                  include: {
+                    designation: {
+                      include: {
+                        department: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
         shiftTimeLines: true,
         managedTimeLines: true,
       },
@@ -100,6 +125,9 @@ export const getTimelineActivity = async (id: string) => {
 export type GetTimelineForMaintEngrType = NonNullable<
   Awaited<ReturnType<typeof getTimelineActivity>>
 >['wrIssuedTo'];
+export type GetTimelineForOPEngrType = NonNullable<
+  Awaited<ReturnType<typeof getTimelineActivity>>
+>['operationTimeLines'];
 
 export const getSingleTimeline = async (id: string) => {
   try {
@@ -123,7 +151,9 @@ export const getSingleTimeline = async (id: string) => {
           include: { designation: { include: { department: true } } },
         },
         operationEngineer: {
-          include: { designation: { include: { department: true } } },
+          include: {
+            designation: { include: { department: true } },
+          },
         },
       },
     });

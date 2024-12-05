@@ -125,7 +125,7 @@ export function WRDataTable<TData, TValue>({
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody className='font-sans text-xs'>
+            <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow

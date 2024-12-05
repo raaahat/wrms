@@ -14,8 +14,9 @@ import { UserInfo } from '@/features/employee/type';
 type HoverProps = {
   timeStamp?: Date | null;
   user?: UserInfo;
+  children?: React.ReactNode;
 };
-export function HoverCardInfo({ timeStamp, user }: HoverProps) {
+export function HoverCardInfo({ timeStamp, user, children }: HoverProps) {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
@@ -25,26 +26,29 @@ export function HoverCardInfo({ timeStamp, user }: HoverProps) {
           className='text-white rounded-lg bg-emerald-500 hover:bg-emerald-600 hover:text-white '
         >
           <Check />
-          Assigned
+          {children ? children : 'Done'}
         </Button>
       </HoverCardTrigger>
       <HoverCardContent className='w-fit'>
         <div>
           <div className=' flex items-center'>
-            <div className='w-fit text-sm'>Maint. Engr: </div>
             {user && (
-              <UserAvatar
-                name={user.name}
-                avatar={user.avatar}
-                department={user.department}
-                designaiton={user.designation}
-              />
+              <>
+                {' '}
+                <div className='w-fit text-sm'>Maint. Engr: </div>
+                <UserAvatar
+                  name={user.name}
+                  avatar={user.avatar}
+                  department={user.department}
+                  designaiton={user.designation}
+                />
+              </>
             )}
           </div>
 
           {timeStamp && (
             <span className='text-xs text-muted-foreground'>
-              Assigned at {format(timeStamp, 'dd-MMM-yy, HH:mm')}
+              Done at {format(timeStamp, 'dd-MMM-yy, HH:mm')}
             </span>
           )}
         </div>

@@ -6,12 +6,22 @@ import { TimeLineModal } from './TimeLineModal';
 import { Button } from '@/components/ui/button';
 
 import { ModeSwitcher } from '@/components/mode-switcher';
-import { HoverCardInfo } from './HoverCard';
 import { GetTimelineForMaintEngrType } from '../query';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { format } from 'date-fns';
-import { useQuery } from '@tanstack/react-query';
-import { getSingleAreaFullName } from '@/features/Area/query';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Check } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export const MaintEngineerPanel = ({
   timelines,
@@ -19,11 +29,6 @@ export const MaintEngineerPanel = ({
   profile: EmployeeWithDetails;
   timelines: GetTimelineForMaintEngrType;
 }) => {
-  const { data: areaFullName, isLoading } = useQuery({
-    queryKey: ['area', timelines[0].areaId],
-    queryFn: () => getSingleAreaFullName(timelines[0].areaId),
-  });
-  const areaName = isLoading ? 'loading...' : areaFullName;
   return (
     <>
       <header className='flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12'>
@@ -38,8 +43,18 @@ export const MaintEngineerPanel = ({
           timelines.map(
             ({
               id,
+
+              areaId,
               creator,
-              timelines: [{ maintManager, maintEngrAssignedAt }],
+              timelines: [
+                {
+                  maintManager,
+                  maintEngrAssignedAt,
+                  isolationConfirmedAt,
+                  operationEngineer,
+                  shiftEngineer,
+                },
+              ],
               createdAt,
               status,
               title,
@@ -60,7 +75,7 @@ export const MaintEngineerPanel = ({
                       designation: creator.designation?.title || 'Not set yet',
                     },
                     id,
-                    areaName,
+                    areaId,
                     createdAt,
                     status,
                     title,
@@ -71,7 +86,7 @@ export const MaintEngineerPanel = ({
                   }}
                 >
                   {maintManager && maintEngrAssignedAt && (
-                    <div className=' rounded-lg bg-muted px-2 py-1 mt-4 bg-emerald-100 dark:bg-emerald-900'>
+                    <div className=' rounded-lg px-3 py-3 mt-4 bg-muted '>
                       <p className='flex flex-wrap items-center gap-1 text-sm '>
                         You have been assigned for this task by
                         <UserAvatar
@@ -90,9 +105,71 @@ export const MaintEngineerPanel = ({
                       </p>
                     </div>
                   )}
-                  <Button className=' mx-auto mt-4' variant={'outline'}>
-                    Waiting for isolation confirmation...
-                  </Button>
+                  {isolationConfirmedAt &&
+                  shiftEngineer &&
+                  operationEngineer ? (
+                    <>
+                      <div className='bg-teal-100 text-green-800 dark:bg-teal-950 dark:text-green-100 w-full rounded-lg p-3 mt-4 flex items-center gap-4 '>
+                        <Check className='my-auto  size-8 ' />
+                        <div className=' '>
+                          <AlertTitle>Isolation Confirmed!</AlertTitle>
+                          <AlertDescription className='flex flex-wrap items-center gap-1 text-sm '>
+                            <UserAvatar
+                              bagde
+                              name={operationEngineer.name}
+                              avatar={operationEngineer.imageUrl}
+                              department={
+                                operationEngineer.designation?.department
+                                  .shortName
+                              }
+                              designaiton={operationEngineer.designation?.title}
+                            />{' '}
+                            confirmed the isolation directed by{' '}
+                            <UserAvatar
+                              bagde
+                              name={shiftEngineer.name}
+                              avatar={shiftEngineer.imageUrl}
+                              department={
+                                shiftEngineer.designation?.department.shortName
+                              }
+                              designaiton={shiftEngineer.designation?.title}
+                            />{' '}
+                            at{' '}
+                            <span className='text-xs italic underline'>
+                              {format(isolationConfirmedAt, 'dd-MMM-yy, HH:mm')}
+                            </span>
+                            Please continue your work and be safe!
+                          </AlertDescription>
+                        </div>
+                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button className=' ml-auto mt-4'>
+                            I have finished my work
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              The status of the work request will be set to
+                              'FINISHED', Operation team will check the work and
+                              upon confirmation, the status will be set to
+                              'DONE' or 'U/O'.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction>Continue</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </>
+                  ) : (
+                    <Button className=' mx-auto mt-4' variant={'outline'}>
+                      Waiting for isolation confirmation...
+                    </Button>
+                  )}
                 </WorkRequestCard>
               );
             }

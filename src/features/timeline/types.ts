@@ -12,7 +12,7 @@ export interface WorkRequestCardProps {
     type: WrType;
     runningHour?: string | null;
     remarks?: string | null;
-    areaName?: string;
+    areaId?: string;
     creator: UserInfo;
   };
   children?: React.ReactNode;

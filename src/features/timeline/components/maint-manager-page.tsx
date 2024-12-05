@@ -45,7 +45,7 @@ export const MaintManagerPage = ({
               id,
               workRequest: {
                 maintEngr,
-                areaName,
+                areaId,
                 createdAt,
                 status,
                 title,
@@ -70,7 +70,7 @@ export const MaintManagerPage = ({
                   key={id}
                   workRequest={{
                     id,
-                    areaName,
+                    areaId,
                     creator: {
                       name: creator.name,
                       avatar: creator.imageUrl,
@@ -101,7 +101,9 @@ export const MaintManagerPage = ({
                       <HoverCardInfo
                         timeStamp={maintEngrAssignedAt}
                         user={maintEngrForAvatar}
-                      />
+                      >
+                        Assigned
+                      </HoverCardInfo>
                     )}
                   </div>
                 </WorkRequestCard>

@@ -19,10 +19,12 @@ import {
 import { StatusBadge } from './status-badge';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { WorkRequestCardProps } from '@/features/timeline/types';
+import { useQuery } from '@tanstack/react-query';
+import { getSingleAreaFullName } from '@/features/Area/query';
 
 export function WorkRequestCard({
   workRequest: {
-    areaName = 'Not Specified',
+    areaId,
     createdAt,
     creator,
     status,
@@ -34,6 +36,12 @@ export function WorkRequestCard({
   },
   children,
 }: WorkRequestCardProps) {
+  const { data: areaFullName, isLoading } = useQuery({
+    queryKey: ['area', areaId],
+    queryFn: () => getSingleAreaFullName(areaId as string),
+    enabled: !!areaId,
+  });
+  const areaName = isLoading ? 'loading...' : areaFullName;
   return (
     <Card className='w-full max-w-lg hover:shadow-lg transition-shadow duration-300'>
       <CardHeader className='pb-2'>
