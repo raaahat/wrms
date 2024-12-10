@@ -54,8 +54,8 @@ In industries with large-scale operations, managing maintenance requests often l
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/raaahat/wrs.git
-   cd wrs
+   git clone https://github.com/raaahat/wrms.git
+   cd wrms
    ```
 
 2. **Install dependencies:**
