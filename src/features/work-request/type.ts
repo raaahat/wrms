@@ -6,7 +6,7 @@ export const CreateWRFormSchema = z.object({
   title: z
     .string()
     .min(1, 'Title is required')
-    .transform((value) => value.trim().replace(/\s+/g, ' ').toLowerCase()),
+    .transform((value) => value.trim().replace(/\s+/g, ' ')),
   areaId: z.string().min(1, 'Area is required'),
   runningHour: z.number().optional(),
   creatorId: z.string().min(1, 'Creator is required'),
@@ -14,7 +14,7 @@ export const CreateWRFormSchema = z.object({
   type: z.nativeEnum(WrType),
   remarks: z
     .string()
-    .transform((value) => value.trim().replace(/\s+/g, ' ').toLowerCase())
+    .transform((value) => value.trim().replace(/\s+/g, ' '))
     .optional(),
 });
 

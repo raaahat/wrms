@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/features/Area/components/accordion';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AreaType } from '../query';
 import { Input } from '@/components/ui/input';
 import { useAdding } from '../store';
@@ -73,21 +73,20 @@ export const NestedItem = ({
   useEffect(() => {
     setOpen(expand);
   }, [expand, setOpen]);
-
   return (
     <>
       {hasChildren ? (
         <Accordion
           key={id}
-          type="multiple"
-          className="w-full bg-slate-200 dark:bg-slate-800 rounded-md"
+          type='multiple'
+          className='w-full min-w-[300px] bg-slate-200 dark:bg-slate-800 rounded-md'
         >
           <AccordionItem value={id}>
             <AccordionTrigger>
-              <div className="group flex items-center justify-between w-full h-full">
+              <div className='group flex items-center justify-between w-full h-full'>
                 {name}
                 <Menu
-                  className="hidden group-hover:block bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 h-full rounded-md size-6 p-1 mr-1"
+                  className='invisible group-hover:visible bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 h-full rounded-md size-6 p-1 mr-1'
                   id={id}
                   canDelete={!hasChildren}
                 />
@@ -96,25 +95,29 @@ export const NestedItem = ({
 
             <AccordionContent>
               {parentId && parentId === id && (
-                <form className=" max-w-[240px]" onSubmit={handleSubmit}>
+                <form
+                  className='min-w-[300px] max-w-[350px]'
+                  onSubmit={handleSubmit}
+                >
                   <AccordionBlock>
                     <Input
                       autoFocus
+                      placeholder='type here...'
                       value={newChild}
-                      className=" = h-full bg-inherit w-full"
-                      type="text"
+                      className=' = h-full bg-inherit w-full'
+                      type='text'
                       onChange={(e) => setNewChild(e.target.value)}
                       disabled={isLoading}
                     />
 
                     <button
-                      type="submit"
-                      className=" ml-auto m-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400"
+                      type='submit'
+                      className=' ml-auto m-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400'
                       disabled={isLoading || cleanUpSpaces(newChild) === ''}
                     >
                       {isLoading ? (
                         <Loader2
-                          className="animate-spin text-white"
+                          className='animate-spin text-white'
                           size={20}
                           strokeWidth={3}
                         />
@@ -123,8 +126,8 @@ export const NestedItem = ({
                       )}
                     </button>
                     <button
-                      type="button"
-                      className=" ml-auto mr-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400"
+                      type='button'
+                      className=' ml-auto mr-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400'
                       onClick={() => {
                         setParentId('');
                       }}
@@ -150,10 +153,10 @@ export const NestedItem = ({
       ) : (
         <>
           <AccordionBlock>
-            <div className="group flex items-center justify-between w-full h-full">
+            <div className='group flex items-center justify-between w-full h-full'>
               {name}
               <Menu
-                className="hidden group-hover:block bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 h-full rounded-md size-6 p-1 mr-1"
+                className='hidden group-hover:block bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 h-full rounded-md size-6 p-1 mr-1'
                 id={id}
                 canDelete={!hasChildren}
               />
@@ -161,27 +164,27 @@ export const NestedItem = ({
           </AccordionBlock>
           {parentId && parentId === id && (
             <form
-              className=" max-w-[240px] -translate-y-3 px-3"
+              className=' max-w-[240px] -translate-y-3 px-3'
               onSubmit={handleSubmit}
             >
               <AccordionBlock>
                 <Input
                   autoFocus
                   value={newChild}
-                  className=" focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 h-full border-none bg-inherit w-full"
-                  type="text"
+                  className=' focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 h-full border-none bg-inherit w-full'
+                  type='text'
                   onChange={(e) => setNewChild(e.target.value)}
                   disabled={isLoading}
                 />
 
                 <button
-                  type="submit"
-                  className="disabled:cursor-not-allowed ml-auto m-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400 "
+                  type='submit'
+                  className='disabled:cursor-not-allowed ml-auto m-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400 '
                   disabled={isLoading || cleanUpSpaces(newChild) === ''}
                 >
                   {isLoading ? (
                     <Loader2
-                      className="animate-spin text-white"
+                      className='animate-spin text-white'
                       size={20}
                       strokeWidth={3}
                     />
@@ -190,8 +193,8 @@ export const NestedItem = ({
                   )}
                 </button>
                 <button
-                  type="button"
-                  className=" ml-auto mr-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400"
+                  type='button'
+                  className=' ml-auto mr-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400'
                   onClick={() => {
                     setParentId('');
                   }}
@@ -324,7 +327,7 @@ function Menu({
       <DropdownMenuTrigger>
         <MoreHorizontal className={className} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start">
+      <DropdownMenuContent align='start'>
         <DropdownMenuItem
           onClick={() => {
             setParentId(id);
@@ -338,7 +341,7 @@ function Menu({
         </DropdownMenuItem>
         {canDelete && (
           <DropdownMenuItem
-            className=" text-rose-700 hover:bg-red-200"
+            className=' text-rose-700 hover:bg-red-200'
             onClick={() => {
               setDeletingId(id);
             }}

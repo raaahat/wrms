@@ -73,39 +73,42 @@ export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
           </DialogHeader>
           <DialogFooter>
             <Button variant={'destructive'} onClick={handleDelete}>
-              Delete{isLoading && <Loader2 className=" animate-spin" />}
+              Delete{isLoading && <Loader2 className=' animate-spin' />}
             </Button>
             <Button onClick={() => setDeletingId('')}>Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <div className="space-y-5 container min-w-fit max-w-[300px]">
-        <div className=" flex items-center">
+      <div className='space-y-5 container min-w-fit max-w-[300px]'>
+        <div className=' flex items-center'>
           <Button onClick={() => setIsAddingParent((prev) => !prev)}>
             {isAddingParent ? 'Cancel' : 'Add'}
           </Button>
         </div>
-        <div className=" flex flex-col gap-2 transition-all duration-1000">
+        <div className=' flex flex-col gap-2 transition-all duration-1000'>
           {isAddingParent && (
-            <form className=" max-w-[240px]" onSubmit={handleSubmit}>
+            <form
+              className='min-w-[300px] max-w-[350px]'
+              onSubmit={handleSubmit}
+            >
               <AccordionBlock>
                 <Input
                   value={parentName}
-                  className="focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 h-full border-none bg-inherit w-full "
-                  type="text"
+                  className='focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 h-full border-none bg-inherit w-full '
+                  type='text'
                   autoFocus
                   onChange={(e) => setParentName(e.target.value)}
                   disabled={isLoading}
                 />
 
                 <button
-                  type="submit"
-                  className=" ml-auto m-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400"
+                  type='submit'
+                  className=' ml-auto m-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400'
                   disabled={isLoading || cleanUpSpaces(parentName) === ''}
                 >
                   {isLoading ? (
                     <Loader2
-                      className="animate-spin text-white"
+                      className='animate-spin text-white'
                       size={20}
                       strokeWidth={3}
                     />
@@ -114,8 +117,8 @@ export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
                   )}
                 </button>
                 <button
-                  type="button"
-                  className=" ml-auto mr-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400"
+                  type='button'
+                  className=' ml-auto mr-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400'
                   onClick={() => {
                     setIsAddingParent(false);
                   }}
