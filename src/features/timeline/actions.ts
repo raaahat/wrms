@@ -8,6 +8,7 @@ import {
 import { db } from '@/lib/prisma';
 import { WrType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
+
 import { redirect } from 'next/navigation';
 
 export const assignMaintEngineer = async (
@@ -225,5 +226,52 @@ export const confirmIsolation = async (timelineId: string) => {
   return {
     success: true,
     message: 'You have confirmed the isolation for this work',
+  };
+};
+
+export const assignMaintEngrDirectly = async (
+  wrId: string,
+  maintEngrId: string
+) => {
+  const existingWr = await db.workRequest.findUnique({
+    where: { id: wrId },
+  });
+  if (!existingWr) return { success: false, message: 'No work request found' };
+  if (existingWr.mode === 'STRICT')
+    return {
+      success: false,
+      message:
+        'You cannot assign maintenance engineer on "Strict" mode work request',
+    };
+  if (existingWr.maintEngrId)
+    return {
+      success: false,
+      message: 'Already assigned',
+    };
+  const maintEngr = await getEmployeeById(maintEngrId);
+  if (!maintEngr)
+    return {
+      success: false,
+      message: 'Employee does not exists',
+    };
+  if (
+    !['MM', 'EM'].includes(maintEngr?.designation?.department.shortName || '')
+  )
+    return {
+      success: false,
+      message:
+        'Selected employee must be from Mechanical or Electrical department.',
+    };
+  await db.workRequest.update({
+    where: { id: wrId },
+    data: {
+      maintEngr: { connect: { id: maintEngrId } },
+      status: 'ONGOING',
+    },
+  });
+  revalidatePath('/work-request');
+  return {
+    success: true,
+    message: `${maintEngr?.name} has been assigned to this work request and status has been set to "ONGOING"`,
   };
 };

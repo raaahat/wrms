@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { CreateWRModal } from '../components/CreateWRModal';
 import { ConfirmIsolationModal } from '../components/ConfirmIsolationModal';
+import { AssignMaintEngrModal } from '../components/AssignMaintEngr';
 
 export const WRModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -17,6 +18,7 @@ export const WRModalProvider = () => {
     <>
       <CreateWRModal />
       <ConfirmIsolationModal />
+      <AssignMaintEngrModal />
     </>
   );
 };

@@ -1,25 +1,54 @@
-import { TableSection } from '@/features/work-request/components/TableSection';
-import { INITIAL_DATERANGE } from '@/features/work-request/constants';
+'use client';
+class Vehicle {
+  type: string;
+  brand: string;
 
-import { getAllWr } from '@/features/work-request/query';
+  constructor(type: string, brand: string) {
+    this.type = type;
+    this.brand = brand;
+  }
 
-const WRpage = async () => {
-  // const user = await currentProfile();
-  // if (!user) return redirect('/register');
-  // const { onOpen } = useWRModal();
+  getDetails(): string {
+    return `${this.brand} ${this.type}`;
+  }
+}
 
-  return (
-    <div className="m-6 flex flex-col gap-3 p-4">
-      {/* <div className=" flex-1 overflow-auto">
-        <TableSection />
-      </div> */}
-      <div className=" w-[1500px] h-60 bg-red-300"></div>
-      <div className=" w-60 h-60 bg-red-300"></div>
-      <div className=" w-60 h-60 bg-red-300"></div>
-      <div className=" w-60 h-60 bg-red-300"></div>
-      <div className=" w-60 h-60 bg-red-300"></div>
-    </div>
-  );
+class Car extends Vehicle {
+  doors: number;
+
+  constructor(brand: string, doors: number) {
+    super('Car', brand); // Call the parent constructor
+    this.doors = doors;
+  }
+
+  getCarInfo(): string {
+    return `${this.getDetails()} with ${this.doors} doors`;
+  }
+}
+
+class Truck extends Vehicle {
+  loadCapacity: number;
+
+  constructor(brand: string, loadCapacity: number) {
+    super('Truck', brand); // Call the parent constructor
+    this.loadCapacity = loadCapacity;
+  }
+
+  getTruckInfo(): string {
+    return `${this.getDetails()} with ${this.loadCapacity} tons load capacity`;
+  }
+}
+
+// Usage
+const car = new Car('Toyota', 4);
+console.log(car.getCarInfo()); // Toyota Car with 4 doors
+
+const truck = new Truck('Ford', 10);
+console.log(truck.getTruckInfo()); // Ford Truck with 10 tons load capacity
+
+const WRpage = () => {
+  return <div>hi rahat</div>;
 };
 
 export default WRpage;
+

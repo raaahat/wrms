@@ -55,6 +55,7 @@ export function EmployeeDataTable<TData, TValue>({
       rowSelection,
       columnFilters,
     },
+    initialState: { pagination: { pageSize: 50 } },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -69,7 +70,7 @@ export function EmployeeDataTable<TData, TValue>({
   });
   const { state } = useSidebar();
   return (
-    <div className='space-y-4'>
+    <div className='space-y-4 mt-4'>
       <EmployeeTableToolbar table={table} />
       <ScrollArea
         className={cn(

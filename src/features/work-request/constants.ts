@@ -15,10 +15,14 @@ export function nextAvailableStatus(current: Status): Status[] {
       return [Status.ONGOING, Status.PENDING];
     case Status.ONGOING:
       return [Status.DONE, Status.UNDER_OBSERVATION];
+    case Status.PENDING:
+      return [Status.ONGOING];
     case Status.DONE:
       return [Status.UNDER_OBSERVATION, Status.NOT_SOLVED, Status.FOLLOW_UP];
     case Status.UNDER_OBSERVATION:
       return [Status.DONE, Status.NOT_SOLVED, Status.FOLLOW_UP];
+    case Status.NOT_SOLVED:
+      return [Status.DONE, Status.UNDER_OBSERVATION, Status.FOLLOW_UP];
     default:
       return [];
   }

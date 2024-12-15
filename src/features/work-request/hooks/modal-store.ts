@@ -1,8 +1,12 @@
+import { WrType } from '@prisma/client';
 import { create } from 'zustand';
 
-export type ModalType = 'createWR';
+export type ModalType = 'createWR' | 'assignMaintEngr';
 
-export type ModalData = {};
+export type ModalData = {
+  wrId?: string;
+  wrType?: WrType;
+};
 export type ModalStore = {
   type: ModalType | null;
   data: ModalData;

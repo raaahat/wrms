@@ -19,7 +19,6 @@ const UserAvatar = ({
   className?: string;
   bagde?: boolean;
 }) => {
-  console.log(department);
   const { text, bgColor } = generateAvatar(name);
   if (bagde)
     return (

@@ -23,6 +23,7 @@ import { StatusBadge } from '../status-badge';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { useQueryClient } from '@tanstack/react-query';
 import { useWRModal } from '../../hooks/modal-store';
+import { Status, WrType } from '@prisma/client';
 const DATE_FORMAT = 'd-MMM-yy';
 
 export const columnWR: ColumnDef<GetAllWRType>[] = [
@@ -30,16 +31,49 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     id: 'actions',
     cell: ({ row }) => {
       const queryClient = useQueryClient();
-      const { id, status, mode, maintEngr, timelines } = row.original;
+      const {
+        id: wrId,
+        status,
+        mode,
+        maintEngr,
+        timelines,
+        maintEngrId,
+        type,
+      } = row.original;
 
       const next = nextAvailableStatus(status);
-      const { openIsolationModal } = useWRModal();
+      const { openIsolationModal, onOpen } = useWRModal();
+
+      async function handleStatus(wrId: string, newStatus: Status) {
+        console.log(status);
+        if (!maintEngrId && newStatus === 'ONGOING') {
+          onOpen('assignMaintEngr', { wrId, wrType: type });
+          return;
+        }
+        toast.loading('Setting Status...', {
+          id: 'set-status',
+        });
+        const { success, message } = await setStatus(wrId, newStatus);
+        if (!success) {
+          toast.error(message, {
+            id: 'set-status',
+          });
+          return;
+        }
+        queryClient.invalidateQueries({
+          queryKey: ['workRequests'],
+        });
+        toast.success(message, {
+          id: 'set-status',
+        });
+      }
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant='ghost'
               className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'
+              title='Options'
             >
               <span className='sr-only'>Open menu</span>
               <MoreHorizontal className='h-4 w-4' />
@@ -65,27 +99,7 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
                     {next.map((item) => (
                       <DropdownMenuItem
                         key={item}
-                        onSelect={async () => {
-                          toast.loading('Setting Status...', {
-                            id: 'set-status',
-                          });
-                          const { success, message } = await setStatus(
-                            id,
-                            item
-                          );
-                          if (!success) {
-                            toast.error(message, {
-                              id: 'set-status',
-                            });
-                            return;
-                          }
-                          queryClient.invalidateQueries({
-                            queryKey: ['workRequests'],
-                          });
-                          toast.success(message, {
-                            id: 'set-status',
-                          });
-                        }}
+                        onSelect={() => handleStatus(wrId, item)}
                       >
                         {item}
                       </DropdownMenuItem>
