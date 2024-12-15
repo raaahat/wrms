@@ -25,6 +25,7 @@ import {
   ResponsiveModalTitle,
 } from '@/components/ui/responsive-modal';
 import { EmployeeComboBox } from '@/features/work-request/components/EmployeeComboBox';
+import { SubmitButton } from '@/components/submit-button';
 
 export const TimeLineModal = () => {
   const { isOpen, setOpen, wrType, timelineId } = useTimelineModalStore();
@@ -88,9 +89,12 @@ export const TimeLineModal = () => {
             />
           )}
           <ResponsiveModalFooter className='mt-5'>
-            <Button type='submit' disabled={!maintEmployeeId || isSubmitting}>
-              Assign {isLoading && <Loader2 className='animate-spin' />}
-            </Button>
+            <SubmitButton
+              buttonText='Assign'
+              type='submit'
+              disabled={!maintEmployeeId || isSubmitting}
+              isPending={isSubmitting}
+            />
           </ResponsiveModalFooter>
         </form>
       </ResponsiveModalContent>

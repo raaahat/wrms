@@ -4,6 +4,7 @@ import { departments } from './department';
 import { data } from './designation';
 import { createUsers } from './employee';
 import { seedAreas } from './area';
+import { seedRolesAndPermissions } from './roles';
 
 const db = new PrismaClient();
 
@@ -34,7 +35,7 @@ async function seedDepartmentWithDesig() {
   console.log('Seeding completed!');
 }
 
-seedAreas()
+seedRolesAndPermissions()
   .catch((error) => {
     console.error('Error seeding database:', error);
     process.exit(1);

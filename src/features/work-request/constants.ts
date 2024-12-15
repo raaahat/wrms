@@ -14,7 +14,7 @@ export function nextAvailableStatus(current: Status): Status[] {
     case Status.PLACED:
       return [Status.ONGOING, Status.PENDING];
     case Status.ONGOING:
-      return [Status.DONE, Status.UNDER_OBSERVATION];
+      return [Status.DONE, Status.UNDER_OBSERVATION, Status.NOT_SOLVED];
     case Status.PENDING:
       return [Status.ONGOING];
     case Status.DONE:

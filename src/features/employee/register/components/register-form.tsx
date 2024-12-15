@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -34,7 +33,7 @@ import {
 import { registerEmployee } from '@/actions/employee';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 
 export const RegisterForm = ({
   deptWithDesig,
@@ -80,7 +79,7 @@ export const RegisterForm = ({
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className='w-full max-w-2xl mx-auto'>
       <CardHeader>
         <CardTitle>Register</CardTitle>
         <CardDescription>
@@ -92,17 +91,17 @@ export const RegisterForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
+            className='space-y-6'
           >
             <FormField
               control={form.control}
-              name="name"
+              name='name'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Your name"
+                      placeholder='Your name'
                       {...field}
                       onFocus={(e) => e.target.select()}
                     />
@@ -116,7 +115,7 @@ export const RegisterForm = ({
             />
             <FormField
               control={form.control}
-              name="departmentId"
+              name='departmentId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Department</FormLabel>
@@ -128,14 +127,14 @@ export const RegisterForm = ({
                     value={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="capitalize">
-                        <SelectValue placeholder="Select a department" />
+                      <SelectTrigger className='capitalize'>
+                        <SelectValue placeholder='Select a department' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {deptWithDesig.map((dept) => (
                         <SelectItem
-                          className="capitalize"
+                          className='capitalize'
                           key={dept.id}
                           value={dept.id}
                         >
@@ -158,20 +157,20 @@ export const RegisterForm = ({
             >
               <FormField
                 control={form.control}
-                name="designationId"
+                name='designationId'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Designation</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="capitalize">
-                          <SelectValue placeholder="Select a designation" />
+                        <SelectTrigger className='capitalize'>
+                          <SelectValue placeholder='Select a designation' />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {designations.map((designation) => (
                           <SelectItem
-                            className="capitalize"
+                            className='capitalize'
                             key={designation.id}
                             value={designation.id}
                           >
@@ -187,14 +186,14 @@ export const RegisterForm = ({
               />
               <FormField
                 control={form.control}
-                name="phone"
+                name='phone'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <Input
-                        type="tel"
-                        placeholder="Your phone number"
+                        type='tel'
+                        placeholder='Your phone number'
                         {...field}
                       />
                     </FormControl>
@@ -206,12 +205,12 @@ export const RegisterForm = ({
                 )}
               />
             </div>
-            <Button type="submit" disabled={form.formState.isLoading}>
-              Submit{' '}
-              {form.formState.isLoading && (
-                <Loader2 className=" animate-spin" />
-              )}
-            </Button>
+            <SubmitButton
+              type='submit'
+              buttonText='Submit'
+              isPending={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting}
+            />
           </form>
         </Form>
       </CardContent>

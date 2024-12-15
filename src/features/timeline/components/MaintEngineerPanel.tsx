@@ -152,10 +152,11 @@ export const MaintEngineerPanel = ({
                           <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              The status of the work request will be set to
-                              'FINISHED', Operation team will check the work and
-                              upon confirmation, the status will be set to
-                              'DONE' or 'U/O'.
+                              You are about to mark this work request as
+                              'FINISHED.' Once confirmed, the operation team
+                              will review the work. They will update the status
+                              to either 'DONE' if approved or 'U/O' if further
+                              action is required.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

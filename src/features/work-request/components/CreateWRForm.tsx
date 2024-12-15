@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mode, WrType } from '@prisma/client';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -32,6 +31,7 @@ import { createWorkRequest } from '../action';
 import { toast } from 'sonner';
 import { useWRModal } from '../hooks/modal-store';
 import { useQueryClient } from '@tanstack/react-query';
+import { SubmitButton } from '@/components/submit-button';
 
 export default function CreateWorkRequestForm() {
   const queryClient = useQueryClient();
@@ -82,18 +82,18 @@ export default function CreateWorkRequestForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 m-6 flex flex-col"
+        className='space-y-6 m-6 flex flex-col'
       >
-        <div className="flex-1 grid md:grid-cols-2 gap-6">
-          <div className="md:col-span-2 xl:col-span-1">
+        <div className='flex-1 grid md:grid-cols-2 gap-6'>
+          <div className='md:col-span-2 xl:col-span-1'>
             <FormField
               control={form.control}
-              name="title"
+              name='title'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter work request title" {...field} />
+                    <Input placeholder='Enter work request title' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,7 +103,7 @@ export default function CreateWorkRequestForm() {
 
           <FormField
             control={form.control}
-            name="areaId"
+            name='areaId'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Area</FormLabel>
@@ -120,7 +120,7 @@ export default function CreateWorkRequestForm() {
 
           <FormField
             control={form.control}
-            name="creatorId"
+            name='creatorId'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Added By</FormLabel>
@@ -137,14 +137,14 @@ export default function CreateWorkRequestForm() {
 
           <FormField
             control={form.control}
-            name="runningHour"
+            name='runningHour'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Running Hour</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    placeholder="Enter running hour (optional)"
+                    type='number'
+                    placeholder='Enter running hour (optional)'
                     {...field}
                     onChange={(e) =>
                       field.onChange(
@@ -157,10 +157,9 @@ export default function CreateWorkRequestForm() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
-            name="mode"
+            name='mode'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Mode</FormLabel>
@@ -170,7 +169,7 @@ export default function CreateWorkRequestForm() {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select mode" />
+                      <SelectValue placeholder='Select mode' />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -185,7 +184,7 @@ export default function CreateWorkRequestForm() {
 
           <FormField
             control={form.control}
-            name="type"
+            name='type'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Type</FormLabel>
@@ -195,7 +194,7 @@ export default function CreateWorkRequestForm() {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
+                      <SelectValue placeholder='Select type' />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -212,16 +211,16 @@ export default function CreateWorkRequestForm() {
             )}
           />
 
-          <div className="md:col-span-2">
+          <div className='md:col-span-2'>
             <FormField
               control={form.control}
-              name="remarks"
+              name='remarks'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Remarks</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter remarks (optional)"
+                      placeholder='Enter remarks (optional)'
                       {...field}
                     />
                   </FormControl>
@@ -232,13 +231,13 @@ export default function CreateWorkRequestForm() {
           </div>
         </div>
 
-        <Button
-          type="submit"
+        <SubmitButton
+          type='submit'
+          buttonText='Create Work Request'
           disabled={form.formState.isSubmitting}
-          className=" w-full md:w-fit md:ml-auto"
-        >
-          {form.formState.isSubmitting ? 'Creating...' : 'Create Work Request'}
-        </Button>
+          isPending={form.formState.isSubmitting}
+          className=' w-full md:w-fit md:ml-auto'
+        />
       </form>
     </Form>
   );

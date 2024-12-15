@@ -12,6 +12,18 @@ import { useState } from 'react';
 import { confirmIsolation } from '../actions';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 export const OPEngrPanel = ({
   timelines,
@@ -86,13 +98,40 @@ export const OPEngrPanel = ({
                       you have confirmed isolation
                     </HoverCardInfo>
                   ) : (
-                    <Button
-                      onClick={() => handleConfirmation(timelineId)}
-                      disabled={submitting}
-                    >
-                      {submitting && <Loader2 />}
-                      Confirm Isolation
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger>
+                        <SubmitButton buttonText='Confirm Isolation' />
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            The maintenance team will commence work after
+                            receiving your field isolation confirmation. Once
+                            confirmed, the status of the work request will be
+                            updated to 'ONGOING'.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                          <SubmitButton
+                            buttonText='Confirm'
+                            onClick={() => handleConfirmation(timelineId)}
+                            disabled={submitting}
+                            isPending={submitting}
+                          />
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    // <Button
+                    //   onClick={() => handleConfirmation(timelineId)}
+                    //   disabled={submitting}
+                    // >
+                    //   {submitting && <Loader2 />}
+                    //   Confirm Isolation
+                    //   </Button>
+                    //   <SubmitButton buttonText='Confirm Isolation'/>
                   )}
                 </div>
               </WorkRequestCard>

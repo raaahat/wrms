@@ -9,11 +9,11 @@ export const CreateWRModal = () => {
   const isModalOpen = isOpen && type === 'createWR';
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="  md:w-[80vw] md:max-w-[80vw] lg:max-w-5xl">
-        <DialogHeader className=" text-2xl mx-6">
+      <DialogContent className='  md:w-[80vw] md:max-w-[80vw] lg:max-w-5xl overflow-visible pointer-events-auto'>
+        <DialogHeader className=' text-2xl mx-6'>
           Create Work Request
         </DialogHeader>
-        <ScrollArea className=" max-h-[85vh]">
+        <ScrollArea className=' max-h-[85vh]'>
           <CreateWorkRequestForm />
         </ScrollArea>
       </DialogContent>

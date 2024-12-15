@@ -272,6 +272,6 @@ export const assignMaintEngrDirectly = async (
   revalidatePath('/work-request');
   return {
     success: true,
-    message: `${maintEngr?.name} has been assigned to this work request and status has been set to "ONGOING"`,
+    message: `${maintEngr.name} has been assigned to this work request and status has been set to "ONGOING"`,
   };
 };

@@ -24,6 +24,7 @@ import { getSingleTimeline, TimeLineType } from '@/features/timeline/query';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SubmitButton } from '@/components/submit-button';
 
 export const ConfirmIsolationModal = () => {
   const queryClient = useQueryClient();
@@ -151,22 +152,12 @@ export const ConfirmIsolationModal = () => {
                 </ScrollArea>
                 <ResponsiveModalFooter>
                   {shiftInchargeId && opEngrId && (
-                    <Button
+                    <SubmitButton
+                      buttonText='Assign Engineer'
+                      isPending={isPending}
                       disabled={isPending}
                       onClick={onSubmit}
-                      className='relative flex items-center justify-center transition-all duration-300 min-w-[140px]'
-                    >
-                      <LoaderCircle
-                        className={cn(
-                          'w-full transition-all -ms-1 me-2 animate-spin',
-                          !isPending && 'hidden w-0'
-                        )}
-                        size={16}
-                        strokeWidth={2}
-                        aria-hidden='true'
-                      />
-                      Assign Engineer
-                    </Button>
+                    />
                   )}
                 </ResponsiveModalFooter>
               </>

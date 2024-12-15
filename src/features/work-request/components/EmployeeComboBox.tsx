@@ -66,7 +66,7 @@ export function EmployeeComboBox({
           <ChevronsUpDown className='opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-full p-0'>
+      <PopoverContent className=' pointer-events-auto'>
         <Command>
           <CommandInput placeholder='Search engineer...' />
           {isLoading ? (
@@ -83,7 +83,10 @@ export function EmployeeComboBox({
           ) : (
             <CommandList>
               <CommandEmpty>No engineer found.</CommandEmpty>
-              <CommandGroup>
+              <CommandGroup
+                onWheel={(e) => e.currentTarget.scrollBy({ top: e.deltaY })}
+                className='max-h-80 overflow-auto'
+              >
                 {allEmployeeList?.map((employee) => (
                   <CommandItem
                     key={employee.id}

@@ -24,6 +24,7 @@ import {
   getAllAreaWithFullName,
 } from '@/features/Area/query';
 import { useCreateWRstore } from '../hooks/create-wr-store';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export const AreaPicker = () => {
   const [open, setOpen] = React.useState(false);
@@ -37,24 +38,27 @@ export const AreaPicker = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
-          role="combobox"
+          variant='outline'
+          role='combobox'
           aria-expanded={open}
-          className="w-full justify-between"
+          className='w-full justify-between'
         >
           {areaId
             ? allAreaWithFullNameQuery.data?.find((area) => area.id === areaId)
                 ?.fullName
             : 'Select Equipment/Area...'}
-          <ChevronsUpDown className="opacity-50" />
+          <ChevronsUpDown className='opacity-50' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className='w-full p-0 '>
         <Command>
-          <CommandInput placeholder="Search equipment/area..." />
+          <CommandInput placeholder='Search equipment/area...' />
           <CommandList>
             <CommandEmpty>No equipment/area found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup
+              onWheel={(e) => e.currentTarget.scrollBy({ top: e.deltaY })}
+              className='max-h-60 overflow-auto'
+            >
               {allAreaWithFullNameQuery.data?.map((area) => (
                 <CommandItem
                   key={area.id}
