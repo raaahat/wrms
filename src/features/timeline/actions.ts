@@ -7,6 +7,7 @@ import {
 } from '@/database/current-profile';
 import { db } from '@/lib/prisma';
 import { WrType } from '@prisma/client';
+import { format } from 'date-fns';
 import { revalidatePath } from 'next/cache';
 
 import { redirect } from 'next/navigation';
@@ -273,5 +274,57 @@ export const assignMaintEngrDirectly = async (
   return {
     success: true,
     message: `${maintEngr.name} has been assigned to this work request and status has been set to "ONGOING"`,
+  };
+};
+
+export const workFinishedByMaintEngr = async (timelineId: string) => {
+  const profile = await currentProfile();
+  if (!profile || !profile.verified) {
+    return {
+      success: false,
+      message: 'Unauthorized!',
+    };
+  }
+  const timeline = await db.timeLine.findUnique({
+    where: { id: timelineId },
+    include: {
+      workRequest: true,
+    },
+  });
+
+  if (!timeline)
+    return {
+      success: false,
+      message: 'No wr found',
+    };
+  if (timeline.workRequest.maintEngrId !== profile.id)
+    return {
+      success: false,
+      message: 'You are not assigned to this work.',
+    };
+  if (timeline.workDoneAt) {
+    return {
+      success: false,
+      message:
+        'You have aleady finished the work at ' +
+        format(timeline.workDoneAt, 'dd MMM yy, HH:mm'),
+    };
+  }
+  const now = new Date();
+  await db.timeLine.update({
+    where: { id: timelineId },
+    data: {
+      workDoneAt: now,
+      workRequest: {
+        update: {
+          status: 'FINISHED',
+        },
+      },
+    },
+  });
+  revalidatePath('/activity');
+  return {
+    success: true,
+    message: 'You have confirmed that the work is finished!',
   };
 };

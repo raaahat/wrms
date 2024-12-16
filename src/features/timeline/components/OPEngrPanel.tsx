@@ -6,16 +6,13 @@ import { ModeSwitcher } from '@/components/mode-switcher';
 import { GetTimelineForOPEngrType } from '../query';
 import { WorkRequestCard } from '@/features/work-request/components/wr-card';
 
-import { Button } from '@/components/ui/button';
 import { HoverCardInfo } from './HoverCard';
 import { useState } from 'react';
 import { confirmIsolation } from '../actions';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -124,14 +121,6 @@ export const OPEngrPanel = ({
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                    // <Button
-                    //   onClick={() => handleConfirmation(timelineId)}
-                    //   disabled={submitting}
-                    // >
-                    //   {submitting && <Loader2 />}
-                    //   Confirm Isolation
-                    //   </Button>
-                    //   <SubmitButton buttonText='Confirm Isolation'/>
                   )}
                 </div>
               </WorkRequestCard>

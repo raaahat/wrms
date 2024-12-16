@@ -17,6 +17,13 @@ export function nextAvailableStatus(current: Status): Status[] {
       return [Status.DONE, Status.UNDER_OBSERVATION, Status.NOT_SOLVED];
     case Status.PENDING:
       return [Status.ONGOING];
+    case Status.FINISHED:
+      return [
+        Status.DONE,
+        Status.UNDER_OBSERVATION,
+        Status.NOT_SOLVED,
+        Status.FOLLOW_UP,
+      ];
     case Status.DONE:
       return [Status.UNDER_OBSERVATION, Status.NOT_SOLVED, Status.FOLLOW_UP];
     case Status.UNDER_OBSERVATION:
@@ -27,13 +34,13 @@ export function nextAvailableStatus(current: Status): Status[] {
       return [];
   }
 }
-
+const className = 'teal';
 export const getStatusColor = (status: Status) => {
   const colors: Record<Status, string> = {
     PLACED: 'blue-500',
     PENDING: 'yellow-500',
     ONGOING: 'purple-500',
-    FINISHED: 'green-500',
+    FINISHED: 'sky-500',
     DONE: 'green-700',
     UNDER_OBSERVATION: 'orange-500',
     NOT_SOLVED: 'red-500',

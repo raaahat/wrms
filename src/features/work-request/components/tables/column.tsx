@@ -23,7 +23,7 @@ import { StatusBadge } from '../status-badge';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { useQueryClient } from '@tanstack/react-query';
 import { useWRModal } from '../../hooks/modal-store';
-import { Status, WrType } from '@prisma/client';
+import { Status } from '@prisma/client';
 const DATE_FORMAT = 'd-MMM-yy';
 
 export const columnWR: ColumnDef<GetAllWRType>[] = [
@@ -45,7 +45,6 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
       const { openIsolationModal, onOpen } = useWRModal();
 
       async function handleStatus(wrId: string, newStatus: Status) {
-        console.log(status);
         if (!maintEngrId && newStatus === 'ONGOING') {
           onOpen('assignMaintEngr', { wrId, wrType: type });
           return;
@@ -86,11 +85,34 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
                   openIsolationModal(timelines[0].id);
                 }}
               >
-                Confirm Isolation
+                {timelines[0].opEngrId
+                  ? 'Isolation Confirmed'
+                  : 'Confirm Isolation'}
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => {}}>edit</DropdownMenuItem>
+            {next.length !== 0 &&
+              mode === 'STRICT' &&
+              !(['PLACED', 'PENDING', 'ONGOING'] as Status[]).includes(
+                status
+              ) && (
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>Set status</DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      {next.map((item) => (
+                        <DropdownMenuItem
+                          key={item}
+                          onSelect={() => handleStatus(wrId, item)}
+                        >
+                          {item}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+              )}
             {next.length !== 0 && mode !== 'STRICT' && (
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Set status</DropdownMenuSubTrigger>

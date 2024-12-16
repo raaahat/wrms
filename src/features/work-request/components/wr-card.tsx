@@ -59,7 +59,7 @@ export function WorkRequestCard({
           </div>
           <div className='flex items-center gap-1 text-muted-foreground'>
             <Clock className='w-4 h-4' />
-            <span>{format(createdAt, 'dd MMM yy HH:mm')}</span>
+            <span>{format(createdAt, 'dd MMM yy, HH:mm')}</span>
           </div>
           <div className='flex items-center gap-1 text-muted-foreground'>
             <Tool className='w-4 h-4' />

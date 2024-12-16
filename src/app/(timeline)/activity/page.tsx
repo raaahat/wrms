@@ -9,9 +9,7 @@ const ActivityPage = async () => {
   if (!profile || !profile.verified) return redirect('/register');
   const timeline = await getTimelineActivity(profile.id);
   if (timeline?.wrIssuedTo.length !== 0 && timeline) {
-    return (
-      <MaintEngineerPanel profile={profile} timelines={timeline.wrIssuedTo} />
-    );
+    return <MaintEngineerPanel timelines={timeline.wrIssuedTo} />;
   }
   if (timeline?.operationTimeLines.length !== 0 && timeline)
     return (

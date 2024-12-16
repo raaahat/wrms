@@ -18,12 +18,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import { EmployeeTableColumnHeader } from './employee-table-header';
 import UserAvatar from '../UserAvatar';
 import { toast } from 'sonner';
 import { toggleRole } from '../../actions';
-import { generateAvatar } from '@/lib/utils';
+
+import { RoleBadge } from '../role-bagde';
 
 export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
   {
@@ -103,7 +104,7 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
                           });
                         }}
                       >
-                        {item.name}
+                        <RoleBadge role={item.name} />
                       </DropdownMenuCheckboxItem>
                     ))}
                   </DropdownMenuSubContent>
@@ -167,16 +168,7 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
         <>
           {info.row.original.roles.length !== 0
             ? info.row.original.roles.map((role) => {
-                const { bgColor } = generateAvatar(role.name);
-                return (
-                  <span
-                    key={role.id}
-                    style={{ backgroundColor: bgColor }}
-                    className='border rounded-md border-border p-0.5 bg-muted m-0.5 text-white'
-                  >
-                    {role.name}
-                  </span>
-                );
+                return <RoleBadge key={role.id} role={role.name} />;
               })
             : 'n/a'}
         </>
