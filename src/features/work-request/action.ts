@@ -135,7 +135,14 @@ export const setStatus = async (id: string, status: Status) => {
   try {
     await db.workRequest.update({
       where: { id },
-      data: { status },
+      data: {
+        status,
+        workStartedAt: status === 'ONGOING' ? new Date() : undefined,
+        workFinishConfrimedAt:
+          existingWr.status === 'ONGOING' || existingWr.status === 'FINISHED'
+            ? new Date()
+            : undefined,
+      },
     });
     revalidatePath('/work-request');
     revalidatePath('/mm');

@@ -1,8 +1,9 @@
 'use server';
 
+import { getEmployeeById } from '@/database/current-profile';
 import { RegisterEmployeeSchema } from '@/features/employee/register/type';
 import { db } from '@/lib/prisma';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth, clerkClient, currentUser } from '@clerk/nextjs/server';
 
 export const registerEmployee = async (data: unknown) => {
   // Validate the input data
@@ -147,6 +148,13 @@ export const updateEmployee = async (
 
 export const grantAccess = async (employeeId: string) => {
   const now = new Date();
+  const client = await clerkClient();
+  const existingUser = await getEmployeeById(employeeId);
+  if (!existingUser)
+    return {
+      success: false,
+      message: 'No employee found',
+    };
   try {
     await db.employee.update({
       where: {
@@ -154,6 +162,12 @@ export const grantAccess = async (employeeId: string) => {
       },
       data: {
         verified: now,
+      },
+    });
+
+    await client.users.updateUser(existingUser.userId, {
+      publicMetadata: {
+        verified: true, // Sync with your database field
       },
     });
     return {

@@ -8,7 +8,8 @@ export type ModalType =
   | 'deleteDepartment'
   | 'addDesignation'
   | 'deleteDesignation'
-  | 'updateEmployee';
+  | 'updateEmployee'
+  | 'grantAccess';
 
 export type ModalData = {
   userInfo?: {

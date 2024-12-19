@@ -1,14 +1,41 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import {
+  clerkClient,
+  clerkMiddleware,
+  createRouteMatcher,
+} from '@clerk/nextjs/server';
 
 const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/sign-up(.*)',
-  '/api/uploadthing',
+  '/register',
 ]);
 
-export default clerkMiddleware((auth, request) => {
-  if (!isPublicRoute(request)) {
-    auth().protect();
+export default clerkMiddleware(async (auth, request) => {
+  const { userId } = auth();
+
+  // Allow public routes without checks
+  if (isPublicRoute(request)) {
+    return;
+  }
+
+  // Protect private routes
+  auth().protect();
+
+  if (!userId) {
+    return auth().redirectToSignIn();
+  }
+
+  // Fetch user information
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
+
+  // Check the `verified` status
+  const isVerified = user?.publicMetadata?.verified;
+
+  if (!isVerified) {
+    // Redirect unverified users to the /register page
+    const url = new URL('/register', request.url);
+    return Response.redirect(url.toString(), 302);
   }
 });
 

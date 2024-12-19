@@ -28,7 +28,7 @@ import { SubmitButton } from '@/components/submit-button';
 
 export const ConfirmIsolationModal = () => {
   const queryClient = useQueryClient();
-  const [editing, setEditing] = useState(false);
+
   const { isIsolationMolalOpen, closeIsolationModal, timelineId } =
     useWRModal();
   const { data: shiftIncharges, isLoading: isLoadingSI } = useQuery({
@@ -45,12 +45,7 @@ export const ConfirmIsolationModal = () => {
     enabled: !!timelineId,
   });
 
-  const {
-    data: resultedTimeline,
-    mutate,
-    isPending,
-    isError,
-  } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: ({
       timelineId,
       shiftInchargeId,

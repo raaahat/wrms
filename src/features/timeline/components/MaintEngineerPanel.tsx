@@ -1,5 +1,4 @@
 'use client';
-import { EmployeeWithDetails } from '@/features/employee/type';
 import { WorkRequestCard } from '@/features/work-request/components/wr-card';
 import { TimeLineModal } from './TimeLineModal';
 
@@ -9,11 +8,10 @@ import { ModeSwitcher } from '@/components/mode-switcher';
 import { GetTimelineForMaintEngrType } from '../query';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { format } from 'date-fns';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Check, CheckCircle } from 'lucide-react';
+import { AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { CheckCircle } from 'lucide-react';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -23,7 +21,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { toast } from 'sonner';
 import { workFinishedByMaintEngr } from '../actions';
 import { SubmitButton } from '@/components/submit-button';
 
@@ -33,18 +30,16 @@ export const MaintEngineerPanel = ({
   timelines: GetTimelineForMaintEngrType;
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const { isSubmitting: submitting, performAction } =
+    useAsyncAction('work-finished');
+
   async function handleConfirmation(timelineId: string) {
-    setSubmitting(true);
-    toast.loading('Please wait..', { id: 'work-finished' });
-    const { success, message } = await workFinishedByMaintEngr(timelineId);
-    if (!success) {
-      toast.error(message, { id: 'work-finished' });
-    } else {
-      toast.success(message, { id: 'work-finished' });
+    const success = await performAction(() =>
+      workFinishedByMaintEngr(timelineId)
+    );
+    if (success) {
       setDialogOpen(false);
     }
-    setSubmitting(false);
   }
   return (
     <>
@@ -238,8 +233,9 @@ function AlertDialogButton({
 
 // Dependencies: pnpm install lucide-react
 
-import { CircleCheck, X } from 'lucide-react';
+import { CircleCheck } from 'lucide-react';
 import { UserButton } from '@clerk/nextjs';
+import { useAsyncAction } from '@/hooks/use-async-action';
 
 export default function WorkFinishedMessage() {
   return (

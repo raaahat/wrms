@@ -1,15 +1,12 @@
 'use client';
 import { EmployeeWithDetails } from '@/features/employee/type';
-import { TimeLineModal } from './TimeLineModal';
 
 import { ModeSwitcher } from '@/components/mode-switcher';
 import { GetTimelineForOPEngrType } from '../query';
 import { WorkRequestCard } from '@/features/work-request/components/wr-card';
 
 import { HoverCardInfo } from './HoverCard';
-import { useState } from 'react';
 import { confirmIsolation } from '../actions';
-import { toast } from 'sonner';
 import { SubmitButton } from '@/components/submit-button';
 import {
   AlertDialog,
@@ -21,6 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { useAsyncAction } from '@/hooks/use-async-action';
 
 export const OPEngrPanel = ({
   timelines,
@@ -28,18 +26,11 @@ export const OPEngrPanel = ({
   profile: EmployeeWithDetails;
   timelines: GetTimelineForOPEngrType;
 }) => {
-  const [submitting, setSubmitting] = useState(false);
+  const { isSubmitting: submitting, performAction } =
+    useAsyncAction('confirm-isolation');
+
   async function handleConfirmation(timelineId: string) {
-    setSubmitting(true);
-    toast.loading('Please wait..', { id: 'confirm-isolation' });
-    const { success, message } = await confirmIsolation(timelineId);
-    if (!success) {
-      toast.error(message, { id: 'confirm-isolation' });
-      setSubmitting(false);
-      return;
-    }
-    toast.success(message, { id: 'confirm-isolation' });
-    setSubmitting(false);
+    await performAction(() => confirmIsolation(timelineId));
   }
   return (
     <>
@@ -49,7 +40,6 @@ export const OPEngrPanel = ({
           <ModeSwitcher />
         </div>
       </header>
-      <TimeLineModal />
       <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3 '>
         {timelines.map(
           ({

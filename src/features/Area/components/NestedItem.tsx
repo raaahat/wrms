@@ -6,11 +6,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/features/Area/components/accordion';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AreaType } from '../query';
 import { Input } from '@/components/ui/input';
 import { useAdding } from '../store';
-import { toast } from 'sonner';
 import { createChildArea } from '../actions/area';
 
 import {
@@ -22,7 +21,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Loader2, MoreHorizontal, SquarePlus, Trash2 } from 'lucide-react';
 
-import { cleanUpSpaces, cn } from '@/lib/utils';
+import { cleanUpSpaces } from '@/lib/utils';
+import { useAsyncAction } from '@/hooks/use-async-action';
 interface NestedItemProps {
   name: string;
   allChildren?: AreaType;
@@ -36,6 +36,7 @@ export const NestedItem = ({
   className,
   id,
 }: NestedItemProps) => {
+  const create = useAsyncAction('create');
   const [open, setOpen] = useState(false);
 
   const hasChildren = allChildren?.length !== 0;
@@ -52,19 +53,11 @@ export const NestedItem = ({
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    toast.loading('Creating an entry...', {
-      id: 'create',
-    });
     setIsLoading(true);
-    const { message, success } = await createChildArea(parentId, newChild);
-    if (!success)
-      toast.error(message, {
-        id: 'create',
-      });
+    const success = await create.performAction(() =>
+      createChildArea(parentId, newChild)
+    );
     if (success) {
-      toast.success(message, {
-        id: 'create',
-      });
       setParentId('');
     }
     setIsLoading(false);
@@ -101,7 +94,6 @@ export const NestedItem = ({
                 >
                   <AccordionBlock>
                     <Input
-                      autoFocus
                       placeholder='type here...'
                       value={newChild}
                       className=' = h-full bg-inherit w-full'
@@ -164,14 +156,14 @@ export const NestedItem = ({
           </AccordionBlock>
           {parentId && parentId === id && (
             <form
-              className=' max-w-[240px] -translate-y-3 px-3'
+              className=' max-w-[350px] -translate-y-3 px-3'
               onSubmit={handleSubmit}
             >
               <AccordionBlock>
                 <Input
-                  autoFocus
+                  placeholder='type here...'
                   value={newChild}
-                  className=' focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 h-full border-none bg-inherit w-full'
+                  className=' = h-full bg-inherit w-full'
                   type='text'
                   onChange={(e) => setNewChild(e.target.value)}
                   disabled={isLoading}

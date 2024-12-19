@@ -17,11 +17,12 @@ import {
   assignMaintEngrDirectly,
 } from '@/features/timeline/actions';
 import { toast } from 'sonner';
+import { useAsyncAction } from '@/hooks/use-async-action';
 
 export const AssignMaintEngrModal = () => {
   const { isOpen, type, onClose, data } = useWRModal();
+  const { isSubmitting, performAction } = useAsyncAction('assignMaintEngr');
   const [maintEngrId, setMaintEngrId] = useState<string>();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { wrId, wrType } = data;
   let dept = undefined;
   if (wrType) {
@@ -40,18 +41,10 @@ export const AssignMaintEngrModal = () => {
   const isModalOpen = isOpen && type === 'assignMaintEngr';
   async function handleSubmit() {
     if (!wrId || !maintEngrId) return;
-    setIsSubmitting(true);
-    const { success, message } = await assignMaintEngrDirectly(
-      wrId,
-      maintEngrId
+
+    const success = await performAction(() =>
+      assignMaintEngrDirectly(wrId, maintEngrId)
     );
-    if (success) {
-      toast.success(message);
-      onClose();
-    } else {
-      toast.error(message);
-    }
-    setIsSubmitting(false);
   }
   return (
     <ResponsiveModal open={isModalOpen} onOpenChange={onClose}>

@@ -26,9 +26,11 @@ import {
 } from '@/components/ui/responsive-modal';
 import { EmployeeComboBox } from '@/features/work-request/components/EmployeeComboBox';
 import { SubmitButton } from '@/components/submit-button';
+import { useAsyncAction } from '@/hooks/use-async-action';
 
 export const TimeLineModal = () => {
   const { isOpen, setOpen, wrType, timelineId } = useTimelineModalStore();
+  const { isSubmitting, performAction } = useAsyncAction('assign');
   const deptShortName =
     wrType === 'MECHANICAL' ? 'MM' : wrType === 'ELECTRICAL' ? 'EM' : undefined;
 
@@ -45,28 +47,14 @@ export const TimeLineModal = () => {
   const selectedEmployee = maintEmployee?.find(
     (item) => item.id === maintEmployeeId
   );
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setIsSubmitting(true);
-    toast.loading('Assigning an engineer...', { id: 'assign' });
     if (!timelineId || !maintEmployeeId) {
       toast.error('Select an engineer...', { id: 'assign' });
       return;
     }
-    const { success, message } = await assignMaintEngineer(
-      timelineId,
-      maintEmployeeId
-    );
-    if (!success) {
-      toast.error(message, { id: 'assign' });
-      setIsSubmitting(false);
-      return;
-    }
-    toast.success(message, { id: 'assign' });
-    setOpen(false);
-    setIsSubmitting(false);
+    await performAction(() => assignMaintEngineer(timelineId, maintEmployeeId));
   }
   return (
     <ResponsiveModal open={isOpen} onOpenChange={setOpen}>

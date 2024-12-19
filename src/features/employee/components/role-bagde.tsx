@@ -13,7 +13,7 @@ export const RoleBadge: React.FC<RoleBadgeProps> = ({ role }) => {
         backgroundColor: bgColor,
         color: textColor,
       }}
-      className='inline-flex gap-1 px-2 py-1 rounded-md border border-border text-sm font-medium'
+      className='inline-flex gap-1 px-2 py-0.5 rounded-md border border-border text-sm font-medium'
     >
       <span>{icon}</span>
       {role}

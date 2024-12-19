@@ -3,7 +3,10 @@
 import { db } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
-export const toggleRole = async (employeeId: string, roleId: string) => {
+export const toggleRole = async (
+  employeeId: string,
+  roleId: string
+): Promise<{ success: boolean; message: string }> => {
   try {
     // Check if the employee exists
     const employeeExists = await db.employee.findUnique({
@@ -12,9 +15,11 @@ export const toggleRole = async (employeeId: string, roleId: string) => {
         roles: true, // Include roles to check existing roles
       },
     });
-
     if (!employeeExists) {
       throw new Error('Employee not found.');
+    }
+    if (!employeeExists.verified) {
+      return { success: false, message: 'Employee must be verified' };
     }
 
     // Check if the role exists

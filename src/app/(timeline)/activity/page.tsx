@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 
 const ActivityPage = async () => {
   const profile = await currentProfile();
-  if (!profile || !profile.verified) return redirect('/register');
+  if (!profile) return redirect('/register');
   const timeline = await getTimelineActivity(profile.id);
   if (timeline?.wrIssuedTo.length !== 0 && timeline) {
     return <MaintEngineerPanel timelines={timeline.wrIssuedTo} />;

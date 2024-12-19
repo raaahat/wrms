@@ -4,9 +4,9 @@ import { AreaType } from '../query';
 import { NestedItem } from './NestedItem';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import { toast } from 'sonner';
+
 import { createParentArea, deleteArea } from '../actions/area';
-import { Check, Loader2, X } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -17,51 +17,34 @@ import {
 import { useAdding } from '../store';
 import { cleanUpSpaces } from '@/lib/utils';
 import { AccordionBlock } from './accordion';
+import { useAsyncAction } from '@/hooks/use-async-action';
 
 export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
   const [isAddingParent, setIsAddingParent] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const create = useAsyncAction('create-parent');
+  const deleteItem = useAsyncAction('delete');
+
   const [parentName, setParentName] = useState('');
 
-  const { deletingId, setDeletingId, expand, toggleExpand } = useAdding();
+  const { deletingId, setDeletingId } = useAdding();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    toast.loading('Creating an entry...', {
-      id: 'create-parent',
-    });
-    setIsLoading(true);
-    const { message, success } = await createParentArea(parentName);
-    if (!success)
-      toast.error(message, {
-        id: 'create-parent',
-      });
+    const success = await create.performAction(() =>
+      createParentArea(parentName)
+    );
     if (success) {
-      toast.success(message, {
-        id: 'create-parent',
-      });
       setParentName('');
       setIsAddingParent(false);
     }
-    setIsLoading(false);
   }
   async function handleDelete() {
-    toast.loading('Deleting...', {
-      id: 'delete',
-    });
-    setIsLoading(true);
-    const { message, success } = await deleteArea(deletingId);
-    if (!success)
-      toast.error(message, {
-        id: 'delete',
-      });
+    const success = await deleteItem.performAction(() =>
+      deleteArea(deletingId)
+    );
     if (success) {
-      toast.success(message, {
-        id: 'delete',
-      });
       setDeletingId('');
     }
-    setIsLoading(false);
   }
 
   return (
@@ -73,7 +56,8 @@ export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
           </DialogHeader>
           <DialogFooter>
             <Button variant={'destructive'} onClick={handleDelete}>
-              Delete{isLoading && <Loader2 className=' animate-spin' />}
+              Delete
+              {deleteItem.isSubmitting && <Loader2 className=' animate-spin' />}
             </Button>
             <Button onClick={() => setDeletingId('')}>Cancel</Button>
           </DialogFooter>
@@ -98,15 +82,17 @@ export const AreaNavigator = ({ areas }: { areas: AreaType }) => {
                   type='text'
                   autoFocus
                   onChange={(e) => setParentName(e.target.value)}
-                  disabled={isLoading}
+                  disabled={create.isSubmitting}
                 />
 
                 <button
                   type='submit'
                   className=' ml-auto m-2 bg-slate-100 rounded-md px-1 hover:bg-slate-400'
-                  disabled={isLoading || cleanUpSpaces(parentName) === ''}
+                  disabled={
+                    create.isSubmitting || cleanUpSpaces(parentName) === ''
+                  }
                 >
-                  {isLoading ? (
+                  {create.isSubmitting ? (
                     <Loader2
                       className='animate-spin text-white'
                       size={20}

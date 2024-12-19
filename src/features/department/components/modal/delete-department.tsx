@@ -36,19 +36,19 @@ export const DeleteDepartmentModal = () => {
   }
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="overflow-hidden">
-        <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">
+      <DialogContent className='overflow-hidden'>
+        <DialogHeader className='pt-8 px-6'>
+          <DialogTitle className='text-2xl text-center font-bold'>
             Delete Department?
           </DialogTitle>
-          <DialogDescription className=" mx-auto">
+          <DialogDescription className=' mx-auto'>
             Are you sure you want to delete {data.departmentInfo?.name}{' '}
             Department?
           </DialogDescription>
         </DialogHeader>
-        <div className=" p-6">
-          <div className="flex items-center mt-2 gap-x-2 justify-center">
-            <Button variant="destructive" onClick={handleSubmit}>
+        <div className=' p-6'>
+          <div className='flex items-center mt-2 gap-x-2 justify-center'>
+            <Button variant='destructive' onClick={handleSubmit}>
               Delete
             </Button>
             <Button onClick={onClose}> Cancel</Button>

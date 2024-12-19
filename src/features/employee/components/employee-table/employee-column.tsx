@@ -75,6 +75,24 @@ export const columnsEmployee: ColumnDef<EmployeeWithDetails>[] = [
             >
               edit
             </DropdownMenuItem>
+            {!verified && (
+              <DropdownMenuItem
+                onSelect={() =>
+                  onOpen('grantAccess', {
+                    userInfo: {
+                      employeeId,
+                      department,
+                      designation,
+                      name,
+                      phone,
+                      verified,
+                    },
+                  })
+                }
+              >
+                Grant Access
+              </DropdownMenuItem>
+            )}
             {roles.length !== 0 && (
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Set Role</DropdownMenuSubTrigger>

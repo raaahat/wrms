@@ -9,8 +9,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,6 +22,7 @@ import {
 import { addDesignation } from '@/actions/designation';
 import { CreateDesignationSchema } from '../../schema';
 import { Loader2 } from 'lucide-react';
+import { useAsyncAction } from '@/hooks/use-async-action';
 
 export const AddDesignationtModal = () => {
   const form = useForm<z.infer<typeof CreateDesignationSchema>>({
@@ -33,55 +32,43 @@ export const AddDesignationtModal = () => {
     },
     resolver: zodResolver(CreateDesignationSchema),
   });
-  const [loading, setLoading] = useState(false);
+  const { isSubmitting: loading, performAction } =
+    useAsyncAction('addDesignation');
   const router = useRouter();
   const { data, isOpen, onClose, type } = useModal();
   const isModalOpen = isOpen && type === 'addDesignation';
 
   async function onSubmit(values: z.infer<typeof CreateDesignationSchema>) {
-    setLoading(true);
-    if (!data.departmentInfo?.name) return;
-    const { success, message } = await addDesignation(
-      values,
-      data.departmentInfo?.name
-    );
+    if (!data.departmentInfo) return;
+    const name = data.departmentInfo.name;
+    const success = await performAction(() => addDesignation(values, name));
     if (success) {
-      toast({
-        variant: 'default',
-        title: message,
-      });
-      setLoading(false);
       form.reset();
       onClose();
       router.refresh();
-    } else
-      toast({
-        variant: 'destructive',
-        title: message,
-      });
-    setLoading(false);
+    }
   }
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="overflow-hidden">
-        <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">
+      <DialogContent className='overflow-hidden'>
+        <DialogHeader className='pt-8 px-6'>
+          <DialogTitle className='text-2xl text-center font-bold'>
             Add Designation for{' '}
-            <span className=" capitalize">{data.departmentInfo?.name}</span>
+            <span className=' capitalize'>{data.departmentInfo?.name}</span>
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form className=" space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className=' space-y-4' onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
-              name="title"
+              name='title'
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
-                      type="text"
-                      placeholder="Enter designation title"
+                      type='text'
+                      placeholder='Enter designation title'
                     />
                   </FormControl>
                   <FormMessage />
@@ -89,15 +76,15 @@ export const AddDesignationtModal = () => {
               )}
             />
             <FormField
-              name="shortTitle"
+              name='shortTitle'
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
-                      type="text"
-                      placeholder="Enter a short title for the designation"
+                      type='text'
+                      placeholder='Enter a short title for the designation'
                     />
                   </FormControl>
                   <FormMessage />
@@ -105,8 +92,8 @@ export const AddDesignationtModal = () => {
               )}
             />
 
-            <Button disabled={loading} className=" w-full">
-              Add {loading && <Loader2 className=" animate-spin" />}
+            <Button disabled={loading} className=' w-full'>
+              Add {loading && <Loader2 className=' animate-spin' />}
             </Button>
           </form>
         </Form>
