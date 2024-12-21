@@ -8,9 +8,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
-
-import { currentProfile } from '@/database/current-profile';
-import { redirect } from 'next/navigation';
 import { NavUser, NavUserSkeleton } from './nav-user';
 import React from 'react';
 
@@ -18,18 +15,20 @@ import { SiWorkplace } from 'react-icons/si';
 import { NavMain } from './nav-main';
 import Link from 'next/link';
 
-export async function AppSidebar() {
-  const user = await currentProfile();
-  if (!user) return redirect('/register');
+export function AppSidebar({
+  user,
+}: {
+  user: { name: string; email: string; imageUrl: string };
+}) {
   return (
-    <Sidebar variant="floating" collapsible="icon">
+    <Sidebar variant='floating' collapsible='icon'>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href="#">
+              <Link href='#'>
                 <SiWorkplace />
-                <span className="text-lg tracking-widest text-slate-300 font-bold">
+                <span className='text-lg tracking-widest dark:text-slate-300 text-slate-700 font-bold'>
                   WRMS
                 </span>
               </Link>

@@ -27,7 +27,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Skeleton } from '../ui/skeleton';
-import { UserButton } from '@clerk/nextjs';
+import { useClerk, UserButton } from '@clerk/nextjs';
 
 export function NavUser({
   user,
@@ -39,147 +39,63 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-
+  const { signOut } = useClerk();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton
-          size="lg"
-          className=" data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          size='lg'
+          className=' data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
         >
-          <UserButton />
-          {/* <span className="flex">
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
-            </div>
-          </span> */}
+          <div className='z-[100]'>
+            <UserButton />
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className=" flex items-center">
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+              <div className=' flex items-center w-full'>
+                <div className='grid flex-1 text-left text-sm leading-tight'>
+                  <span className='truncate font-semibold'>{user.name}</span>
+                  <span className='truncate text-xs'>{user.email}</span>
                 </div>
-                <ChevronsUpDown className="ml-auto size-4" />
+                <ChevronsUpDown className='ml-auto size-4' />
               </div>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
-              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
               side={isMobile ? 'bottom' : 'right'}
-              align="end"
+              align='end'
               sideOffset={4}
             >
-              <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-lg">
+              <DropdownMenuLabel className='p-0 font-normal'>
+                <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+                  <Avatar className='h-8 w-8 rounded-lg'>
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">
+                    <AvatarFallback className='rounded-lg'>
                       <UserRound />
                     </AvatarFallback>
                   </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{user.name}</span>
-                    <span className="truncate text-xs">{user.email}</span>
+                  <div className='grid flex-1 text-left text-sm leading-tight'>
+                    <span className='truncate font-semibold'>{user.name}</span>
+                    <span className='truncate text-xs'>{user.email}</span>
                   </div>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Sparkles />
-                  Upgrade to Pro
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
+              <DropdownMenuGroup></DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <BadgeCheck />
-                  Account
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard />
-                  Billing
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Bell />
-                  Notifications
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={async () => {
+                  await signOut();
+                  window.location.href = '/sign-in';
+                }}
+              >
                 <LogOut />
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuButton>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="rounded-lg">
-                <UserRound />
-              </AvatarFallback>
-            </Avatar>
-
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
-            </div>
-            <ChevronsUpDown className="ml-auto size-4" />
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
-                    <UserRound />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
       </SidebarMenuItem>
     </SidebarMenu>
   );
@@ -187,14 +103,14 @@ export function NavUser({
 export function NavUserSkeleton() {
   return (
     <SidebarMenuButton
-      size="lg"
-      className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+      size='lg'
+      className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
     >
-      <Skeleton className="h-8 w-8 rounded-lg" />
-      <div className="grid flex-1 text-left text-sm leading-tight">
-        <Skeleton className="h-8 w-24" />
+      <Skeleton className='h-8 w-8 rounded-lg' />
+      <div className='grid flex-1 text-left text-sm leading-tight'>
+        <Skeleton className='h-8 w-24' />
       </div>
-      <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
+      <ChevronsUpDown className='ml-auto size-4 text-muted-foreground' />
     </SidebarMenuButton>
   );
 }

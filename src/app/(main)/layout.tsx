@@ -9,13 +9,14 @@ import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 
 import { ModeSwitcher } from '@/components/mode-switcher';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await currentProfile();
   if (!user) return redirect('/register');
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar
+        user={{ name: user.name, email: user.email, imageUrl: user.imageUrl }}
+      />
       <SidebarInset>
         <div className='flex flex-col h-screen'>
           <header className='flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12'>
