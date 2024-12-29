@@ -1,6 +1,6 @@
 import { WRModalProvider } from '@/features/work-request/providers/modal-provider';
 
-const WRPageLayout = async ({ children }: { children: React.ReactNode }) => {
+const WRPageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <WRModalProvider />
