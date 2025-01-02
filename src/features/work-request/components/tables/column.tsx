@@ -140,12 +140,20 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     accessorKey: 'wrNo',
     header: 'WR-NO',
     cell({ row }) {
-      return row.original.mode === 'STRICT'
-        ? `${row.original.wrNo}*`
-        : row.original.wrNo;
+      const { onOpen } = useWRModal();
+      const a = row.original;
+      return (
+        <span
+          className='hover:underline cursor-pointer'
+          onClick={() => onOpen('viewWr', { wrInfo: row.original })}
+        >
+          {row.original.mode === 'STRICT'
+            ? `${row.original.wrNo}*`
+            : row.original.wrNo}
+        </span>
+      );
     },
   },
-
   {
     id: 'createdAt',
     accessorFn: (info) => info.createdAt,

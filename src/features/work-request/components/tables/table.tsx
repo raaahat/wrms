@@ -40,6 +40,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useSidebar } from '@/components/ui/sidebar';
+import { useWRModal } from '../../hooks/modal-store';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -182,9 +183,9 @@ export function WrSkeleton() {
           </TableHeader>
           <TableBody>
             {[1, 2, 3, 4, 5].map((row) => (
-              <TableRow key={row} className=' border-none'>
+              <TableRow key={row} className=' border-none space-y-5'>
                 {[1, 2, 3, 4, 5].map((cell) => (
-                  <TableCell className=' py-1' key={cell}>
+                  <TableCell className=' py-1 m-4' key={cell}>
                     <Skeleton className=' h-5' />
                   </TableCell>
                 ))}

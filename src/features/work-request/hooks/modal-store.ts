@@ -1,15 +1,19 @@
 import { WrType } from '@prisma/client';
 import { create } from 'zustand';
+import { WRdataType } from '../type';
+import { GetAllWRType } from '../query';
 
-export type ModalType = 'createWR' | 'assignMaintEngr';
+export type ModalType = 'createWR' | 'assignMaintEngr' | 'viewWr';
 
 export type ModalData = {
   wrId?: string;
   wrType?: WrType;
+  wrInfo?: GetAllWRType;
 };
 export type ModalStore = {
   type: ModalType | null;
   data: ModalData;
+
   isOpen: boolean;
   onOpen: (type: ModalType, data?: ModalData) => void;
   onClose: () => void;
