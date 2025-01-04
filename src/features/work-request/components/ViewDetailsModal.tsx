@@ -5,21 +5,34 @@ import {
   ResponsiveModal,
   ResponsiveModalContent,
 } from '@/components/ui/responsive-modal';
+import {
+  PenToolIcon as Tool,
+  Activity,
+  FileText,
+  CircleCheckBig,
+} from 'lucide-react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import {
-  Activity,
-  AlertTriangle,
-  ArrowDownRight,
-  ArrowUpRight,
-  Clock,
-  MapPin,
-  Wrench,
-} from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Clock, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+
+import { StatusBadge } from './status-badge';
+import { TypeBadge } from './TypeBadge';
+import { ModeBadge } from './ModeBadge';
+import { useSingleTimeline } from '../hooks/use-single-timeline';
+import { GetAllWRType } from '../query';
+import { Skeleton } from '@/components/ui/skeleton';
+import { getStatusIcon } from '../constants';
 
 const TABS = ['Details', 'Timeline'] as const;
 
@@ -31,8 +44,8 @@ export const ViewDetailsModal = () => {
   const isMobile = useIsMobile();
   return (
     <ResponsiveModal open={isModalOpen} onOpenChange={onClose}>
-      <ResponsiveModalContent className=' pointer-events-auto lg:min-w-[600px]'>
-        <ScrollArea className=' max-h-[85vh] '>
+      <ResponsiveModalContent className=' pointer-events-auto lg:min-w-[900px]'>
+        <ScrollArea className=' max-h-[85vh] flex'>
           {isMobile ? (
             <>
               <div className=' border-b'>
@@ -57,12 +70,10 @@ export const ViewDetailsModal = () => {
               {activeTab === 'Timeline' && <Timeline />}
             </>
           ) : (
-            <>
-              <div className='flex'>
-                <Details className='w-60' />
-                <Timeline className='flex-1' />
-              </div>
-            </>
+            <div className='flex '>
+              <Details className='basis-[40%] flex-grow' />
+              <Timeline className='basis-[60%] flex-grow' />
+            </div>
           )}
         </ScrollArea>
       </ResponsiveModalContent>
@@ -75,51 +86,128 @@ function Details({ className }: { className?: string }) {
   const workRequest = data.wrInfo;
   if (!workRequest) return null;
   return (
-    <div className={cn('bg-purple-900 w-full h-60', className)}>
-      <InfoItem
-        icon={Clock}
-        label='Created'
-        value={format(workRequest.createdAt, 'PPpp')}
-      />
-      <InfoItem
-        icon={MapPin}
-        label='Area'
-        value={workRequest.allParentAreas.join(', ')}
-      />
-      <InfoItem icon={Wrench} label='Type' value={workRequest.type} />
-      <InfoItem icon={AlertTriangle} label='Mode' value={workRequest.mode} />
-      {workRequest.runningHour && (
-        <InfoItem
-          icon={Activity}
-          label='Running Hour'
-          value={workRequest.runningHour}
-        />
-      )}
-      {workRequest.referredFromId && (
-        <InfoItem
-          icon={ArrowUpRight}
-          label='Referred From'
-          value={workRequest.referredFromId}
-        />
-      )}
-      {workRequest.referredToId && (
-        <InfoItem
-          icon={ArrowDownRight}
-          label='Referred To'
-          value={workRequest.referredToId}
-        />
-      )}
-      <div>
-        Work Request sdgs Lorem ipsum dolor sit amet consectetur, adipisicing
-        elit. Numquam illo explicabo, expedita delectus porro vitae tenetur quis
-        iste amet est.
-      </div>
+    <div className={cn('w-full h-full', className)}>
+      <Card className='bg-secondary border-none '>
+        <CardHeader>
+          <CardTitle className='flex justify-between items-center'>
+            <h2 className='text-xl font-semibold flex items-center gap-1'>
+              {workRequest.wrNo} <ModeBadge mode={workRequest.mode} />
+            </h2>
+            <StatusBadge status={workRequest.status} />
+          </CardTitle>
+          <CardDescription>{workRequest.title}</CardDescription>
+          <TypeBadge type={workRequest.type} />
+        </CardHeader>
+        <CardContent>
+          <div className='grid grid-cols-2 gap-2 text-sm'>
+            <div className='flex items-center gap-1 text-muted-foreground'>
+              <MapPin className='w-4 h-4' />
+              <span>{workRequest.allParentAreas.join(', ')}</span>
+            </div>
+            <div className='flex items-center gap-1 text-muted-foreground'>
+              <Clock className='w-4 h-4' />
+              <span>{format(workRequest.createdAt, 'dd MMM yy, HH:mm')}</span>
+            </div>
+            {workRequest.runningHour && (
+              <div className='flex items-center gap-1 text-muted-foreground'>
+                <Activity className='w-4 h-4' />
+                <span>{workRequest.runningHour} hrs</span>
+              </div>
+            )}
+          </div>
+          {workRequest.remarks && (
+            <div className='mt-2 flex items-start gap-1 text-muted-foreground'>
+              <FileText className='w-4 h-4 mt-1 flex-shrink-0' />
+              <p className='text-sm line-clamp-2'>{workRequest.remarks}</p>
+            </div>
+          )}
+          {workRequest.referredFromId && (
+            <InfoItem
+              icon={ArrowUpRight}
+              label='Referred From'
+              value={workRequest.referredFromId}
+            />
+          )}
+          {workRequest.referredToId && (
+            <InfoItem
+              icon={ArrowDownRight}
+              label='Referred To'
+              value={workRequest.referredToId}
+            />
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
 function Timeline({ className }: { className?: string }) {
+  const { data } = useWRModal();
+  const workRequest = data.wrInfo;
+  if (!workRequest) return 'nothing to show';
+  if (workRequest.mode === 'NORMAL')
+    return <NormalTimeline className={className} workRequest={workRequest} />;
+  if (workRequest.mode === 'STRICT' && workRequest.timelines[0].id)
+    return (
+      <StrictTimeline
+        className={className}
+        workRequest={workRequest}
+        timelineId={workRequest.timelines[0].id}
+      />
+    );
+}
+
+function NormalTimeline({
+  workRequest,
+  className,
+}: {
+  workRequest: GetAllWRType;
+  className?: string;
+}) {
   return (
-    <div className={cn('bg-teal-900 w-full h-60', className)}>Timeline</div>
+    <Card className={cn(' w-full border-none ml-6', className)}>
+      <CardHeader>
+        <CardTitle>Timeline</CardTitle>
+        <CardDescription>Work Request Timeline</CardDescription>
+      </CardHeader>
+      <CardContent>Timeline</CardContent>
+    </Card>
+  );
+}
+
+function StrictTimeline({
+  workRequest,
+  className,
+  timelineId,
+}: {
+  workRequest: GetAllWRType;
+  className?: string;
+  timelineId: string;
+}) {
+  const { timeline } = useSingleTimeline(timelineId);
+  if (!timeline)
+    return (
+      <>
+        <Skeleton className='h-8' />
+      </>
+    );
+  return (
+    <Card className={cn(' w-full border-none ml-6', className)}>
+      <CardHeader>
+        <CardTitle>Timeline</CardTitle>
+        <CardDescription>Work Request Timeline</CardDescription>
+      </CardHeader>
+      <CardContent className='flex flex-col gap-2'>
+        <ol className='relative border-l border-gray-200 dark:border-gray-700'>
+          <TimelineItem
+            icon={getStatusIcon('PLACED')}
+            time={workRequest.createdAt}
+            title='Work Request Created'
+          >
+            description
+          </TimelineItem>
+        </ol>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -134,13 +222,50 @@ function InfoItem({
 }) {
   return (
     <div className='flex items-center gap-3'>
-      <div className='bg-blue-100 p-2 rounded-full'>
-        <Icon className='w-4 h-4 text-blue-500' />
+      <div className=' p-2 rounded-full'>
+        <Icon className='w-4 h-4' />
       </div>
       <div>
-        <span className='text-sm text-gray-500 block'>{label}</span>
-        <p className='text-sm font-medium text-gray-700'>{value}</p>
+        <span className='text-sm  block'>{label}</span>
+        <p className='text-sm font-medium '>{value}</p>
       </div>
     </div>
+  );
+}
+
+function TimelineItem({
+  time,
+  title,
+  icon,
+  children,
+}: {
+  time: Date;
+  title: string;
+  icon: React.ElementType<any, keyof JSX.IntrinsicElements>;
+  children?: React.ReactNode;
+}) {
+  const Icon = icon;
+  return (
+    <li className='mb-10 ml-6'>
+      <span className='absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -left-4 ring-8 ring-white dark:ring-gray-900 dark:bg-gray-700'>
+        <Icon />
+      </span>
+      <h3 className='flex items-center mb-1 pt-1 text-lg font-semibold text-gray-900 dark:text-white'>
+        {title}
+        {time ? (
+          <CircleCheckBig className='w-6 h-6 ml-2 text-emerald-500' />
+        ) : (
+          <span className='bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 ml-3'>
+            Current
+          </span>
+        )}
+      </h3>
+      <time className='block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500'>
+        {format(time, 'dd MMM yy, HH:mm')}
+      </time>
+      <p className='mb-4 text-base font-normal text-gray-500 dark:text-gray-400'>
+        {children}
+      </p>
+    </li>
   );
 }

@@ -21,7 +21,7 @@ export const ActionTooltip = ({
 }: ActionTooltipProps) => {
   return (
     <TooltipProvider>
-      <Tooltip delayDuration={50}>
+      <Tooltip delayDuration={10}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent side={side} align={align}>
           <p className='font-semibold text-sm '>{label}</p>

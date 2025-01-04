@@ -25,7 +25,7 @@ export function nextAvailableStatus(current: Status): Status[] {
         Status.FOLLOW_UP,
       ];
     case Status.DONE:
-      return [Status.UNDER_OBSERVATION, Status.NOT_SOLVED, Status.FOLLOW_UP];
+      return [];
     case Status.UNDER_OBSERVATION:
       return [Status.DONE, Status.NOT_SOLVED, Status.FOLLOW_UP];
     case Status.NOT_SOLVED:
@@ -34,7 +34,7 @@ export function nextAvailableStatus(current: Status): Status[] {
       return [];
   }
 }
-const className = 'teal';
+
 export const getStatusColor = (status: Status) => {
   const colors: Record<Status, string> = {
     PLACED: 'blue-500',

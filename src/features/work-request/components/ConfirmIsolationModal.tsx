@@ -25,6 +25,7 @@ import UserAvatar from '@/features/employee/components/UserAvatar';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SubmitButton } from '@/components/submit-button';
+import { useSingleTimeline } from '../hooks/use-single-timeline';
 
 export const ConfirmIsolationModal = () => {
   const queryClient = useQueryClient();
@@ -39,11 +40,7 @@ export const ConfirmIsolationModal = () => {
     queryKey: ['employee-list', 'OP'],
     queryFn: () => employeeListByDept('OP'),
   });
-  const { data: timeline } = useQuery({
-    queryKey: ['timeline', timelineId],
-    queryFn: () => getSingleTimeline(timelineId as string),
-    enabled: !!timelineId,
-  });
+  const { timeline } = useSingleTimeline(timelineId);
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({
