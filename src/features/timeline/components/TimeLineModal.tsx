@@ -27,6 +27,7 @@ import {
 import { EmployeeComboBox } from '@/features/work-request/components/EmployeeComboBox';
 import { SubmitButton } from '@/components/submit-button';
 import { useAsyncAction } from '@/hooks/use-async-action';
+import { TypeBadge } from '@/features/work-request/components/TypeBadge';
 
 export const TimeLineModal = () => {
   const { isOpen, setOpen, wrType, timelineId } = useTimelineModalStore();
@@ -55,13 +56,18 @@ export const TimeLineModal = () => {
       return;
     }
     await performAction(() => assignMaintEngineer(timelineId, maintEmployeeId));
+    setOpen(false);
   }
   return (
     <ResponsiveModal open={isOpen} onOpenChange={setOpen}>
       <ResponsiveModalContent side={'top'}>
         <ResponsiveModalHeader>
           <ResponsiveModalTitle>
-            Choose an {wrType} engineer for this work
+            Choose an{' '}
+            <span className='inline-flex items-center align-middle'>
+              <TypeBadge type={wrType} />
+            </span>{' '}
+            engineer for this work
           </ResponsiveModalTitle>
         </ResponsiveModalHeader>
         <form onSubmit={handleSubmit}>
@@ -78,6 +84,7 @@ export const TimeLineModal = () => {
           )}
           <ResponsiveModalFooter className='mt-5'>
             <SubmitButton
+              className='mt-4'
               buttonText='Assign'
               type='submit'
               disabled={!maintEmployeeId || isSubmitting}

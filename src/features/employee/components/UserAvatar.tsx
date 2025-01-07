@@ -5,7 +5,7 @@ import { cn, generateAvatar } from '@/lib/utils';
 const UserAvatar = ({
   avatar,
   name,
-  designaiton,
+  designation,
   department,
   email,
   className,
@@ -13,7 +13,7 @@ const UserAvatar = ({
 }: {
   avatar?: string;
   name: string;
-  designaiton?: string;
+  designation?: string;
   department?: string;
   email?: string;
   className?: string;
@@ -23,7 +23,7 @@ const UserAvatar = ({
   if (bagde)
     return (
       <ActionTooltip
-        label={`${designaiton || 'not available'}(${department || 'none'})`}
+        label={`${designation || 'not available'}(${department || 'none'})`}
       >
         <span
           className={cn(
@@ -64,11 +64,11 @@ const UserAvatar = ({
         <span title={name} className='truncate font-semibold capitalize'>
           {name}
         </span>
-        {designaiton && department && (
+        {designation && department && (
           <span
-            title={`${designaiton}(${department})`}
+            title={`${designation}(${department})`}
             className='truncate text-xs capitalize'
-          >{`${designaiton}(${department})`}</span>
+          >{`${designation}(${department})`}</span>
         )}
         {email && (
           <span title={email} className='truncate text-xs '>

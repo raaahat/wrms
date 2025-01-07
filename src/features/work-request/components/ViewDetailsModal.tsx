@@ -184,20 +184,37 @@ function StrictTimeline({
   className?: string;
   timelineId: string;
 }) {
-  const { timeline } = useSingleTimeline(timelineId);
-  if (!timeline)
+  const { timeline, isLoading } = useSingleTimeline(timelineId);
+  if (!timeline || isLoading)
     return (
       <>
-        <Skeleton className='h-8' />
+        <Skeleton className='h-8 w-full' />
       </>
     );
   const { name, designation, imageUrl } = workRequest.creator;
   const creator = {
     name,
     department: designation?.department.shortName,
-    designaiton: designation?.title,
+    designation: designation?.title,
     avatar: imageUrl,
   };
+  const isPending = timeline.maintManagerId && timeline.maintEngrAssignedAt;
+
+  const maintManager = {
+    name: timeline.maintManager?.name || 'Maintenance Manager',
+    department: timeline.maintManager?.designation?.department.shortName,
+    designation: timeline.maintManager?.designation?.title,
+    avatar: timeline.maintManager?.imageUrl,
+  };
+
+  const maintEngr = {
+    name: workRequest.maintEngr?.name || 'Maintenance Engineer',
+    department: workRequest.maintEngr?.designation?.department.shortName,
+    designation: workRequest.maintEngr?.designation?.title,
+    avatar: workRequest.maintEngr?.imageUrl,
+  };
+  console.log('creator', creator);
+  console.log('maint manager', maintManager);
   return (
     <Card className={cn(' w-full border-none ml-6', className)}>
       <CardHeader>
@@ -216,6 +233,30 @@ function StrictTimeline({
             </span>
             placed the work request, status: 'Placed'
           </TimelineItem>
+          {isPending ? (
+            <TimelineItem
+              icon={getStatusIcon('PENDING')}
+              time={timeline.maintEngrAssignedAt as Date}
+              title='Assigned to Maintenance Engineer'
+            >
+              <span className='inline-flex items-center align-middle'>
+                <UserAvatar bagde {...maintManager} />
+              </span>
+              assigned
+              <span className='inline-flex items-center align-middle'>
+                <UserAvatar bagde {...maintEngr} />
+              </span>
+              for this work, status: 'Pending'
+            </TimelineItem>
+          ) : (
+            <TimelineItem
+              icon={getStatusIcon('PENDING')}
+              title='Waiting for Maintenance Manager Approval'
+            >
+              Maintenance Manager will assign the work request to a maintenance
+              engineer
+            </TimelineItem>
+          )}
         </ol>
       </CardContent>
     </Card>
@@ -250,7 +291,7 @@ function TimelineItem({
   icon,
   children,
 }: {
-  time: Date;
+  time?: Date;
   title: string;
   icon: React.ElementType<any, keyof JSX.IntrinsicElements>;
   children?: React.ReactNode;
@@ -271,9 +312,12 @@ function TimelineItem({
           </span>
         )}
       </h3>
-      <time className='block mb-2 text-sm font-normal leading-none text-muted-foreground '>
-        {format(time, 'dd MMM yy, HH:mm')}
-      </time>
+      {time && (
+        <time className='block mb-2 text-sm font-normal leading-none text-muted-foreground '>
+          {format(time, 'dd MMM yy, HH:mm')}
+        </time>
+      )}
+
       <p className='mb-4 text-base font-normal text-gray-500 dark:text-gray-400'>
         {children}
       </p>
