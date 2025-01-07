@@ -82,13 +82,15 @@ export function WorkRequestCard({
       <CardFooter className=' flex flex-col pt-2 items-start '>
         <div className='flex items-center'>
           <span className='text-sm text-muted-foreground'>WR created by</span>
-          <UserAvatar
-            name={creator.name}
-            avatar={creator.avatar}
-            bagde
-            department={creator.department}
-            designaiton={creator.designation}
-          />
+          <span className='inline-flex items-center align-middle'>
+            <UserAvatar
+              name={creator.name}
+              avatar={creator.avatar}
+              bagde
+              department={creator.department}
+              designaiton={creator.designation}
+            />
+          </span>
         </div>
 
         {children}

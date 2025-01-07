@@ -25,9 +25,9 @@ const UserAvatar = ({
       <ActionTooltip
         label={`${designaiton || 'not available'}(${department || 'none'})`}
       >
-        <div
+        <span
           className={cn(
-            'bg-primary/10 text-foreground flex gap-1 w-fit rounded-full  px-1 py-1 items-center hover:bg-muted',
+            'bg-primary/10 text-foreground inline-flex items-center gap-1 w-fit rounded-full  px-1 py-1  hover:bg-muted',
             className
           )}
         >
@@ -46,7 +46,7 @@ const UserAvatar = ({
           >
             {name}
           </span>
-        </div>
+        </span>
       </ActionTooltip>
     );
   return (

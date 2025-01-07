@@ -33,6 +33,7 @@ import { useSingleTimeline } from '../hooks/use-single-timeline';
 import { GetAllWRType } from '../query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getStatusIcon } from '../constants';
+import UserAvatar from '@/features/employee/components/UserAvatar';
 
 const TABS = ['Details', 'Timeline'] as const;
 
@@ -190,6 +191,13 @@ function StrictTimeline({
         <Skeleton className='h-8' />
       </>
     );
+  const { name, designation, imageUrl } = workRequest.creator;
+  const creator = {
+    name,
+    department: designation?.department.shortName,
+    designaiton: designation?.title,
+    avatar: imageUrl,
+  };
   return (
     <Card className={cn(' w-full border-none ml-6', className)}>
       <CardHeader>
@@ -203,7 +211,10 @@ function StrictTimeline({
             time={workRequest.createdAt}
             title='Work Request Created'
           >
-            description
+            <span className='inline-flex items-center align-middle'>
+              <UserAvatar bagde {...creator} />
+            </span>
+            placed the work request, status: 'Placed'
           </TimelineItem>
         </ol>
       </CardContent>
@@ -260,7 +271,7 @@ function TimelineItem({
           </span>
         )}
       </h3>
-      <time className='block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500'>
+      <time className='block mb-2 text-sm font-normal leading-none text-muted-foreground '>
         {format(time, 'dd MMM yy, HH:mm')}
       </time>
       <p className='mb-4 text-base font-normal text-gray-500 dark:text-gray-400'>

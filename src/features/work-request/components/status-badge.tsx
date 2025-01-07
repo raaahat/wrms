@@ -2,7 +2,6 @@ import { Badge } from '@/components/ui/badge';
 import { Status } from '@prisma/client';
 import React from 'react';
 import { getStatusColor, getStatusIcon } from '../constants';
-import { cn } from '@/lib/utils';
 import clsx from 'clsx';
 
 export const StatusBadge = ({
@@ -17,7 +16,7 @@ export const StatusBadge = ({
   return (
     <Badge
       className={clsx(
-        'text-white',
+        'text-white font-geistMono',
         `bg-${color}`,
         `hover:bg-${color}/80`,
         className
@@ -29,13 +28,4 @@ export const StatusBadge = ({
       </span>
     </Badge>
   );
-  // return (
-  //   <Badge
-  //     className={`${getStatusColor(
-  //       status
-  //     )} text-white px-2 py-[0.011rem] text-[.61rem] font-medium`}
-  //   >
-  //     {status === 'UNDER_OBSERVATION' ? 'U/O' : status}
-  //   </Badge>
-  // );
 };

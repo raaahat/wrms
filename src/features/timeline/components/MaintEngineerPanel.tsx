@@ -104,15 +104,17 @@ export const MaintEngineerPanel = ({
                     <div className=' rounded-lg px-3 py-3 mt-4 bg-muted '>
                       <p className='flex flex-wrap items-center gap-1 text-sm '>
                         You have been assigned for this task by
-                        <UserAvatar
-                          bagde
-                          name={maintManager.name}
-                          avatar={maintManager.imageUrl}
-                          department={
-                            maintManager.designation?.department.shortName
-                          }
-                          designaiton={maintManager.designation?.title}
-                        />
+                        <span className='inline-flex items-center align-middle'>
+                          <UserAvatar
+                            bagde
+                            name={maintManager.name}
+                            avatar={maintManager.imageUrl}
+                            department={
+                              maintManager.designation?.department.shortName
+                            }
+                            designaiton={maintManager.designation?.title}
+                          />
+                        </span>
                         at{' '}
                         <span className='text-xs italic underline'>
                           {format(maintEngrAssignedAt, 'dd-MMM-yy, HH:mm')}
@@ -131,28 +133,35 @@ export const MaintEngineerPanel = ({
                             Isolation Confirmed!
                           </AlertTitle>
                           <AlertDescription className='flex flex-wrap items-center gap-1 text-sm '>
-                            <UserAvatar
-                              className=''
-                              bagde
-                              name={operationEngineer.name}
-                              avatar={operationEngineer.imageUrl}
-                              department={
-                                operationEngineer.designation?.department
-                                  .shortName
-                              }
-                              designaiton={operationEngineer.designation?.title}
-                            />
+                            <span className='inline-flex items-center align-middle'>
+                              <UserAvatar
+                                className=''
+                                bagde
+                                name={operationEngineer.name}
+                                avatar={operationEngineer.imageUrl}
+                                department={
+                                  operationEngineer.designation?.department
+                                    .shortName
+                                }
+                                designaiton={
+                                  operationEngineer.designation?.title
+                                }
+                              />
+                            </span>
                             confirmed the isolation directed by
-                            <UserAvatar
-                              bagde
-                              name={shiftEngineer.name}
-                              avatar={shiftEngineer.imageUrl}
-                              department={
-                                shiftEngineer.designation?.department.shortName
-                              }
-                              designaiton={shiftEngineer.designation?.title}
-                              className='inline-flex'
-                            />{' '}
+                            <span className='inline-flex items-center align-middle'>
+                              <UserAvatar
+                                bagde
+                                name={shiftEngineer.name}
+                                avatar={shiftEngineer.imageUrl}
+                                department={
+                                  shiftEngineer.designation?.department
+                                    .shortName
+                                }
+                                designaiton={shiftEngineer.designation?.title}
+                                className='inline-flex'
+                              />
+                            </span>{' '}
                             at{' '}
                             <span className='text-xs italic underline'>
                               {format(isolationConfirmedAt, 'dd-MMM-yy, HH:mm')}

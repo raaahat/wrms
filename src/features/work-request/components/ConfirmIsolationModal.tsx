@@ -201,13 +201,15 @@ function DetailsPage({ timeline }: { timeline: TimeLineType }) {
       <div className='flex flex-wrap items-center gap-2'>
         {' '}
         {OPUser} has been assigned for isolation by{' '}
-        <UserAvatar
-          name={shiftEngineer?.name || 'UnNamed'}
-          avatar={shiftEngineer?.imageUrl}
-          bagde
-          department={shiftEngineer?.designation?.department.shortName}
-          designaiton={shiftEngineer?.designation?.title}
-        />{' '}
+        <span className='inline-flex items-center align-middle'>
+          <UserAvatar
+            name={shiftEngineer?.name || 'UnNamed'}
+            avatar={shiftEngineer?.imageUrl}
+            bagde
+            department={shiftEngineer?.designation?.department.shortName}
+            designaiton={shiftEngineer?.designation?.title}
+          />
+        </span>{' '}
         {timeline.opEngrAssignedAt && (
           <>
             at{' '}
