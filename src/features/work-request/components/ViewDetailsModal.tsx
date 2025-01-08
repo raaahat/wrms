@@ -191,6 +191,13 @@ function StrictTimeline({
         <Skeleton className='h-8 w-full' />
       </>
     );
+
+  const isPending = timeline.maintManagerId && timeline.maintEngrAssignedAt;
+  const isOngoing =
+    timeline.shiftEngrId &&
+    timeline.opEngrAssignedAt &&
+    timeline.opEngrAssignedAt;
+
   const { name, designation, imageUrl } = workRequest.creator;
   const creator = {
     name,
@@ -198,7 +205,6 @@ function StrictTimeline({
     designation: designation?.title,
     avatar: imageUrl,
   };
-  const isPending = timeline.maintManagerId && timeline.maintEngrAssignedAt;
 
   const maintManager = {
     name: timeline.maintManager?.name || 'Maintenance Manager',
@@ -213,8 +219,19 @@ function StrictTimeline({
     designation: workRequest.maintEngr?.designation?.title,
     avatar: workRequest.maintEngr?.imageUrl,
   };
-  console.log('creator', creator);
-  console.log('maint manager', maintManager);
+
+  const shiftIncharge = {
+    name: timeline.shiftEngineer?.name || 'Shift Incharge',
+    department: timeline.shiftEngineer?.designation?.department.shortName,
+    designation: timeline.shiftEngineer?.designation?.title,
+    avatar: timeline.shiftEngineer?.imageUrl,
+  };
+  const opEngr = {
+    name: timeline.operationEngineer?.name || 'Operation Engineer',
+    department: timeline.operationEngineer?.designation?.department.shortName,
+    designation: timeline.operationEngineer?.designation?.title,
+    avatar: timeline.operationEngineer?.imageUrl,
+  };
   return (
     <Card className={cn(' w-full border-none ml-6', className)}>
       <CardHeader>
@@ -255,6 +272,31 @@ function StrictTimeline({
             >
               Maintenance Manager will assign the work request to a maintenance
               engineer
+            </TimelineItem>
+          )}
+          {isOngoing ? (
+            <TimelineItem
+              icon={getStatusIcon('ONGOING')}
+              time={timeline.opEngrAssignedAt as Date}
+              title='Isolation Confirmed'
+            >
+              {' '}
+              Shift Incharge
+              <span className='inline-flex items-center align-middle'>
+                <UserAvatar bagde {...shiftIncharge} />
+              </span>
+              and Operation Engineer{' '}
+              <span className='inline-flex items-center align-middle'>
+                <UserAvatar bagde {...opEngr} />
+              </span>{' '}
+              has confirmed the isolation, status: 'Ongoing'
+            </TimelineItem>
+          ) : (
+            <TimelineItem
+              icon={getStatusIcon('ONGOING')}
+              title='Waiting for Isolation Confirmation'
+            >
+              Operation Engineer will confirm the isolation
             </TimelineItem>
           )}
         </ol>
