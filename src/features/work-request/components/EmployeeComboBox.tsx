@@ -55,7 +55,7 @@ export function EmployeeComboBox({
             <UserAvatar
               name={selectedEmployee.name}
               department={selectedEmployee.designation?.department.shortName}
-              designaiton={selectedEmployee.designation?.title}
+              designation={selectedEmployee.designation?.title}
               avatar={selectedEmployee.imageUrl}
             />
           ) : title ? (
@@ -99,7 +99,7 @@ export function EmployeeComboBox({
                     <UserAvatar
                       name={employee.name}
                       department={employee.designation?.department.shortName}
-                      designaiton={employee.designation?.title}
+                      designation={employee.designation?.title}
                       avatar={employee.imageUrl}
                     />
 

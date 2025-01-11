@@ -176,7 +176,7 @@ function DetailsPage({ timeline }: { timeline: TimeLineType }) {
       avatar={operationEngineer?.imageUrl}
       bagde
       department={operationEngineer?.designation?.department.shortName}
-      designaiton={operationEngineer?.designation?.title}
+      designation={operationEngineer?.designation?.title}
     />
   );
   return (
@@ -207,7 +207,7 @@ function DetailsPage({ timeline }: { timeline: TimeLineType }) {
             avatar={shiftEngineer?.imageUrl}
             bagde
             department={shiftEngineer?.designation?.department.shortName}
-            designaiton={shiftEngineer?.designation?.title}
+            designation={shiftEngineer?.designation?.title}
           />
         </span>{' '}
         {timeline.opEngrAssignedAt && (

@@ -88,7 +88,7 @@ export function WorkRequestCard({
               avatar={creator.avatar}
               bagde
               department={creator.department}
-              designaiton={creator.designation}
+              designation={creator.designation}
             />
           </span>
         </div>

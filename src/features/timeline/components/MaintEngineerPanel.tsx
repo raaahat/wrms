@@ -112,7 +112,7 @@ export const MaintEngineerPanel = ({
                             department={
                               maintManager.designation?.department.shortName
                             }
-                            designaiton={maintManager.designation?.title}
+                            designation={maintManager.designation?.title}
                           />
                         </span>
                         at{' '}
@@ -143,7 +143,7 @@ export const MaintEngineerPanel = ({
                                   operationEngineer.designation?.department
                                     .shortName
                                 }
-                                designaiton={
+                                designation={
                                   operationEngineer.designation?.title
                                 }
                               />
@@ -158,7 +158,7 @@ export const MaintEngineerPanel = ({
                                   shiftEngineer.designation?.department
                                     .shortName
                                 }
-                                designaiton={shiftEngineer.designation?.title}
+                                designation={shiftEngineer.designation?.title}
                                 className='inline-flex'
                               />
                             </span>{' '}

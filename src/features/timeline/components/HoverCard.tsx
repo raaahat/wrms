@@ -40,7 +40,7 @@ export function HoverCardInfo({ timeStamp, user, children }: HoverProps) {
                   name={user.name}
                   avatar={user.avatar}
                   department={user.department}
-                  designaiton={user.designation}
+                  designation={user.designation}
                 />
               </>
             )}

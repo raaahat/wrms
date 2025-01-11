@@ -216,7 +216,7 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
         <UserAvatar
           name={name}
           avatar={imageUrl}
-          designaiton={des?.title}
+          designation={des?.title}
           department={des?.department.shortName}
         />
       );
@@ -235,7 +235,7 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
         <UserAvatar
           name={name}
           avatar={imageUrl}
-          designaiton={des?.title}
+          designation={des?.title}
           department={des?.department.shortName}
         />
       );
