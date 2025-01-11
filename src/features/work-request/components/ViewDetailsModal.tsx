@@ -34,6 +34,7 @@ import { GetAllWRType } from '../query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getStatusIcon } from '../constants';
 import UserAvatar from '@/features/employee/components/UserAvatar';
+import { Status } from '@prisma/client';
 
 const TABS = ['Details', 'Timeline'] as const;
 
@@ -242,17 +243,19 @@ function StrictTimeline({
         <ol className='relative border-l border-gray-200 dark:border-gray-700'>
           <TimelineItem
             icon={getStatusIcon('PLACED')}
+            status='PLACED'
             time={workRequest.createdAt}
             title='Work Request Created'
           >
             <span className='inline-flex items-center align-middle'>
               <UserAvatar bagde {...creator} />
             </span>
-            placed the work request, status: 'Placed'
+            placed the work request
           </TimelineItem>
           {isPending ? (
             <TimelineItem
               icon={getStatusIcon('PENDING')}
+              status='PENDING'
               time={timeline.maintEngrAssignedAt as Date}
               title='Assigned to Maintenance Engineer'
             >
@@ -263,7 +266,7 @@ function StrictTimeline({
               <span className='inline-flex items-center align-middle'>
                 <UserAvatar bagde {...maintEngr} />
               </span>
-              for this work, status: 'Pending'
+              for this work
             </TimelineItem>
           ) : (
             <TimelineItem
@@ -277,6 +280,7 @@ function StrictTimeline({
           {isOngoing ? (
             <TimelineItem
               icon={getStatusIcon('ONGOING')}
+              status='ONGOING'
               time={timeline.opEngrAssignedAt as Date}
               title='Isolation Confirmed'
             >
@@ -289,7 +293,15 @@ function StrictTimeline({
               <span className='inline-flex items-center align-middle'>
                 <UserAvatar bagde {...opEngr} />
               </span>{' '}
-              has confirmed the isolation, status: 'Ongoing'
+              has confirmed the isolation{' '}
+              {timeline.opEngrAssignedAt && (
+                <>
+                  at{' '}
+                  <time className='text-primary text-sm'>
+                    {format(timeline.opEngrAssignedAt, 'dd MMM yy, HH:mm')}
+                  </time>
+                </>
+              )}
             </TimelineItem>
           ) : (
             <TimelineItem
@@ -297,6 +309,49 @@ function StrictTimeline({
               title='Waiting for Isolation Confirmation'
             >
               Operation Engineer will confirm the isolation
+            </TimelineItem>
+          )}
+          {timeline.workDoneAt ? (
+            <TimelineItem
+              icon={getStatusIcon('FINISHED')}
+              status='FINISHED'
+              time={timeline.workDoneAt as Date}
+              title='Work Finished'
+            >
+              Work has been finished by{' '}
+              <span className='inline-flex items-center align-middle'>
+                <UserAvatar bagde {...maintEngr} />
+              </span>{' '}
+              at{' '}
+              <time className='text-primary text-sm'>
+                {format(timeline.workDoneAt, 'dd MMM yy, HH:mm')}
+              </time>
+            </TimelineItem>
+          ) : (
+            <TimelineItem
+              icon={getStatusIcon('DONE')}
+              title='Waiting for the Work to be Finished by Maintenance'
+            >
+              Maintenance Engineer will confirm the work done
+            </TimelineItem>
+          )}
+          {workRequest.status === 'FINISHED' ? (
+            <TimelineItem
+              icon={getStatusIcon(workRequest.status)}
+              title='Waiting for Operation Team Review'
+            >
+              The Operation Team will review the completed work and update the
+              status accordingly.
+            </TimelineItem>
+          ) : (
+            <TimelineItem
+              icon={getStatusIcon(workRequest.status)}
+              title='Work Request Closed'
+            >
+              The status of the work request is now
+              <span className='mx-1 inline-flex items-center align-middle'>
+                <StatusBadge status={workRequest.status} />
+              </span>
             </TimelineItem>
           )}
         </ol>
@@ -332,7 +387,9 @@ function TimelineItem({
   title,
   icon,
   children,
+  status,
 }: {
+  status?: Status;
   time?: Date;
   title: string;
   icon: React.ElementType<any, keyof JSX.IntrinsicElements>;
@@ -355,9 +412,12 @@ function TimelineItem({
         )}
       </h3>
       {time && (
-        <time className='block mb-2 text-sm font-normal leading-none text-muted-foreground '>
-          {format(time, 'dd MMM yy, HH:mm')}
-        </time>
+        <span className='flex items-center gap-1 mb-2'>
+          <time className='text-sm font-normal leading-none text-muted-foreground '>
+            {format(time, 'dd MMM yy, HH:mm')}
+          </time>
+          {status && <StatusBadge status={status} />}
+        </span>
       )}
 
       <p className='mb-4 text-base font-normal text-gray-500 dark:text-gray-400'>
