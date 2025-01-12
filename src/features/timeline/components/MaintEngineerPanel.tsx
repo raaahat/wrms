@@ -249,7 +249,7 @@ import { useAsyncAction } from '@/hooks/use-async-action';
 export default function WorkFinishedMessage() {
   return (
     // To make the notification fixed, add classes like `fixed bottom-4 right-4` to the container element.
-    <div className='mt-4 z-[100] w-full rounded-lg border border-border bg-background px-4 py-3 shadow-lg shadow-black/5'>
+    <div className='mt-4 w-full rounded-lg border border-border bg-background px-4 py-3 shadow-lg shadow-black/5'>
       <div className='flex gap-2  items-center'>
         <CircleCheck
           className=' text-emerald-500'

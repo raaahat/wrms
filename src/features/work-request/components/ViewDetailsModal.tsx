@@ -233,6 +233,9 @@ function StrictTimeline({
     designation: timeline.operationEngineer?.designation?.title,
     avatar: timeline.operationEngineer?.imageUrl,
   };
+
+  let shouldRender = true;
+
   return (
     <Card className={cn(' w-full border-none ml-6', className)}>
       <CardHeader>
@@ -252,107 +255,128 @@ function StrictTimeline({
             </span>
             placed the work request
           </TimelineItem>
-          {isPending ? (
-            <TimelineItem
-              icon={getStatusIcon('PENDING')}
-              status='PENDING'
-              time={timeline.maintEngrAssignedAt as Date}
-              title='Assigned to Maintenance Engineer'
-            >
-              <span className='inline-flex items-center align-middle'>
-                <UserAvatar bagde {...maintManager} />
-              </span>
-              assigned
-              <span className='inline-flex items-center align-middle'>
-                <UserAvatar bagde {...maintEngr} />
-              </span>
-              for this work
-            </TimelineItem>
-          ) : (
-            <TimelineItem
-              icon={getStatusIcon('PENDING')}
-              title='Waiting for Maintenance Manager Approval'
-            >
-              Maintenance Manager will assign the work request to a maintenance
-              engineer
-            </TimelineItem>
+          {shouldRender && (
+            <>
+              {isPending ? (
+                <TimelineItem
+                  icon={getStatusIcon('PENDING')}
+                  status='PENDING'
+                  time={timeline.maintEngrAssignedAt as Date}
+                  title='Assigned to Maintenance Engineer'
+                >
+                  <span className='inline-flex items-center align-middle'>
+                    <UserAvatar bagde {...maintManager} />
+                  </span>
+                  assigned
+                  <span className='inline-flex items-center align-middle'>
+                    <UserAvatar bagde {...maintEngr} />
+                  </span>
+                  for this work
+                </TimelineItem>
+              ) : (
+                <TimelineItem
+                  icon={getStatusIcon('PENDING')}
+                  title='Waiting for Maintenance Manager Approval'
+                >
+                  Maintenance Manager will assign the work request to a
+                  maintenance engineer
+                </TimelineItem>
+              )}
+            </>
           )}
-          {isOngoing ? (
-            <TimelineItem
-              icon={getStatusIcon('ONGOING')}
-              status='ONGOING'
-              time={timeline.opEngrAssignedAt as Date}
-              title='Isolation Confirmed'
-            >
-              {' '}
-              Shift Incharge
-              <span className='inline-flex items-center align-middle'>
-                <UserAvatar bagde {...shiftIncharge} />
-              </span>
-              and Operation Engineer{' '}
-              <span className='inline-flex items-center align-middle'>
-                <UserAvatar bagde {...opEngr} />
-              </span>{' '}
-              has confirmed the isolation{' '}
-              {timeline.opEngrAssignedAt && (
-                <>
+          {(shouldRender = shouldRender && !!isPending)}
+          {shouldRender && (
+            <>
+              {isOngoing ? (
+                <TimelineItem
+                  icon={getStatusIcon('ONGOING')}
+                  status='ONGOING'
+                  time={timeline.opEngrAssignedAt as Date}
+                  title='Isolation Confirmed'
+                >
+                  {' '}
+                  Shift Incharge
+                  <span className='inline-flex items-center align-middle'>
+                    <UserAvatar bagde {...shiftIncharge} />
+                  </span>
+                  and Operation Engineer{' '}
+                  <span className='inline-flex items-center align-middle'>
+                    <UserAvatar bagde {...opEngr} />
+                  </span>{' '}
+                  has confirmed the isolation{' '}
+                  {timeline.opEngrAssignedAt && (
+                    <>
+                      at{' '}
+                      <time className='text-primary text-sm'>
+                        {format(timeline.opEngrAssignedAt, 'dd MMM yy, HH:mm')}
+                      </time>
+                    </>
+                  )}
+                </TimelineItem>
+              ) : (
+                <TimelineItem
+                  icon={getStatusIcon('ONGOING')}
+                  title='Waiting for Isolation Confirmation'
+                >
+                  Operation Engineer will confirm the isolation
+                </TimelineItem>
+              )}
+            </>
+          )}
+          {(shouldRender = shouldRender && !!isOngoing)}
+
+          {shouldRender && (
+            <>
+              {timeline.workDoneAt ? (
+                <TimelineItem
+                  icon={getStatusIcon('FINISHED')}
+                  status='FINISHED'
+                  time={timeline.workDoneAt as Date}
+                  title='Work Finished'
+                >
+                  Work has been finished by{' '}
+                  <span className='inline-flex items-center align-middle'>
+                    <UserAvatar bagde {...maintEngr} />
+                  </span>{' '}
                   at{' '}
                   <time className='text-primary text-sm'>
-                    {format(timeline.opEngrAssignedAt, 'dd MMM yy, HH:mm')}
+                    {format(timeline.workDoneAt, 'dd MMM yy, HH:mm')}
                   </time>
-                </>
+                </TimelineItem>
+              ) : (
+                <TimelineItem
+                  icon={getStatusIcon('DONE')}
+                  title='Waiting for the Work to be Finished by Maintenance'
+                >
+                  Maintenance Engineer will confirm the work done
+                </TimelineItem>
               )}
-            </TimelineItem>
-          ) : (
-            <TimelineItem
-              icon={getStatusIcon('ONGOING')}
-              title='Waiting for Isolation Confirmation'
-            >
-              Operation Engineer will confirm the isolation
-            </TimelineItem>
+            </>
           )}
-          {timeline.workDoneAt ? (
-            <TimelineItem
-              icon={getStatusIcon('FINISHED')}
-              status='FINISHED'
-              time={timeline.workDoneAt as Date}
-              title='Work Finished'
-            >
-              Work has been finished by{' '}
-              <span className='inline-flex items-center align-middle'>
-                <UserAvatar bagde {...maintEngr} />
-              </span>{' '}
-              at{' '}
-              <time className='text-primary text-sm'>
-                {format(timeline.workDoneAt, 'dd MMM yy, HH:mm')}
-              </time>
-            </TimelineItem>
-          ) : (
-            <TimelineItem
-              icon={getStatusIcon('DONE')}
-              title='Waiting for the Work to be Finished by Maintenance'
-            >
-              Maintenance Engineer will confirm the work done
-            </TimelineItem>
-          )}
-          {workRequest.status === 'FINISHED' ? (
-            <TimelineItem
-              icon={getStatusIcon(workRequest.status)}
-              title='Waiting for Operation Team Review'
-            >
-              The Operation Team will review the completed work and update the
-              status accordingly.
-            </TimelineItem>
-          ) : (
-            <TimelineItem
-              icon={getStatusIcon(workRequest.status)}
-              title='Work Request Closed'
-            >
-              The status of the work request is now
-              <span className='mx-1 inline-flex items-center align-middle'>
-                <StatusBadge status={workRequest.status} />
-              </span>
-            </TimelineItem>
+          {(shouldRender = shouldRender && !!timeline.workDoneAt)}
+
+          {shouldRender && (
+            <>
+              {workRequest.status === 'FINISHED' ? (
+                <TimelineItem
+                  icon={getStatusIcon(workRequest.status)}
+                  title='Waiting for Operation Team Review'
+                >
+                  The Operation Team will review the completed work and update
+                  the status accordingly.
+                </TimelineItem>
+              ) : (
+                <TimelineItem
+                  icon={getStatusIcon(workRequest.status)}
+                  title='Work Request Closed'
+                >
+                  The status of the work request is now
+                  <span className='mx-1 inline-flex items-center align-middle'>
+                    <StatusBadge status={workRequest.status} />
+                  </span>
+                </TimelineItem>
+              )}
+            </>
           )}
         </ol>
       </CardContent>
