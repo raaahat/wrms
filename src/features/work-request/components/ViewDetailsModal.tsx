@@ -5,12 +5,7 @@ import {
   ResponsiveModal,
   ResponsiveModalContent,
 } from '@/components/ui/responsive-modal';
-import {
-  PenToolIcon as Tool,
-  Activity,
-  FileText,
-  CircleCheckBig,
-} from 'lucide-react';
+import { Activity, FileText, CircleCheckBig } from 'lucide-react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -35,6 +30,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getStatusIcon } from '../constants';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { Status } from '@prisma/client';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const TABS = ['Details', 'Timeline'] as const;
 
@@ -44,10 +40,11 @@ export const ViewDetailsModal = () => {
   const { isOpen, type, onClose } = useWRModal();
   const isModalOpen = isOpen && type === 'viewWr';
   const isMobile = useIsMobile();
+
   return (
-    <ResponsiveModal open={isModalOpen} onOpenChange={onClose}>
-      <ResponsiveModalContent className=' pointer-events-auto lg:min-w-[900px]'>
-        <ScrollArea className=' max-h-[85vh] flex'>
+    <Dialog open={isModalOpen} onOpenChange={onClose}>
+      <DialogContent className=' pointer-events-auto md:min-w-[90vw] lg:min-w-[80vw] xl:min-w-[70vw] '>
+        <ScrollArea className='max-h-[85vh]  '>
           {isMobile ? (
             <>
               <div className=' border-b'>
@@ -72,14 +69,15 @@ export const ViewDetailsModal = () => {
               {activeTab === 'Timeline' && <Timeline />}
             </>
           ) : (
-            <div className='flex '>
-              <Details className='basis-[40%] flex-grow' />
+            <div className='flex w-full h-full'>
+              <Details className='bg-yellow-400 basis-[40%] flex-grow' />
+
               <Timeline className='basis-[60%] flex-grow' />
             </div>
           )}
         </ScrollArea>
-      </ResponsiveModalContent>
-    </ResponsiveModal>
+      </DialogContent>
+    </Dialog>
   );
 };
 
@@ -88,58 +86,56 @@ function Details({ className }: { className?: string }) {
   const workRequest = data.wrInfo;
   if (!workRequest) return null;
   return (
-    <div className={cn('w-full h-full', className)}>
-      <Card className='bg-secondary border-none '>
-        <CardHeader>
-          <CardTitle className='flex justify-between items-center'>
-            <h2 className='text-xl font-semibold flex items-center gap-1'>
-              {workRequest.wrNo} <ModeBadge mode={workRequest.mode} />
-            </h2>
-            <StatusBadge status={workRequest.status} />
-          </CardTitle>
-          <CardDescription>{workRequest.title}</CardDescription>
-          <TypeBadge type={workRequest.type} />
-        </CardHeader>
-        <CardContent>
-          <div className='grid grid-cols-2 gap-2 text-sm'>
-            <div className='flex items-center gap-1 text-muted-foreground'>
-              <MapPin className='w-4 h-4' />
-              <span>{workRequest.allParentAreas.join(', ')}</span>
-            </div>
-            <div className='flex items-center gap-1 text-muted-foreground'>
-              <Clock className='w-4 h-4' />
-              <span>{format(workRequest.createdAt, 'dd MMM yy, HH:mm')}</span>
-            </div>
-            {workRequest.runningHour && (
-              <div className='flex items-center gap-1 text-muted-foreground'>
-                <Activity className='w-4 h-4' />
-                <span>{workRequest.runningHour} hrs</span>
-              </div>
-            )}
+    <Card className='bg-secondary border-none '>
+      <CardHeader>
+        <CardTitle className='flex justify-between items-center'>
+          <h2 className='text-xl font-semibold flex items-center gap-1'>
+            {workRequest.wrNo} <ModeBadge mode={workRequest.mode} />
+          </h2>
+          <StatusBadge status={workRequest.status} />
+        </CardTitle>
+        <CardDescription>{workRequest.title}</CardDescription>
+        <TypeBadge type={workRequest.type} />
+      </CardHeader>
+      <CardContent>
+        <div className='grid grid-cols-2 gap-2 text-sm'>
+          <div className='flex items-center gap-1 text-muted-foreground'>
+            <MapPin className='w-4 h-4' />
+            <span>{workRequest.allParentAreas.join(', ')}</span>
           </div>
-          {workRequest.remarks && (
-            <div className='mt-2 flex items-start gap-1 text-muted-foreground'>
-              <FileText className='w-4 h-4 mt-1 flex-shrink-0' />
-              <p className='text-sm line-clamp-2'>{workRequest.remarks}</p>
+          <div className='flex items-center gap-1 text-muted-foreground'>
+            <Clock className='w-4 h-4' />
+            <span>{format(workRequest.createdAt, 'dd MMM yy, HH:mm')}</span>
+          </div>
+          {workRequest.runningHour && (
+            <div className='flex items-center gap-1 text-muted-foreground'>
+              <Activity className='w-4 h-4' />
+              <span>{workRequest.runningHour} hrs</span>
             </div>
           )}
-          {workRequest.referredFromId && (
-            <InfoItem
-              icon={ArrowUpRight}
-              label='Referred From'
-              value={workRequest.referredFromId}
-            />
-          )}
-          {workRequest.referredToId && (
-            <InfoItem
-              icon={ArrowDownRight}
-              label='Referred To'
-              value={workRequest.referredToId}
-            />
-          )}
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+        {workRequest.remarks && (
+          <div className='mt-2 flex items-start gap-1 text-muted-foreground'>
+            <FileText className='w-4 h-4 mt-1 flex-shrink-0' />
+            <p className='text-sm line-clamp-2'>{workRequest.remarks}</p>
+          </div>
+        )}
+        {workRequest.referredFromId && (
+          <InfoItem
+            icon={ArrowUpRight}
+            label='Referred From'
+            value={workRequest.referredFromId}
+          />
+        )}
+        {workRequest.referredToId && (
+          <InfoItem
+            icon={ArrowDownRight}
+            label='Referred To'
+            value={workRequest.referredToId}
+          />
+        )}
+      </CardContent>
+    </Card>
   );
 }
 function Timeline({ className }: { className?: string }) {
@@ -189,7 +185,19 @@ function StrictTimeline({
   if (!timeline || isLoading)
     return (
       <>
-        <Skeleton className='h-8 w-full' />
+        <Card className={cn('h-full w-full border-none ml-6', className)}>
+          <CardHeader>
+            <CardTitle>
+              <Skeleton className=' h-5  w-20' />
+            </CardTitle>
+            <CardDescription>
+              <Skeleton className=' h-4 w-60' />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className=' h-5 w-16' />
+          </CardContent>
+        </Card>
       </>
     );
 

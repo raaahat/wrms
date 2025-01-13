@@ -92,6 +92,11 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => {}}>edit</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => onOpen('viewWr', { wrInfo: row.original })}
+            >
+              view details
+            </DropdownMenuItem>
             {next.length !== 0 &&
               mode === 'STRICT' &&
               !(['PLACED', 'PENDING', 'ONGOING'] as Status[]).includes(
@@ -141,7 +146,6 @@ export const columnWR: ColumnDef<GetAllWRType>[] = [
     header: 'WR-NO',
     cell({ row }) {
       const { onOpen } = useWRModal();
-      const a = row.original;
       return (
         <span
           className='hover:underline cursor-pointer'
