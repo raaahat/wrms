@@ -35,7 +35,7 @@ async function seedDepartmentWithDesig() {
   console.log('Seeding completed!');
 }
 
-seedRolesAndPermissions()
+seedDepartmentWithDesig()
   .catch((error) => {
     console.error('Error seeding database:', error);
     process.exit(1);

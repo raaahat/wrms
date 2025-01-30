@@ -170,3 +170,57 @@ model Permission {
   roles     Role[]         @relation("RolePermissions") // many-to-many relation with roles
   employees Employee[]     @relation("UserPermissions")
 }
+
+model Engine {
+  id         String       @id @default(cuid())
+  name       String       @unique
+  number     Int          @unique @map("engine_number") // Unique and mapped for better DB clarity
+  engineData EngineData[]
+
+  @@index([number]) // Ensures fast lookups
+}
+
+enum EngineStatus {
+  RUNNING
+  STANDBY
+  UM
+}
+
+model EngineData {
+  id       String       @id @default(cuid())
+  engineId String
+  date     DateTime     @default(now())
+  status   EngineStatus @default(RUNNING)
+
+  loadSetpoint    Decimal? // Stored in MW
+  fuelRackControl Decimal? // Stored as percentage (%)
+  foFlowRate      Decimal? // Stored in Kg/Hr
+
+  tcSpeedA Int? // Stored in RPM
+  tcSpeedB Int? // Stored in RPM
+
+  exhGasTempTCAInlet Decimal? // Stored in °C
+  exhGasTempTCBInlet Decimal? // Stored in °C
+  avgExhaustTemp     Decimal? // Stored in °C
+
+  crankcasePress Decimal? // Stored in mbar
+
+  maxMainBearingTemp       Decimal? // Stored in °C
+  maxBigEndBearingTemp     Decimal? // Stored in °C
+  maxLinerTemp             Decimal? // Stored in °C
+  maxAlternatorBearingTemp Decimal? // Stored in °C
+  maxWindingTemp           Decimal? // Stored in °C
+
+  torsionalVib Decimal? // Stored in millidegree (mdeg)
+
+  cleanLeakPumpRuns Int? // Count of runs (No.)
+
+  fuelConsumption Decimal? // Stored in g/kWh
+  heatRate        Decimal? // Stored in kJ/kWh
+
+  engine Engine @relation(fields: [engineId], references: [id], onDelete: Cascade) // Ensures no orphaned data
+
+  @@unique([engineId, date]) // Ensures one entry per engine per day
+  @@index([engineId]) // Index for faster queries
+  @@index([date]) // Index to optimize historical lookups
+}

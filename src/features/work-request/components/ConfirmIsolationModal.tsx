@@ -9,9 +9,7 @@ import {
 import { useState } from 'react';
 import { EmployeeComboBox } from './EmployeeComboBox';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { CheckCircle2, LoaderCircle } from 'lucide-react';
-import { cn, wait } from '@/lib/utils';
 import {
   ResponsiveModal,
   ResponsiveModalContent,
@@ -20,7 +18,7 @@ import {
 } from '@/components/ui/responsive-modal';
 import { assignOPEngr } from '@/features/timeline/actions';
 import { toast } from 'sonner';
-import { getSingleTimeline, TimeLineType } from '@/features/timeline/query';
+import { TimeLineType } from '@/features/timeline/query';
 import UserAvatar from '@/features/employee/components/UserAvatar';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
