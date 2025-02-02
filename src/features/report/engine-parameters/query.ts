@@ -8,6 +8,10 @@ import {
   startOfMonth,
 } from 'date-fns';
 
+export type EngineDataType = NonNullable<
+  Awaited<ReturnType<typeof getEngineDataForDate>>
+>[number];
+
 export const getEngineDataForDate = async (date: string) => {
   const engineData = await db.engineData.findMany({
     where: { date: new Date(date) },
@@ -36,6 +40,7 @@ export const getEngineDataForDate = async (date: string) => {
 export type EngineTableDataType = Awaited<
   ReturnType<typeof getEngineDataForMonth>
 >[string];
+
 export const getEngineDataForMonth = async (month: string) => {
   try {
     // Convert '2025-01' to Date
@@ -96,7 +101,7 @@ export const getEngineDataForMonth = async (month: string) => {
       });
     });
 
-    return groupedData; // ✅ Add this return statement
+    return groupedData;
   } catch (error) {
     console.error('Error fetching engine data:', error);
     return {}; // Ensure function returns an empty object on failure

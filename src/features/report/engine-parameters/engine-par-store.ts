@@ -1,4 +1,4 @@
-import { getCurrentMonth } from '@/lib/utils';
+import { getCurrentDay, getCurrentMonth } from '@/lib/utils';
 import { create } from 'zustand';
 
 type EngineParametersStoreProps = {
@@ -12,7 +12,7 @@ type EngineParametersStoreProps = {
 
 export const useEngineParametersStore = create<EngineParametersStoreProps>(
   (set) => ({
-    selectedDate: '',
+    selectedDate: getCurrentDay(),
     onOpen: (date) => set({ selectedDate: date, isOpen: true }),
     isOpen: false,
     onClose: () => set({ isOpen: false }),

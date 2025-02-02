@@ -89,6 +89,9 @@ export const getDaysInMonth = (month: string): string[] => {
 export const getCurrentMonth = (): string => {
   return format(new Date(), 'yyyy-MM');
 };
+export const getCurrentDay = (): string => {
+  return format(new Date(), 'yyyy-MM-dd');
+};
 
 export const formatMonthForUser = (month: string): string => {
   const parsedDate = parse(month, 'yyyy-MM', new Date());
