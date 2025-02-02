@@ -4,6 +4,15 @@ import { useRef, useState, useEffect } from 'react';
 import { updateEngineData } from '../actions';
 import { useQueryClient } from '@tanstack/react-query';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { EngineStatus } from '@prisma/client';
+
 export const EngineDataForm = ({
   engineData,
   engineNumber,
@@ -61,18 +70,15 @@ export const EngineDataForm = ({
   };
 
   const handleUpdate = async (field: keyof EngineDataType) => {
-    const payload = {
-      date,
-      engineNumber,
-      [field]: formData[field], // Send only the edited field
-    };
     const { success, message } = await updateEngineData(date, engineNumber, {
       [field]: formData[field],
     });
     if (success) {
       queryClient.invalidateQueries({ queryKey: ['engine-data', date] });
+      queryClient.invalidateQueries({
+        queryKey: ['engine-data', date.slice(0, 7)],
+      });
     }
-    console.log('success:', success, 'message:', message);
     // Reset the edited field
     setEditedField(null);
   };
@@ -190,6 +196,32 @@ export const EngineDataForm = ({
 
   return (
     <form className='space-y-2 min-w-[400px]'>
+      <div className='grid grid-cols-[auto_min-content_min-content] items-center gap-2'>
+        <span className='text-left truncate'>Status</span>
+        <Select
+          value={formData.status}
+          onValueChange={(value) => {
+            console.log('status: ', value);
+            console.log('before: ', formData);
+            setFormData((prev) => ({
+              ...prev,
+              status: value as EngineStatus, // Ensure it's the correct type
+            }));
+            console.log('after: ', formData);
+            handleUpdate('status'); // Update backend immediately when status changes
+          }}
+        >
+          <SelectTrigger className='w-24'>
+            <SelectValue placeholder='Status' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={EngineStatus.RUNNING}>Running</SelectItem>
+            <SelectItem value={EngineStatus.STANDBY}>StandBy</SelectItem>
+            <SelectItem value={EngineStatus.UM}>U/M</SelectItem>
+          </SelectContent>
+        </Select>
+        <span className='flex justify-start truncate w-16'></span>
+      </div>
       {serializedData.map((item, index) => (
         <div
           key={index}

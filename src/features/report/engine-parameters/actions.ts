@@ -63,6 +63,7 @@ export const updateEngineData = async (
   engineNumber: number,
   data: Partial<EngineDataType>
 ) => {
+  console.log('Data', data);
   try {
     // Convert string date to Date object
     const formattedDate = new Date(date);

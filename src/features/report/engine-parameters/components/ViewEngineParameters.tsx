@@ -40,6 +40,9 @@ const ViewEngineParameters = () => {
   async function handleCreateEntry(date: string) {
     const normalizedDate = new Date(date);
     const { success, message } = await createEntry(normalizedDate);
+    if (success) {
+      onOpen(date);
+    }
   }
   return (
     <div>
