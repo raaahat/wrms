@@ -1,8 +1,12 @@
 import { AddDataButton } from '@/features/report/engine-parameters/components/add-data-button';
 import EngineDataTable from '@/features/report/engine-parameters/components/EngineDataTable';
+import ViewEngineParameters from '@/features/report/engine-parameters/components/ViewEngineParameters';
+import { getAvailableMonths } from '@/features/report/engine-parameters/query';
 import { db } from '@/lib/prisma';
 
 const EngineParameters = async () => {
+  const availableMonths = await getAvailableMonths();
+
   const engineData = await db.engineData.findMany({
     include: {
       engine: {
@@ -12,18 +16,9 @@ const EngineParameters = async () => {
       },
     },
   });
-  const currentDate = new Date().toISOString().split('T')[0];
   return (
     <div>
-      EngineParameters <br />
-      <AddDataButton />
-      <br />
-      <div className='p-4'>
-        <h1 className='text-xl font-bold mb-4'>
-          Engine Data for {currentDate}
-        </h1>
-        <EngineDataTable date={currentDate} />
-      </div>
+      <ViewEngineParameters />
     </div>
   );
 };

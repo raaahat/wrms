@@ -1,37 +1,15 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { getEngineDataForDate } from '../query';
+import { parameterLabels } from '../constants';
+import { EngineTableDataType } from '../query';
+import { ReactNode } from 'react';
 
-// Mapping of parameter keys to user-friendly labels
-const parameterLabels: Record<string, string> = {
-  loadSetpoint: 'Load Set Point',
-  fuelRackControl: 'Fuel Rack Control',
-  foFlowRate: 'Fuel Oil Flow Rate',
-  tcSpeedA: 'Turbocharger Speed A',
-  tcSpeedB: 'Turbocharger Speed B',
-  exhGasTempTCAInlet: 'Exh. Gas Temp TCA Inlet',
-  exhGasTempTCBInlet: 'Exh. Gas Temp TCB Inlet',
-  avgExhaustTemp: 'Average Exhaust Temp',
-  crankcasePress: 'Crankcase Pressure',
-  maxMainBearingTemp: 'Max Main Bearing Temp',
-  maxBigEndBearingTemp: 'Max Big End Bearing Temp',
-  maxLinerTemp: 'Max Liner Temp',
-  maxAlternatorBearingTemp: 'Max Alternator Bearing Temp',
-  maxWindingTemp: 'Max Winding Temp',
-  torsionalVib: 'Torsional Vibration',
-  cleanLeakPumpRuns: 'Clean Leak Pump Runs',
-  fuelConsumption: 'Fuel Consumption',
-  heatRate: 'Heat Rate',
-};
-
-const EngineDataTable = ({ date }: { date: string }) => {
-  const engineDataQuery = useQuery({
-    queryKey: ['engine-data', date],
-    queryFn: () => getEngineDataForDate(date),
-  });
-
-  if (!engineDataQuery.data) return <p>Loading...</p>;
+const EngineDataTable = ({
+  engineDataByDate,
+}: {
+  engineDataByDate: EngineTableDataType;
+}) => {
+  if (!engineDataByDate) return <p>No data available.</p>;
 
   return (
     <div className='overflow-x-auto'>
@@ -39,7 +17,7 @@ const EngineDataTable = ({ date }: { date: string }) => {
         <thead>
           <tr>
             <th className='border p-2 text-left'>Parameter</th>
-            {engineDataQuery.data.headers.map((header) => (
+            {(engineDataByDate?.headers ?? []).map((header) => (
               <th key={header} className='border p-2 text-center'>
                 {header}
               </th>
@@ -47,18 +25,14 @@ const EngineDataTable = ({ date }: { date: string }) => {
           </tr>
         </thead>
         <tbody>
-          {engineDataQuery.data.rows.map((row) => (
+          {(engineDataByDate?.rows ?? []).map((row) => (
             <tr key={row.name} className='border-b'>
-              <td className='border p-2'>
-                {parameterLabels[row.name] || row.name} {/* Display label */}
+              <td className='border '>
+                {parameterLabels[row.name] || row.name}
               </td>
               {row.values.map((value, idx) => (
-                <td key={idx} className='border p-2 text-center'>
-                  {typeof value === 'object'
-                    ? value instanceof Date
-                      ? value.toLocaleDateString()
-                      : JSON.stringify(value)
-                    : value}
+                <td key={`${row.name}-${idx}`} className='border  text-center'>
+                  {formatValue(value)}
                 </td>
               ))}
             </tr>
@@ -67,6 +41,20 @@ const EngineDataTable = ({ date }: { date: string }) => {
       </table>
     </div>
   );
+};
+
+// Utility function to safely format values
+const formatValue = (value: unknown): ReactNode => {
+  if (value instanceof Date) {
+    return value.toLocaleDateString();
+  }
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value); // Ensure it's a string
+  }
+  if (typeof value === 'boolean') {
+    return value ? 'True' : 'False'; // Handle boolean values
+  }
+  return value !== null && value !== undefined ? String(value) : '—'; // Ensure string output
 };
 
 export default EngineDataTable;

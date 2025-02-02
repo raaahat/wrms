@@ -1,0 +1,21 @@
+// Mapping of parameter keys to user-friendly labels
+export const parameterLabels: Record<string, string> = {
+  loadSetpoint: 'Load Setpoint',
+  fuelRackControl: 'Fuel Rack Control',
+  foFlowRate: 'Fuel Oil Flow Rate',
+  tcSpeedA: 'TC Speed A',
+  tcSpeedB: 'TC Speed B',
+  exhGasTempTCAInlet: 'Exh. Gas Temp TC-A Inlet',
+  exhGasTempTCBInlet: 'Exh. Gas Temp TC-B Inlet',
+  avgExhaustTemp: 'Average Exhaust Temp',
+  crankcasePress: 'Crankcase Pressure',
+  maxMainBearingTemp: 'Max Main Bearing Temp',
+  maxBigEndBearingTemp: 'Max Big End Bearing Temp',
+  maxLinerTemp: 'Max Liner Temp',
+  maxAlternatorBearingTemp: 'Max Alternator Bearing Temp',
+  maxWindingTemp: 'Max Winding Temp',
+  torsionalVib: 'Torsional Vibration',
+  cleanLeakPumpRuns: 'Clean Leak Pump Runs',
+  fuelConsumption: 'Fuel Consumption',
+  heatRate: 'Heat Rate',
+};

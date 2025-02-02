@@ -1,5 +1,12 @@
+import EditEngineDataModal from '@/features/report/engine-parameters/components/EditDataModal';
+
 const ReportLayout = ({ children }: { children: React.ReactNode }) => {
-  return <div>{children}</div>;
+  return (
+    <div>
+      <EditEngineDataModal />
+      {children}
+    </div>
+  );
 };
 
 export default ReportLayout;

@@ -14,6 +14,8 @@ import React from 'react';
 import { SiWorkplace } from 'react-icons/si';
 import { NavMain } from './nav-main';
 import Link from 'next/link';
+import Image from 'next/image';
+import { Logo } from '../layout/logo';
 
 export function AppSidebar({
   user,
@@ -26,12 +28,18 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link href='#'>
+              <Image
+                src='/logo.svg' // No 'public' in the path
+                alt='Company logo'
+                width={500}
+                height={100}
+              />
+              {/* <Link href='#'>
                 <SiWorkplace />
                 <span className='text-lg tracking-widest dark:text-slate-300 text-slate-700 font-bold'>
-                  WRMS
+                  O&M OIS
                 </span>
-              </Link>
+              </Link> */}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

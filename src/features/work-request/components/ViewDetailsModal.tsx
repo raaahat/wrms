@@ -70,7 +70,7 @@ export const ViewDetailsModal = () => {
             </>
           ) : (
             <div className='flex w-full h-full'>
-              <Details className='bg-yellow-400 basis-[40%] flex-grow' />
+              <Details className=' basis-[40%] flex-grow' />
 
               <Timeline className='basis-[60%] flex-grow' />
             </div>

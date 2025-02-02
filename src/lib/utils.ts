@@ -1,4 +1,12 @@
 import { type ClassValue, clsx } from 'clsx';
+import {
+  eachDayOfInterval,
+  endOfMonth,
+  format,
+  parse,
+  parseISO,
+  startOfMonth,
+} from 'date-fns';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -68,3 +76,30 @@ export function generateAvatar(fullName: string): {
 }
 
 export const toSlug = (str: string) => str.replace(/\s+/g, '-').toLowerCase();
+
+export const getDaysInMonth = (month: string): string[] => {
+  const startDate = startOfMonth(parseISO(`${month}-01`));
+  const endDate = endOfMonth(startDate);
+
+  return eachDayOfInterval({ start: startDate, end: endDate }).map((date) =>
+    format(date, 'yyyy-MM-dd')
+  );
+};
+
+export const getCurrentMonth = (): string => {
+  return format(new Date(), 'yyyy-MM');
+};
+
+export const formatMonthForUser = (month: string): string => {
+  const parsedDate = parse(month, 'yyyy-MM', new Date());
+  return format(parsedDate, 'MMMM yyyy'); // 'February 2025'
+};
+
+export const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(date);
+};

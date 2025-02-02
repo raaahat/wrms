@@ -130,7 +130,7 @@ export const UpdateEmployeeForm = ({
   }, [deptWithDesig, defaultValues?.department]);
 
   return (
-    <Card className=" w-full max-w-2xl mx-auto">
+    <Card className=' w-full max-w-2xl mx-auto'>
       <CardHeader>
         <CardTitle>Register</CardTitle>
         <CardDescription>
@@ -142,17 +142,17 @@ export const UpdateEmployeeForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
+            className='space-y-6'
           >
             <FormField
               control={form.control}
-              name="name"
+              name='name'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Your name"
+                      placeholder='Your name'
                       {...field}
                       onFocus={(e) => e.target.select()}
                     />
@@ -166,7 +166,7 @@ export const UpdateEmployeeForm = ({
             />
             <FormField
               control={form.control}
-              name="departmentId"
+              name='departmentId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Department</FormLabel>
@@ -178,14 +178,14 @@ export const UpdateEmployeeForm = ({
                     value={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="capitalize">
-                        <SelectValue placeholder="Select a department" />
+                      <SelectTrigger className='capitalize'>
+                        <SelectValue placeholder='Select a department' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {deptWithDesig.map((dept) => (
                         <SelectItem
-                          className="capitalize"
+                          className='capitalize'
                           key={dept.id}
                           value={dept.id}
                         >
@@ -208,20 +208,20 @@ export const UpdateEmployeeForm = ({
             >
               <FormField
                 control={form.control}
-                name="designationId"
+                name='designationId'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Designation</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="capitalize">
-                          <SelectValue placeholder="Select a designation" />
+                        <SelectTrigger className='capitalize'>
+                          <SelectValue placeholder='Select a designation' />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {designations.map((designation) => (
                           <SelectItem
-                            className="capitalize"
+                            className='capitalize'
                             key={designation.id}
                             value={designation.id}
                           >
@@ -237,14 +237,14 @@ export const UpdateEmployeeForm = ({
               />
               <FormField
                 control={form.control}
-                name="phone"
+                name='phone'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <Input
-                        type="tel"
-                        placeholder="Your phone number"
+                        type='tel'
+                        placeholder='Your phone number'
                         {...field}
                       />
                     </FormControl>
@@ -256,18 +256,20 @@ export const UpdateEmployeeForm = ({
                 )}
               />
             </div>
-            <div className="flex justify-end items-center">
+            <div className='flex justify-end items-center'>
               <Button
-                type="submit"
-                disabled={!form.formState.isDirty || form.formState.isLoading}
+                type='submit'
+                disabled={
+                  !form.formState.isDirty || form.formState.isSubmitting
+                }
               >
                 Save Changes{' '}
                 {form.formState.isSubmitting && (
-                  <Loader2 className=" animate-spin" />
+                  <Loader2 className=' animate-spin' />
                 )}
               </Button>
               {verified ? (
-                <Button disabled className=" bg-emerald-600 ml-auto">
+                <Button disabled className=' bg-emerald-600 ml-auto'>
                   {' '}
                   <Check />
                   verified
@@ -275,7 +277,7 @@ export const UpdateEmployeeForm = ({
               ) : (
                 <Button
                   asChild
-                  className=" ml-auto hover:cursor-pointer"
+                  className=' ml-auto hover:cursor-pointer'
                   onClick={async () => {
                     const { success, message } = await grantAccess(employeeId);
                     toast({

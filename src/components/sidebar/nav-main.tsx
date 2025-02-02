@@ -27,6 +27,21 @@ import {
 
 const items = [
   {
+    title: 'Report',
+    url: '/report',
+    icon: TbReportAnalytics,
+    items: [
+      {
+        title: 'Overview',
+        url: '/report',
+      },
+      {
+        title: 'Engine Parameters',
+        url: '/report/engine-parameters',
+      },
+    ],
+  },
+  {
     title: 'Work Requests',
     url: '/work-request',
     icon: MdOutlineWorkOutline,
@@ -41,21 +56,6 @@ const items = [
     title: 'Settings',
     url: '/settings',
     icon: Settings,
-  },
-  {
-    title: 'Report',
-    url: '/report',
-    icon: TbReportAnalytics,
-    items: [
-      {
-        title: 'Overview',
-        url: '/report',
-      },
-      {
-        title: 'Engine Parameters',
-        url: '/report/engine-parameters',
-      },
-    ],
   },
 ];
 
@@ -73,7 +73,7 @@ export function NavMain() {
           {items.map((item) => {
             const active = path.startsWith(item.url);
             return (
-              <>
+              <div key={item.title}>
                 {item.items ? (
                   <Collapsible
                     key={item.title}
@@ -114,14 +114,14 @@ export function NavMain() {
                     </SidebarMenuItem>
                   </Collapsible>
                 ) : (
-                  <SidebarMenuButton asChild isActive={active}>
+                  <SidebarMenuButton key={item.title} asChild isActive={active}>
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 )}
-              </>
+              </div>
             );
           })}
         </SidebarMenu>
