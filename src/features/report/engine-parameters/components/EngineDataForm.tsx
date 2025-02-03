@@ -3,7 +3,6 @@ import { EngineDataType } from '../query';
 import { useRef, useState, useEffect } from 'react';
 import { updateEngineData } from '../actions';
 import { useQueryClient } from '@tanstack/react-query';
-
 import {
   Select,
   SelectContent,
@@ -34,6 +33,13 @@ export const EngineDataForm = ({
     setFormData(engineData);
   }, [engineData]);
 
+  // Trigger handleUpdate when formData.status changes
+  useEffect(() => {
+    if (editedField === 'status') {
+      handleUpdate('status');
+    }
+  }, [formData.status]); // Run this effect when formData.status changes
+
   // Helper function to convert Decimal to string
   const decimalToString = (value: any): string => {
     if (value && typeof value === 'object' && 'toString' in value) {
@@ -48,6 +54,14 @@ export const EngineDataForm = ({
       [key]: value === '' ? null : Number(value),
     }));
     setEditedField(key); // Track the edited field
+  };
+
+  const handleStatusChange = (value: EngineStatus) => {
+    setFormData((prev) => ({
+      ...prev,
+      status: value,
+    }));
+    setEditedField('status');
   };
 
   const handleKeyDown = (
@@ -196,32 +210,28 @@ export const EngineDataForm = ({
 
   return (
     <form className='space-y-2 min-w-[400px]'>
+      {/* Status Field */}
       <div className='grid grid-cols-[auto_min-content_min-content] items-center gap-2'>
         <span className='text-left truncate'>Status</span>
         <Select
           value={formData.status}
-          onValueChange={(value) => {
-            console.log('status: ', value);
-            console.log('before: ', formData);
-            setFormData((prev) => ({
-              ...prev,
-              status: value as EngineStatus, // Ensure it's the correct type
-            }));
-            console.log('after: ', formData);
-            handleUpdate('status'); // Update backend immediately when status changes
-          }}
+          onValueChange={(value: EngineStatus) => handleStatusChange(value)}
         >
           <SelectTrigger className='w-24'>
             <SelectValue placeholder='Status' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={EngineStatus.RUNNING}>Running</SelectItem>
-            <SelectItem value={EngineStatus.STANDBY}>StandBy</SelectItem>
-            <SelectItem value={EngineStatus.UM}>U/M</SelectItem>
+            {Object.values(EngineStatus).map((status) => (
+              <SelectItem key={status} value={status}>
+                {status}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         <span className='flex justify-start truncate w-16'></span>
       </div>
+
+      {/* Other Fields */}
       {serializedData.map((item, index) => (
         <div
           key={index}
