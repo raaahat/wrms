@@ -19,6 +19,7 @@ import { usePathname } from 'next/navigation';
 import { FaUserGear } from 'react-icons/fa6';
 import { MdOutlineWorkOutline } from 'react-icons/md';
 import { TbReportAnalytics } from 'react-icons/tb';
+import { PiCalculator } from 'react-icons/pi';
 import {
   Collapsible,
   CollapsibleContent,
@@ -26,6 +27,11 @@ import {
 } from '../ui/collapsible';
 
 const items = [
+  {
+    title: 'Energy Meter Reading',
+    url: '/energy-meter-reading',
+    icon: PiCalculator,
+  },
   {
     title: 'Report',
     url: '/report',

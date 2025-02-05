@@ -224,3 +224,22 @@ model EngineData {
   @@index([engineId]) // Index for faster queries
   @@index([date]) // Index to optimize historical lookups
 }
+
+model EnergyMeterReading {
+  id                   Int      @id @default(autoincrement())
+  date                 DateTime @db.Date // Store only the date part
+  hour                 Int // Hour of the day (0-23)
+  cumulativeImportMW   Float
+  cumulativeExportMW   Float
+  cumulativeExportMVar Float
+  demandMW             Float
+
+  @@unique([date, hour])
+}
+
+model DemandData {
+  id         Int      @id @default(autoincrement())
+  demandMW   Float
+  nldcPerson String
+  timestamp  DateTime
+}
