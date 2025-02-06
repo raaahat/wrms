@@ -1,12 +1,15 @@
-import { getCurrentDay, getCurrentMonth } from '@/lib/utils';
 import { create } from 'zustand';
 
 type DateStoreProps = {
-  selectedDate: Date | undefined;
+  selectedDate: Date;
   setSelectedDate: (date: Date | undefined) => void;
 };
+const today = new Date();
+const isoString = today.toISOString();
+const datePart = isoString.split('T')[0]; // Split at 'T' and take the first part
+const dateOnly = new Date(datePart);
 
-export const useDateStore = create<DateStoreProps>((set) => ({
-  selectedDate: new Date(),
+export const useEngergyMeterStore = create<DateStoreProps>((set) => ({
+  selectedDate: dateOnly,
   setSelectedDate: (date) => set({ selectedDate: date }),
 }));

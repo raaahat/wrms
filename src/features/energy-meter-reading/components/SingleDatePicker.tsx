@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useEffect, useId, useState } from 'react';
-import { useDateStore } from '../energy-meter-store';
+import { useEngergyMeterStore } from '../energy-meter-store';
 
 export default function DatePicker({
   start,
@@ -24,8 +24,11 @@ export default function DatePicker({
 }) {
   const id = useId();
   const today = new Date();
+  const isoString = today.toISOString();
+  const datePart = isoString.split('T')[0]; // Split at 'T' and take the first part
+  const dateOnly = new Date(datePart);
   const [month, setMonth] = useState(today);
-  const { selectedDate, setSelectedDate } = useDateStore();
+  const { selectedDate, setSelectedDate } = useEngergyMeterStore();
   const [inputValue, setInputValue] = useState('');
 
   const handleDayPickerSelect = (date: Date | undefined) => {
@@ -55,6 +58,9 @@ export default function DatePicker({
   useEffect(() => {
     setInputValue(format(selectedDate ?? today, 'yyyy-MM-dd'));
   }, [selectedDate]);
+  useEffect(() => {
+    setSelectedDate(end ?? dateOnly);
+  }, []);
 
   return (
     <div>
