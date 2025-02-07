@@ -40,6 +40,7 @@ export const fetchEnergyMeterReadings = async (selectedDate: string) => {
     {
       id: number;
       date: Date;
+      hour: number;
       cumulativeImportMW: number;
       cumulativeExportMW: number;
       cumulativeExportMVar: number;
@@ -51,6 +52,7 @@ export const fetchEnergyMeterReadings = async (selectedDate: string) => {
     formattedReadings[reading.hour] = {
       id: reading.id,
       date: reading.date,
+      hour: reading.hour,
       cumulativeImportMW: reading.cumulativeImportMW,
       cumulativeExportMW: reading.cumulativeExportMW,
       cumulativeExportMVar: reading.cumulativeExportMVar,
@@ -63,6 +65,7 @@ export const fetchEnergyMeterReadings = async (selectedDate: string) => {
     formattedReadings[24] = {
       id: nextDayReading.id,
       date: nextDayReading.date,
+      hour: nextDayReading.hour,
       cumulativeImportMW: nextDayReading.cumulativeImportMW,
       cumulativeExportMW: nextDayReading.cumulativeExportMW,
       cumulativeExportMVar: nextDayReading.cumulativeExportMVar,

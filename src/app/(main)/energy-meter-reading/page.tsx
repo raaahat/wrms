@@ -1,5 +1,6 @@
 import { MeterReadingTable } from '@/features/energy-meter-reading/components/MeterReadingTable';
 import DatePicker from '@/features/energy-meter-reading/components/SingleDatePicker';
+import { UpsertMeterDataModal } from '@/features/energy-meter-reading/components/UpsertMeterDataModal';
 import { getDateRangeOfEnergyMeter } from '@/features/energy-meter-reading/query';
 
 const EnergyMeterReading = async () => {
@@ -13,6 +14,7 @@ const EnergyMeterReading = async () => {
       </div>
       <div>
         <MeterReadingTable />
+        <UpsertMeterDataModal />
       </div>
     </div>
   );
