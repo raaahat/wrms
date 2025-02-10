@@ -75,3 +75,33 @@ export const fetchEnergyMeterReadings = async (selectedDate: string) => {
 
   return formattedReadings;
 };
+
+export const getPreviousHourReading = async (date: string, hour: number) => {
+  const currentDate = new Date(date);
+
+  let previousDate: Date;
+  let previousHour: number;
+
+  if (hour === 0) {
+    // If hour is 0, fetch the 23rd hour of the previous day
+    previousDate = new Date(currentDate);
+    previousDate.setDate(previousDate.getDate() - 1); // Subtract one day
+    previousHour = 23;
+  } else {
+    // Otherwise, fetch the previous hour of the same day
+    previousDate = currentDate;
+    previousHour = hour - 1;
+  }
+
+  // Fetch the previous hour's reading
+  const previousReading = await db.energyMeterReading.findUnique({
+    where: {
+      date_hour: {
+        date: previousDate,
+        hour: previousHour,
+      },
+    },
+  });
+
+  return previousReading;
+};

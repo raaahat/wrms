@@ -22,38 +22,48 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useEffect } from 'react'; // Add useEffect
+import { useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getPreviousHourReading } from '../query';
+import { format } from 'date-fns';
+import { Skeleton } from '@/components/ui/skeleton';
+import { calculateHourlyExport } from '../utils';
 
 export const UpsertMeterDataModal = () => {
-  const { upsertModalOpen, closeUpsertModal, hour, currentData } =
+  const { selectedDate, upsertModalOpen, closeUpsertModal, hour, currentData } =
     useEngergyMeterStore();
-  console.log('currentData', currentData);
-
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['energyMeterReading', selectedDate, hour],
+    queryFn: () =>
+      getPreviousHourReading(format(selectedDate, 'yyyy-MM-dd'), hour),
+  });
   const form = useForm<z.infer<typeof EnergyMeterFormSchema>>({
     resolver: zodResolver(EnergyMeterFormSchema),
     defaultValues: {
-      demandMW: 0,
-      cumulativeImportMW: 0,
-      cumulativeExportMW: 0,
-      cumulativeExportMVar: 0,
+      demandMW: undefined, // Initialize as undefined (blank input)
+      cumulativeImportMW: undefined, // Initialize as undefined (blank input)
+      cumulativeExportMW: undefined, // Initialize as undefined (blank input)
+      cumulativeExportMVar: undefined, // Initialize as undefined (blank input)
     },
   });
-  console.log('form', form.getValues());
   useEffect(() => {
     form.reset({
-      demandMW: currentData?.demandMW ?? 0,
-      cumulativeImportMW: currentData?.cumulativeImportMW ?? 0,
-      cumulativeExportMW: currentData?.cumulativeExportMW ?? 0,
-      cumulativeExportMVar: currentData?.cumulativeExportMVar ?? 0,
+      demandMW: currentData?.demandMW,
+      cumulativeImportMW: currentData?.cumulativeImportMW,
+      cumulativeExportMW: currentData?.cumulativeExportMW,
+      cumulativeExportMVar: currentData?.cumulativeExportMVar,
     });
-  }, [currentData, form.reset]);
+  }, [currentData, form]);
+  function handleSubmit(formData: z.infer<typeof EnergyMeterFormSchema>) {
+    console.log(formData); // Form data will already be validated as numbers
+  }
 
   return (
     <Dialog
       open={upsertModalOpen}
       onOpenChange={() => {
         closeUpsertModal();
-        form.reset();
+        form.reset(); // Reset form when modal closes
       }}
     >
       <DialogContent>
@@ -62,7 +72,7 @@ export const UpsertMeterDataModal = () => {
             <DialogTitle className='flex items-center justify-end'>
               <span>{hour}:00 hours Reading</span>
               <span className='ml-auto border rounded-sm py-1 px-3'>
-                13-Jan-2025
+                {format(selectedDate, 'dd-MMM-yyyy')}
               </span>
             </DialogTitle>
             <DialogDescription className='text-left'>
@@ -71,16 +81,38 @@ export const UpsertMeterDataModal = () => {
           </DialogHeader>
         </div>
         <Form {...form}>
-          <form className='space-y-5'>
+          <form
+            className='space-y-5'
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
             <div className='space-y-4'>
               <FormField
                 control={form.control}
                 name='demandMW'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Demand</FormLabel>
+                    <FormLabel className='flex items-center'>
+                      Demand
+                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-50'>
+                        {isLoading ? (
+                          <Skeleton className=' w-40 h-4' />
+                        ) : data ? (
+                          `previous hour: ${data.demandMW}`
+                        ) : (
+                          'no previous data available'
+                        )}
+                      </span>
+                    </FormLabel>
                     <FormControl>
-                      <Input type='number' {...field} />
+                      <Input
+                        type='number'
+                        {...field}
+                        value={field.value ?? ''} // Ensure blank input initially
+                        onChange={(e) => {
+                          const value = e.target.valueAsNumber;
+                          field.onChange(isNaN(value) ? null : value); // Handle blank input
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -91,15 +123,40 @@ export const UpsertMeterDataModal = () => {
                 name='cumulativeImportMW'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Import kW</FormLabel>
+                    <FormLabel className='flex items-center'>
+                      Import kW
+                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-50'>
+                        {isLoading ? (
+                          <Skeleton className=' w-40 h-4' />
+                        ) : data ? (
+                          `previous hour: ${data.cumulativeImportMW}`
+                        ) : (
+                          'no previous data available'
+                        )}
+                      </span>
+                    </FormLabel>
                     <FormControl>
                       <div className='flex'>
                         <Input
+                          type='number'
                           className='-ms-px rounded-e-none shadow-none'
                           {...field}
+                          value={field.value ?? ''} // Ensure blank input initially
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber;
+                            field.onChange(isNaN(value) ? null : value); // Handle blank input
+                          }}
                         />
                         <span className='min-w-[200px] -z-10 flex items-center rounded-e-lg border border-input bg-background px-3 text-sm text-muted-foreground'>
-                          Hourly Import
+                          Import in MWh:{' '}
+                          {data &&
+                          form.getValues('cumulativeImportMW') >=
+                            data.cumulativeImportMW
+                            ? calculateHourlyExport(
+                                form.getValues('cumulativeImportMW'),
+                                data.cumulativeImportMW
+                              ).toFixed(2)
+                            : ''}
                         </span>
                       </div>
                     </FormControl>
@@ -112,15 +169,40 @@ export const UpsertMeterDataModal = () => {
                 name='cumulativeExportMW'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Export kW</FormLabel>
+                    <FormLabel className='flex items-center'>
+                      Export kW
+                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-50'>
+                        {isLoading ? (
+                          <Skeleton className=' w-40 h-4' />
+                        ) : data ? (
+                          `previous hour: ${data.cumulativeExportMW}`
+                        ) : (
+                          'no previous data available'
+                        )}
+                      </span>
+                    </FormLabel>
                     <FormControl>
                       <div className='flex'>
                         <Input
+                          type='number'
                           className='-ms-px rounded-e-none shadow-none'
                           {...field}
+                          value={field.value ?? ''} // Ensure blank input initially
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber;
+                            field.onChange(isNaN(value) ? null : value); // Handle blank input
+                          }}
                         />
                         <span className='min-w-[200px] -z-10 flex items-center rounded-e-lg border border-input bg-background px-3 text-sm text-muted-foreground'>
-                          Hourly Export
+                          Emport in MWh:{' '}
+                          {data &&
+                          form.getValues('cumulativeExportMW') >=
+                            data.cumulativeExportMW
+                            ? calculateHourlyExport(
+                                form.getValues('cumulativeExportMW'),
+                                data.cumulativeExportMW
+                              ).toFixed(2)
+                            : ''}
                         </span>
                       </div>
                     </FormControl>
@@ -133,15 +215,40 @@ export const UpsertMeterDataModal = () => {
                 name='cumulativeExportMVar'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Export kVar</FormLabel>
+                    <FormLabel className='flex items-center'>
+                      Export kVar
+                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-50'>
+                        {isLoading ? (
+                          <Skeleton className=' w-40 h-4' />
+                        ) : data ? (
+                          `previous hour: ${data.cumulativeExportMVar}`
+                        ) : (
+                          'no previous data available'
+                        )}
+                      </span>
+                    </FormLabel>
                     <FormControl>
                       <div className='flex'>
                         <Input
+                          type='number'
                           className='-ms-px rounded-e-none shadow-none'
                           {...field}
+                          value={field.value ?? ''} // Ensure blank input initially
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber;
+                            field.onChange(isNaN(value) ? null : value); // Handle blank input
+                          }}
                         />
                         <span className='min-w-[200px] -z-10 flex items-center rounded-e-lg border border-input bg-background px-3 text-sm text-muted-foreground'>
-                          Hourly Export
+                          Import in MVar:{' '}
+                          {data &&
+                          form.getValues('cumulativeExportMVar') >=
+                            data.cumulativeExportMVar
+                            ? calculateHourlyExport(
+                                form.getValues('cumulativeExportMVar'),
+                                data.cumulativeExportMVar
+                              ).toFixed(2)
+                            : ''}
                         </span>
                       </div>
                     </FormControl>
@@ -151,7 +258,7 @@ export const UpsertMeterDataModal = () => {
               />
             </div>
 
-            <Button type='button' className='w-full'>
+            <Button type='submit' className='w-full'>
               Save Changes
             </Button>
           </form>

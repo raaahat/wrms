@@ -20,21 +20,16 @@ export type UserInfo = {
 };
 
 export const EnergyMeterFormSchema = z.object({
-  // date: z.date({ required_error: 'Date is required' }),
-  // hour: z
-  //   .number({ required_error: 'Hour is required' })
-  //   .min(0, 'Hour must be between 0 and 23')
-  //   .max(23, 'Hour must be between 0 and 23'),
-  cumulativeImportMW: z
-    .number({ required_error: 'Cumulative Import kW is required' })
-    .nonnegative('Must be a non-negative value'),
-  cumulativeExportMW: z
-    .number({ required_error: 'Cumulative Export kW is required' })
-    .nonnegative('Must be a non-negative value'),
-  cumulativeExportMVar: z
-    .number({ required_error: 'Cumulative Export kVar is required' })
-    .nonnegative('Must be a non-negative value'),
   demandMW: z
     .number({ required_error: 'Demand MW is required' })
-    .nonnegative('Must be a non-negative value'),
+    .min(0.0001, 'Value must be greater than 0'), // Ensures non-zero
+  cumulativeImportMW: z
+    .number({ required_error: 'Cumulative Import kW is required' })
+    .min(0.0001, 'Value must be greater than 0'), // Ensures non-zero
+  cumulativeExportMW: z
+    .number({ required_error: 'Cumulative Export kW is required' })
+    .min(0.0001, 'Value must be greater than 0'), // Ensures non-zero
+  cumulativeExportMVar: z
+    .number({ required_error: 'Cumulative Export kVar is required' })
+    .min(0.0001, 'Value must be greater than 0'), // Ensures non-zero
 });

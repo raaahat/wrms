@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { EnergyMeterReading } from '@prisma/client';
+import { calculateHourlyExport } from '../utils';
 
 export const MeterReadingTable = () => {
   const { selectedDate, openUpsertModal } = useEngergyMeterStore();
@@ -72,14 +73,22 @@ export const MeterReadingTable = () => {
 
           // Calculate hourly values
           const hourlyImport = previousReading
-            ? reading?.cumulativeImportMW - previousReading.cumulativeImportMW
+            ? calculateHourlyExport(
+                reading?.cumulativeImportMW,
+                previousReading.cumulativeImportMW
+              )
             : 0;
           const hourlyExportMW = previousReading
-            ? reading?.cumulativeExportMW - previousReading.cumulativeExportMW
+            ? calculateHourlyExport(
+                reading?.cumulativeExportMW,
+                previousReading.cumulativeExportMW
+              )
             : 0;
           const hourlyExportMVar = previousReading
-            ? reading?.cumulativeExportMVar -
-              previousReading.cumulativeExportMVar
+            ? calculateHourlyExport(
+                reading?.cumulativeExportMVar,
+                previousReading.cumulativeExportMVar
+              )
             : 0;
 
           return (
