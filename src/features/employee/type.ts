@@ -18,18 +18,3 @@ export type UserInfo = {
   department: string;
   designation: string;
 };
-
-export const EnergyMeterFormSchema = z.object({
-  demandMW: z
-    .number({ required_error: 'Demand MW is required' })
-    .min(0.0001, 'Value must be greater than 0'), // Ensures non-zero
-  cumulativeImportMW: z
-    .number({ required_error: 'Cumulative Import kW is required' })
-    .min(0.0001, 'Value must be greater than 0'), // Ensures non-zero
-  cumulativeExportMW: z
-    .number({ required_error: 'Cumulative Export kW is required' })
-    .min(0.0001, 'Value must be greater than 0'), // Ensures non-zero
-  cumulativeExportMVar: z
-    .number({ required_error: 'Cumulative Export kVar is required' })
-    .min(0.0001, 'Value must be greater than 0'), // Ensures non-zero
-});

@@ -10,7 +10,7 @@ import {
 import { useEngergyMeterStore } from '../energy-meter-store';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { EnergyMeterFormSchema } from '@/features/employee/type';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
@@ -23,17 +23,24 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useEffect, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPreviousHourReading } from '../query';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { calculateHourlyExport } from '../utils';
+import { SubmitButton } from '@/components/submit-button';
+import { EnergyMeterFormSchema, energyMeterSchema } from '../type';
+import { useAsyncAction } from '@/hooks/use-async-action';
+import { upsertEnergyMeterReading } from '../actions';
+import { invalidateQuery } from '@/hooks/use-invalidate-hook';
 
 export const UpsertMeterDataModal = () => {
+  const queryClient = useQueryClient();
+  const { isSubmitting, performAction } = useAsyncAction('upsertMeterData');
   const { selectedDate, upsertModalOpen, closeUpsertModal, hour, currentData } =
     useEngergyMeterStore();
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['energyMeterReading', selectedDate, hour],
+    queryKey: ['energyMeterReading', format(selectedDate, 'yyyy-MM-dd'), hour],
     queryFn: () =>
       getPreviousHourReading(format(selectedDate, 'yyyy-MM-dd'), hour),
   });
@@ -54,10 +61,26 @@ export const UpsertMeterDataModal = () => {
       cumulativeExportMVar: currentData?.cumulativeExportMVar,
     });
   }, [currentData, form]);
-  function handleSubmit(formData: z.infer<typeof EnergyMeterFormSchema>) {
-    console.log(formData); // Form data will already be validated as numbers
-  }
 
+  async function handleSubmit(formData: z.infer<typeof EnergyMeterFormSchema>) {
+    const data: z.infer<typeof energyMeterSchema> = {
+      date: format(selectedDate, 'yyyy-MM-dd'),
+      hour,
+      demandMW: formData.demandMW,
+      cumulativeImportMW: formData.cumulativeImportMW,
+      cumulativeExportMW: formData.cumulativeExportMW,
+      cumulativeExportMVar: formData.cumulativeExportMVar,
+    };
+    const success = await performAction(() => upsertEnergyMeterReading(data));
+    console.log('success', success);
+    console.log('modal', upsertModalOpen);
+    if (success) {
+      queryClient.invalidateQueries({
+        queryKey: ['energyMeterReadings', data.date],
+      });
+      closeUpsertModal();
+    }
+  }
   return (
     <Dialog
       open={upsertModalOpen}
@@ -257,10 +280,13 @@ export const UpsertMeterDataModal = () => {
                 )}
               />
             </div>
-
-            <Button type='submit' className='w-full'>
-              Save Changes
-            </Button>
+            <SubmitButton
+              buttonText='Save Changes'
+              type='submit'
+              isPending={form.formState.isSubmitting || isSubmitting}
+              disabled={!form.formState.isDirty}
+              className='w-full'
+            />
           </form>
         </Form>
       </DialogContent>

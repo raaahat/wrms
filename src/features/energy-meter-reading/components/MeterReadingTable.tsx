@@ -109,22 +109,22 @@ export const MeterReadingTable = () => {
               </TableCell>
               <TableCell>{hour}:00</TableCell>
               <TableCell>
-                {reading ? reading.demandMW.toFixed(2) : '-'}
+                {reading ? reading.demandMW.toFixed(0) : '-'}
               </TableCell>
               <TableCell>
-                {reading ? reading.cumulativeImportMW.toFixed(2) : '-'}
+                {reading ? reading.cumulativeImportMW.toFixed(3) : '-'}
               </TableCell>
               <TableCell>
                 {hour === 0 || !reading ? '-' : hourlyImport.toFixed(2)}
               </TableCell>
               <TableCell>
-                {reading ? reading.cumulativeExportMW.toFixed(2) : '-'}
+                {reading ? reading.cumulativeExportMW.toFixed(3) : '-'}
               </TableCell>
               <TableCell>
                 {hour === 0 || !reading ? '-' : hourlyExportMW.toFixed(2)}
               </TableCell>
               <TableCell>
-                {reading ? reading.cumulativeExportMVar.toFixed(2) : '-'}
+                {reading ? reading.cumulativeExportMVar.toFixed(3) : '-'}
               </TableCell>
               <TableCell>
                 {hour === 0 || !reading ? '-' : hourlyExportMVar.toFixed(2)}
