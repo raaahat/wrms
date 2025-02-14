@@ -7,6 +7,7 @@ type DateStoreProps = {
   hour: number;
   currentData: EnergyMeterReading | null;
   openUpsertModal: (
+    date: string,
     hour: number,
     currentData: EnergyMeterReading | null
   ) => void;
@@ -24,8 +25,9 @@ export const useEngergyMeterStore = create<DateStoreProps>((set) => ({
   hour: 0,
   currentData: null,
   setSelectedDate: (date) => set({ selectedDate: date }),
-  openUpsertModal: (hour, currentData) =>
+  openUpsertModal: (date, hour, currentData) =>
     set({
+      selectedDate: new Date(date),
       upsertModalOpen: true,
       hour,
       currentData,

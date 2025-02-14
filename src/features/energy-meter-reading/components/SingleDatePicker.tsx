@@ -9,36 +9,42 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { cn, formatDateToISO } from '@/lib/utils';
+import { addDays, format } from 'date-fns';
+import { ArrowLeft, ArrowRight, CalendarIcon } from 'lucide-react';
 import { useEffect, useId, useState } from 'react';
-import { useEngergyMeterStore } from '../energy-meter-store';
+
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function DatePicker({
+  selectedDate,
   start,
   end,
 }: {
+  selectedDate: string;
   start: Date | null;
   end: Date | null;
 }) {
+  const router = useRouter();
   const id = useId();
   const today = new Date();
-  const isoString = today.toISOString();
-  const datePart = isoString.split('T')[0]; // Split at 'T' and take the first part
-  const dateOnly = new Date(datePart);
+  const parsedDate = new Date(selectedDate);
+  const nextDate = formatDateToISO(addDays(parsedDate, +1));
+  const prevDate = formatDateToISO(addDays(parsedDate, -1));
   const [month, setMonth] = useState(today);
-  const { selectedDate, setSelectedDate } = useEngergyMeterStore();
   const [inputValue, setInputValue] = useState('');
 
-  const handleDayPickerSelect = (date: Date | undefined) => {
-    if (!date) {
-      setInputValue('');
-      setSelectedDate(undefined);
-    } else {
-      setSelectedDate(date);
-      setMonth(date);
-      setInputValue(format(date, 'yyyy-MM-dd'));
+  const handleDayPickerSelect = (dateObj: Date | undefined) => {
+    if (dateObj) {
+      const date = formatDateToISO(dateObj);
+      const params = new URLSearchParams();
+      params.set('date', date);
+      router.push(`?${params.toString()}`, {
+        scroll: false,
+      });
+      setMonth(new Date(date));
+      setInputValue(date);
     }
   };
 
@@ -47,23 +53,26 @@ export default function DatePicker({
     setInputValue(value);
 
     if (value) {
-      const parsedDate = new Date(value);
-      setSelectedDate(parsedDate);
-      setMonth(parsedDate);
-    } else {
-      setSelectedDate(undefined);
+      const params = new URLSearchParams();
+      params.set('date', value);
+      router.push(`?${params.toString()}`, {
+        scroll: false,
+      });
+      setMonth(new Date(value));
     }
   };
 
   useEffect(() => {
-    setInputValue(format(selectedDate ?? today, 'yyyy-MM-dd'));
+    setInputValue(selectedDate);
   }, [selectedDate]);
-  useEffect(() => {
-    setSelectedDate(end ?? dateOnly);
-  }, []);
 
   return (
-    <div>
+    <div className='flex items-center gap-2'>
+      <Button asChild size={'default'} className='p-2' variant={'outline'}>
+        <Link href={`/energy-meter-reading?date=${prevDate}`}>
+          <ArrowLeft className='size-5' />
+        </Link>
+      </Button>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -114,7 +123,7 @@ export default function DatePicker({
           <Calendar
             mode='single'
             className='p-2'
-            selected={selectedDate}
+            selected={parsedDate}
             onSelect={handleDayPickerSelect}
             month={month}
             onMonthChange={setMonth}
@@ -128,7 +137,6 @@ export default function DatePicker({
             size='sm'
             className='mb-1 mt-2'
             onClick={() => {
-              setSelectedDate(today);
               setMonth(today);
             }}
           >
@@ -136,6 +144,11 @@ export default function DatePicker({
           </Button>
         </PopoverContent>
       </Popover>
+      <Button asChild size={'default'} className='p-2' variant={'outline'}>
+        <Link href={`/energy-meter-reading?date=${nextDate}`}>
+          <ArrowRight className='size-5' />
+        </Link>
+      </Button>
     </div>
   );
 }

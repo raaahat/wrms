@@ -9,6 +9,7 @@ import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 
 import { ModeSwitcher } from '@/components/mode-switcher';
+import PageTitle from '@/components/layout/page-title';
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await currentProfile();
   if (!user) return redirect('/register');
@@ -23,6 +24,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
             <div className='flex items-center gap-2 px-4'>
               <SidebarTrigger className='-ml-1' />
               <Separator orientation='vertical' className='mr-2 h-4' />
+              <PageTitle />
               {/* <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">

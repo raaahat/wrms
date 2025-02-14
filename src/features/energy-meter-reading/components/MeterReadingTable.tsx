@@ -12,7 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Plus } from 'lucide-react';
 import {
@@ -23,15 +22,31 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { EnergyMeterReading } from '@prisma/client';
 import { calculateHourlyExport } from '../utils';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { usePageInfo } from '@/hooks/use-store';
+import { useEffect } from 'react';
 
-export const MeterReadingTable = () => {
-  const { selectedDate, openUpsertModal } = useEngergyMeterStore();
-  const stringDate = format(selectedDate, 'yyyy-MM-dd');
+export const MeterReadingTable = ({
+  initialDate,
+  initialData,
+}: {
+  initialDate: string;
+  initialData: { [key: number]: EnergyMeterReading };
+}) => {
+  const searchParams = useSearchParams();
+  const { setPageTitle } = usePageInfo();
+  const paramDate = searchParams.get('date') || initialDate;
+  const { openUpsertModal } = useEngergyMeterStore();
+
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['energyMeterReadings', stringDate],
-    queryFn: () => fetchEnergyMeterReadings(stringDate),
+    queryKey: ['energyMeterReadings', paramDate],
+    queryFn: () => fetchEnergyMeterReadings(paramDate),
+    initialData: paramDate === initialDate ? initialData : undefined,
   });
 
+  useEffect(() => {
+    setPageTitle('Energy Meter Data Entry');
+  }, []);
   if (isLoading) {
     return <Skeleton className='h-32 w-full' />;
   }
@@ -40,7 +55,7 @@ export const MeterReadingTable = () => {
     return <div className='text-red-500'>Failed to load data.</div>;
   }
 
-  if (!data) {
+  if (!data || Object.keys(data).length === 0) {
     return (
       <div className='text-gray-500'>
         No readings available for the selected date.
@@ -95,13 +110,17 @@ export const MeterReadingTable = () => {
             <TableRow key={hour} className='[&>*]:py-1'>
               <TableCell>
                 {reading ? (
-                  <DropdownMenuButton hour={hour} currentData={reading} />
+                  <DropdownMenuButton
+                    paramDate={paramDate}
+                    hour={hour}
+                    currentData={reading}
+                  />
                 ) : (
                   <Button
                     size={'icon'}
                     variant={'ghost'}
                     className='bg-emerald-200 text-emerald-800 hover:bg-emerald-500 dark:bg-emerald-800 dark:text-emerald-200 dark:hover:bg-emerald-500 dark:hover:text-emerald-800 h-6 w-6 p-0 data-[state=open]:bg-muted'
-                    onClick={() => openUpsertModal(hour, null)}
+                    onClick={() => openUpsertModal(paramDate, hour, null)}
                   >
                     <Plus className='size-4' />
                   </Button>
@@ -138,9 +157,11 @@ export const MeterReadingTable = () => {
 };
 
 function DropdownMenuButton({
+  paramDate,
   hour,
   currentData,
 }: {
+  paramDate: string;
   hour: number;
   currentData: EnergyMeterReading;
 }) {
@@ -157,7 +178,9 @@ function DropdownMenuButton({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onSelect={() => openUpsertModal(hour, currentData)}>
+        <DropdownMenuItem
+          onSelect={() => openUpsertModal(paramDate, hour, currentData)}
+        >
           edit
         </DropdownMenuItem>
         <DropdownMenuItem>delete{/* delete TODO: */}</DropdownMenuItem>

@@ -3,6 +3,7 @@ import {
   eachDayOfInterval,
   endOfMonth,
   format,
+  isValid,
   parse,
   parseISO,
   startOfMonth,
@@ -82,7 +83,7 @@ export const getDaysInMonth = (month: string): string[] => {
   const endDate = endOfMonth(startDate);
 
   return eachDayOfInterval({ start: startDate, end: endDate }).map((date) =>
-    format(date, 'yyyy-MM-dd')
+    formatDateToISO(date)
   );
 };
 
@@ -90,7 +91,7 @@ export const getCurrentMonth = (): string => {
   return format(new Date(), 'yyyy-MM');
 };
 export const getCurrentDay = (): string => {
-  return format(new Date(), 'yyyy-MM-dd');
+  return formatDateToISO(new Date());
 };
 
 export const formatMonthForUser = (month: string): string => {
@@ -106,3 +107,10 @@ export const formatDate = (dateString: string): string => {
     year: 'numeric',
   }).format(date);
 };
+
+export const formatDateToISO = (date: Date) => {
+  return format(date, 'yyyy-MM-dd');
+};
+
+export const isValidDate = (dateString: string) =>
+  isValid(parseISO(dateString));

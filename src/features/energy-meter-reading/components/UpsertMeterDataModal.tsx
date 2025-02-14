@@ -21,8 +21,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useEffect, useRef } from 'react';
+
+import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPreviousHourReading } from '../query';
 import { format } from 'date-fns';
@@ -32,7 +32,8 @@ import { SubmitButton } from '@/components/submit-button';
 import { EnergyMeterFormSchema, energyMeterSchema } from '../type';
 import { useAsyncAction } from '@/hooks/use-async-action';
 import { upsertEnergyMeterReading } from '../actions';
-import { invalidateQuery } from '@/hooks/use-invalidate-hook';
+
+import { formatDateToISO } from '@/lib/utils';
 
 export const UpsertMeterDataModal = () => {
   const queryClient = useQueryClient();
@@ -40,9 +41,8 @@ export const UpsertMeterDataModal = () => {
   const { selectedDate, upsertModalOpen, closeUpsertModal, hour, currentData } =
     useEngergyMeterStore();
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['energyMeterReading', format(selectedDate, 'yyyy-MM-dd'), hour],
-    queryFn: () =>
-      getPreviousHourReading(format(selectedDate, 'yyyy-MM-dd'), hour),
+    queryKey: ['energyMeterReading', formatDateToISO(selectedDate), hour],
+    queryFn: () => getPreviousHourReading(formatDateToISO(selectedDate), hour),
   });
   const form = useForm<z.infer<typeof EnergyMeterFormSchema>>({
     resolver: zodResolver(EnergyMeterFormSchema),
@@ -64,7 +64,7 @@ export const UpsertMeterDataModal = () => {
 
   async function handleSubmit(formData: z.infer<typeof EnergyMeterFormSchema>) {
     const data: z.infer<typeof energyMeterSchema> = {
-      date: format(selectedDate, 'yyyy-MM-dd'),
+      date: formatDateToISO(selectedDate),
       hour,
       demandMW: formData.demandMW,
       cumulativeImportMW: formData.cumulativeImportMW,

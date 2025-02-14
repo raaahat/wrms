@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/sidebar';
 import { NavUser, NavUserSkeleton } from './nav-user';
 import React from 'react';
-
 import { SiWorkplace } from 'react-icons/si';
 import { NavMain } from './nav-main';
 import Link from 'next/link';
@@ -29,10 +28,11 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Image
-                src='/logo.svg' // No 'public' in the path
+                src='/logo.svg'
                 alt='Company logo'
-                width={500}
+                width={100}
                 height={100}
+                className='h-[60px]'
               />
               {/* <Link href='#'>
                 <SiWorkplace />
