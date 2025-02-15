@@ -7,63 +7,20 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSkeleton,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { ChevronRight, Plus, Settings } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { FaUserGear } from 'react-icons/fa6';
-import { MdOutlineWorkOutline } from 'react-icons/md';
-import { TbReportAnalytics } from 'react-icons/tb';
-import { PiCalculator } from 'react-icons/pi';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '../ui/collapsible';
-
-const items = [
-  {
-    title: 'Energy Meter Reading',
-    url: '/energy-meter-reading',
-    icon: PiCalculator,
-  },
-  {
-    title: 'Report',
-    url: '/report',
-    icon: TbReportAnalytics,
-    items: [
-      {
-        title: 'Overview',
-        url: '/report',
-      },
-      {
-        title: 'Engine Parameters',
-        url: '/report/engine-parameters',
-      },
-    ],
-  },
-  {
-    title: 'Work Requests',
-    url: '/work-request',
-    icon: MdOutlineWorkOutline,
-  },
-  {
-    title: 'Employee',
-    url: '/employee',
-    icon: FaUserGear,
-  },
-
-  {
-    title: 'Settings',
-    url: '/settings',
-    icon: Settings,
-  },
-];
+import { MAIN_NAV_ITEMS } from './constants';
 
 export function NavMain() {
   const path = usePathname();
@@ -76,7 +33,7 @@ export function NavMain() {
       </SidebarGroupAction>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => {
+          {MAIN_NAV_ITEMS.map((item) => {
             const active = path.startsWith(item.url);
             return (
               <div key={item.title}>
