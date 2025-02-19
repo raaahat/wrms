@@ -9,6 +9,7 @@ import {
   startOfMonth,
 } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
+import { z } from 'zod';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -114,3 +115,12 @@ export const formatDateToISO = (date: Date) => {
 
 export const isValidDate = (dateString: string) =>
   isValid(parseISO(dateString));
+
+export const formatZodErrors = (error: z.ZodError) => {
+  return Object.values(error.format())
+    .flatMap((field) =>
+      // Check if field has _errors before accessing it
+      '_errors' in field ? field._errors : []
+    )
+    .filter((msg) => msg); // Removes empty values
+};

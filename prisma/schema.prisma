@@ -243,3 +243,48 @@ model DemandData {
   nldcPerson String
   timestamp  DateTime
 }
+
+model EquipmentCategory {
+  id            String              @id @default(uuid())
+  name          String              @unique
+  parameters    ParameterTemplate[]
+  // ... other fields
+  EquipmentType EquipmentType[]
+}
+
+model ParameterTemplate {
+  id          String            @id @default(uuid())
+  categoryId  String
+  category    EquipmentCategory @relation(fields: [categoryId], references: [id])
+  name        String // e.g., "Rated Output"
+  key         String // e.g., "ratedOutput"
+  dataType    String // "number", "text", "boolean", etc.
+  unit        String? // "kW", "rpm", "bar"
+  required    Boolean           @default(true)
+  constraints Json? // { min: 0, max: 10000 }
+  order       Int // For UI ordering
+}
+
+model EquipmentType {
+  id         String            @id @default(uuid())
+  name       String // e.g., "Wärtsilä W18V50 Engine"
+  categoryId String
+  category   EquipmentCategory @relation(fields: [categoryId], references: [id])
+  parameters Json // Store type-specific specs as structured JSON
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  Equipment  Equipment[]
+
+  @@unique([name, categoryId])
+}
+
+model Equipment {
+  id        String        @id @default(uuid())
+  serialNo  String        @unique
+  typeId    String
+  type      EquipmentType @relation(fields: [typeId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // Additional instance-specific fields could be added here
+}

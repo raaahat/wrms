@@ -1,10 +1,20 @@
 import { Settings } from 'lucide-react';
+import { ElementType } from 'react';
+
 import { FaUserGear } from 'react-icons/fa6';
+
 import { MdOutlineWorkOutline } from 'react-icons/md';
 import { PiCalculator } from 'react-icons/pi';
 import { TbReportAnalytics } from 'react-icons/tb';
 
-export const MAIN_NAV_ITEMS = [
+type NavItem = {
+  title: string;
+  url: string;
+  icon?: ElementType;
+  items?: NavItem[];
+};
+
+export const MAIN_NAV_ITEMS: NavItem[] = [
   {
     title: 'Energy Meter Reading',
     url: '/energy-meter-reading',
@@ -40,6 +50,16 @@ export const MAIN_NAV_ITEMS = [
     title: 'Settings',
     url: '/settings',
     icon: Settings,
+    items: [
+      {
+        title: 'Manage Catagory',
+        url: '/equipment/manage-catagory',
+      },
+      {
+        title: 'Equipment type',
+        url: '/equipment/type',
+      },
+    ],
   },
 ];
 

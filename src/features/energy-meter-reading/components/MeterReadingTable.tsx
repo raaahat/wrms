@@ -107,7 +107,7 @@ export const MeterReadingTable = ({
             : 0;
 
           return (
-            <TableRow key={hour} className='[&>*]:py-1'>
+            <TableRow key={hour} className='[&>*]:py-0.5'>
               <TableCell>
                 {reading ? (
                   <DropdownMenuButton

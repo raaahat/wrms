@@ -72,12 +72,11 @@ export const UpsertMeterDataModal = () => {
       cumulativeExportMVar: formData.cumulativeExportMVar,
     };
     const success = await performAction(() => upsertEnergyMeterReading(data));
-    console.log('success', success);
-    console.log('modal', upsertModalOpen);
     if (success) {
       queryClient.invalidateQueries({
         queryKey: ['energyMeterReadings', data.date],
       });
+      form.reset();
       closeUpsertModal();
     }
   }
@@ -116,7 +115,7 @@ export const UpsertMeterDataModal = () => {
                   <FormItem>
                     <FormLabel className='flex items-center'>
                       Demand
-                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-50'>
+                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-70'>
                         {isLoading ? (
                           <Skeleton className=' w-40 h-4' />
                         ) : data ? (
@@ -148,7 +147,7 @@ export const UpsertMeterDataModal = () => {
                   <FormItem>
                     <FormLabel className='flex items-center'>
                       Import kW
-                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-50'>
+                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-70'>
                         {isLoading ? (
                           <Skeleton className=' w-40 h-4' />
                         ) : data ? (
@@ -194,7 +193,7 @@ export const UpsertMeterDataModal = () => {
                   <FormItem>
                     <FormLabel className='flex items-center'>
                       Export kW
-                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-50'>
+                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-70'>
                         {isLoading ? (
                           <Skeleton className=' w-40 h-4' />
                         ) : data ? (
@@ -240,7 +239,7 @@ export const UpsertMeterDataModal = () => {
                   <FormItem>
                     <FormLabel className='flex items-center'>
                       Export kVar
-                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-50'>
+                      <span className='ml-auto text-muted-foreground italic font-geistMono text-xs opacity-70'>
                         {isLoading ? (
                           <Skeleton className=' w-40 h-4' />
                         ) : data ? (
