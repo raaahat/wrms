@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EquipmentCatagory } from '@/features/equipment/components/EquipmentCatagory';
+import { EquipmentType } from '@/features/equipment/components/EquipmentType';
 
 const ManageCatagoryPage = () => {
   return (
@@ -14,8 +15,10 @@ const ManageCatagoryPage = () => {
         <TabsContent value='categories'>
           <EquipmentCatagory />
         </TabsContent>
-        <TabsContent value='types'>types</TabsContent>
-        <TabsContent value='equipment'>equipment</TabsContent>
+        <TabsContent value='types'>
+          <EquipmentType />
+        </TabsContent>
+        <TabsContent value='equipment'>ff</TabsContent>
       </Tabs>
     </main>
   );

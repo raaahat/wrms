@@ -124,3 +124,11 @@ export const formatZodErrors = (error: z.ZodError) => {
     )
     .filter((msg) => msg); // Removes empty values
 };
+
+export const generateKey = (name: string): string => {
+  return name
+    .trim() // Remove extra spaces
+    .toLowerCase() // Convert to lowercase
+    .replace(/\s+(.)/g, (_, char) => char.toUpperCase()) // Convert spaces to camelCase
+    .replace(/[^a-zA-Z0-9]/g, ''); // Remove non-alphanumeric characters
+};

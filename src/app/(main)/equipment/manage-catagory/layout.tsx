@@ -1,3 +1,4 @@
+import EquipmentModalProvider from '@/features/equipment/components/modal-provider';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,5 +11,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div>{children}</div>;
+  return (
+    <>
+      <EquipmentModalProvider />
+      {children}
+    </>
+  );
 }

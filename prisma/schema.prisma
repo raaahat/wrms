@@ -245,46 +245,47 @@ model DemandData {
 }
 
 model EquipmentCategory {
-  id            String              @id @default(uuid())
-  name          String              @unique
-  parameters    ParameterTemplate[]
+  id              String                 @id @default(uuid())
+  name            String                 @unique
+  specifications  SpecificatonTemplate[]
   // ... other fields
-  EquipmentType EquipmentType[]
+  EquipmentModels EquipmentModel[]
 }
 
-model ParameterTemplate {
-  id          String            @id @default(uuid())
-  categoryId  String
-  category    EquipmentCategory @relation(fields: [categoryId], references: [id])
-  name        String // e.g., "Rated Output"
-  key         String // e.g., "ratedOutput"
-  dataType    String // "number", "text", "boolean", etc.
-  unit        String? // "kW", "rpm", "bar"
-  required    Boolean           @default(true)
-  constraints Json? // { min: 0, max: 10000 }
-  order       Int // For UI ordering
-}
-
-model EquipmentType {
+model SpecificatonTemplate {
   id         String            @id @default(uuid())
-  name       String // e.g., "Wärtsilä W18V50 Engine"
   categoryId String
   category   EquipmentCategory @relation(fields: [categoryId], references: [id])
-  parameters Json // Store type-specific specs as structured JSON
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
-  Equipment  Equipment[]
+  name       String // e.g., "Rated Output"
+  dataType   String // "number", "text", "boolean", etc.
+  unit       String? // "kW", "rpm", "bar"
+  required   Boolean           @default(true)
 
-  @@unique([name, categoryId])
+  //constraints Json? { min: 0, max: 10000 }
+  @@unique([categoryId, name])
+}
+
+model EquipmentModel {
+  id             String            @id @default(uuid())
+  modelName      String // e.g., "Wärtsilä W18V50 Engine"
+  categoryId     String
+  category       EquipmentCategory @relation(fields: [categoryId], references: [id])
+  specifications Json // Store type-specific specs as structured JSON
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  Equipment      Equipment[]
+
+  @@unique([modelName, categoryId])
+  @@map("EquipmentType")
 }
 
 model Equipment {
-  id        String        @id @default(uuid())
-  serialNo  String        @unique
+  id        String         @id @default(uuid())
+  serialNo  String         @unique
   typeId    String
-  type      EquipmentType @relation(fields: [typeId], references: [id])
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  type      EquipmentModel @relation(fields: [typeId], references: [id])
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   // Additional instance-specific fields could be added here
 }
