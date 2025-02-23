@@ -19,15 +19,15 @@ const ViewEquipmentType = ({
 }: {
   categories: { [key: string]: EquipmentModel[] };
 }) => {
-  const { onOpen } = useEquipmentModal();
+  const { onOpen, setCategoryId } = useEquipmentModal();
   const categoryNames = useMemo(() => {
     return Object.entries(categories).map(([key, value]) => ({
       name: key,
       count: value.length,
     }));
   }, [categories]);
-  const [selectedCat, setSelectedCat] = useState<keyof typeof categories>(
-    Object.keys(categories)[0] as keyof typeof categories
+  const [selectedCat, setSelectedCat] = useState<string>(
+    Object.keys(categories)[0]
   );
   return (
     <div className='flex h-full'>
@@ -62,7 +62,13 @@ const ViewEquipmentType = ({
         </CardHeader>
         <CardContent>
           <Accordion type='single'>
-            <Button className='mb-6' onClick={() => onOpen('addEquipmentType')}>
+            <Button
+              className='mb-6'
+              onClick={() => {
+                setCategoryId(selectedCat);
+                onOpen('addEquipmentType');
+              }}
+            >
               Add {selectedCat}
             </Button>
             {categories[selectedCat] &&

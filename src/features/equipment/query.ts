@@ -1,3 +1,4 @@
+'use server';
 import { db } from '@/lib/prisma';
 
 export const getCatagories = async () => {
@@ -23,4 +24,14 @@ export const getCategoriesWithType = async () => {
   }, {} as Record<string, (typeof categories)[number]['EquipmentModels']>);
 
   return categoryMap;
+};
+
+export const getCategoryWithSpec = async (name: string) => {
+  const category = await db.equipmentCategory.findUnique({
+    where: { name },
+    include: {
+      specifications: true,
+    },
+  });
+  return category;
 };

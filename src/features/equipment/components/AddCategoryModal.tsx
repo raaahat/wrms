@@ -27,18 +27,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { useAsyncAction } from '@/hooks/use-async-action';
 import { addCategory } from '../action';
-
-// const FormSchema = z.object({
-//   category: z.string().min(1, 'Category name is required'),
-//   specifications: z.array(
-//     z.object({
-//       name: z.string().min(1, 'Specification name is required'),
-//       dataType: z.string().min(1, 'Data type is required'),
-//       unit: z.string().optional(),
-//       required: z.boolean().default(false),
-//     })
-//   ),
-// });
+import { SubmitButton } from '@/components/submit-button';
 
 const AddCategoryModal = () => {
   const { isOpen, onClose, type } = useEquipmentModal();
@@ -57,14 +46,14 @@ const AddCategoryModal = () => {
   });
 
   const isModalOpen = isOpen && type === 'addCategory';
+
   const onSubmit = async (data: FormData) => {
     const success = await performAction(() => addCategory(data));
     if (success) {
       onClose();
     }
   };
-  //   console.log('Form Data:', data);
-  // };
+
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -209,7 +198,12 @@ const AddCategoryModal = () => {
             </div>
 
             {/* Submit Button */}
-            <Button type='submit'>Submit</Button>
+            <SubmitButton
+              buttonText='Submit'
+              type='submit'
+              isPending={isSubmitting}
+              disabled={isSubmitting}
+            />
           </form>
         </Form>
       </DialogContent>
